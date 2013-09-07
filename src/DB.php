@@ -5,7 +5,7 @@ class DB {
 	private static $db = false;
 
 	public static function collection ($collection) {
-		if (self::$cofig === false) {
+		if (self::$config === false) {
 			self::$config = Config::db();
 		}
 		if (self::$client ==- false) {

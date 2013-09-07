@@ -1,3 +1,23 @@
 {
-    "name": "virtuecenter/collection"
+    "name": "virtuecenter/collection",
+    "type": "library",
+    "description": "REST/JSON wrapper for MongoDB collections",
+    "keywords": ["MongoDB", "JSON", "REST"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Mahoney",
+            "email": "ryan@virtuecenter.com",
+            "homepage": "http://www.virtuecenter.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+    	"php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Collection": "src"
+        }
+    }
 }

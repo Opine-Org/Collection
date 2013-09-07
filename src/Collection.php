@@ -1,6 +1,5 @@
 <?php
 trait Collection {
-	public static $config = false;
 	public $collection = false;
 	public $criteria = [];
 	public $sort = [];
@@ -27,13 +26,6 @@ trait Collection {
 
 	public function localSet() {
 		$this->local = true;
-	}
-
-	private static function db ($collection) {
-		self::$config = require(__DIR__ . '/../config.php');
-		$client = new MongoClient(self::$config['conn']);
-		$db = new MongoDB($client, self::$config['name']);
-		return new MongoCollection($db, $collection);
 	}
 
 	private function decorate (&$document) {
@@ -71,27 +63,23 @@ trait Collection {
 		return $rows;
 	}
 
-	private static function id ($id) {
-		return new MongoId((string)$id);
-	}
-
 	public function all () {
 		$this->name = $this->collection;
 		if ($this->publishable) {
 			$this->criteria['status'] = 'published';
 		}
-		$this->total = self::db($this->collection)->find($this->criteria)->count();
-		return $this->fetchAll($this->collection, self::db($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+		$this->total = DB::collection($this->collection)->find($this->criteria)->count();
+		return $this->fetchAll($this->collection, DB::collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 	}
 
 	public function byId ($id) {
 		$this->name = $this::$singular;
-		return self::db($this->collection)->findOne(['_id' => self::id($id)]);
+		return DB::collection($this->collection)->findOne(['_id' => DB::id($id)]);
 	}
 
 	public function bySlug ($slug) {
 		$this->name = $this::$singular;
-		return self::db($this->collection)->findOne(['code_name' => $slug]); 
+		return DB::collection($this->collection)->findOne(['code_name' => $slug]); 
 	}
 
 	public function featured () {
@@ -100,7 +88,7 @@ trait Collection {
 	}
 
 	public function byCategoryId ($categoryId) {
-		$this->criteria['category'] = self::id($categoryId);
+		$this->criteria['category'] = DB::id($categoryId);
 		return $this->all();
 	}
 
@@ -114,7 +102,7 @@ trait Collection {
 	}
 
 	public function byCategoryIdFeatured ($categoryId) {
-		$this->criteria['category'] = self::id($categoryId);
+		$this->criteria['category'] = DB::id($categoryId);
 		$this->criteria['featured'] = 't';
 		return $this->all();
 	}
@@ -144,11 +132,11 @@ trait Collection {
 	}
 
 	public function byAuthorId ($id) {
-		$this->criteria['author'] = self::id($id);
+		$this->criteria['author'] = DB::id($id);
 	}
 
 	public function byAuthorSlug ($slug) {
-		$this->criteria['author'] = self::id($id);
+		$this->criteria['author'] = DB::id($id);
 	}
 
 	public function tags () {

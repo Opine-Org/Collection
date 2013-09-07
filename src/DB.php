@@ -8,7 +8,7 @@ class DB {
 		if (self::$config === false) {
 			self::$config = Config::db();
 		}
-		if (self::$client ==- false) {
+		if (self::$client === false) {
 			self::$client = new MongoClient(self::$config['conn']);
 		}
 		if (self::$db === false) {

@@ -51,7 +51,7 @@ class CollectionRoute {
 		});
 	}
 
-	public static function pages (&$app, &$route) {
+	public static function pages (&$app) {
 		$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
 		if (!file_exists($cacheFile)) {
 			return;

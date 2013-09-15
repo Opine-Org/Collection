@@ -77,7 +77,7 @@ class CollectionRoute {
 		            	}
 		            }
 		            $separation = Separation::layout($collection['p'] . '.html')->template()->write();
-		        });
+		        })->name($collection['p']);
 		    }
 	        if (!isset($collection['s'])) {
 	        	continue;
@@ -86,7 +86,7 @@ class CollectionRoute {
                 $separation = Separation::layout($collection['s'] . '.html')->set([
                 	['Sep' => $collection['p'], 'a' => ['slug' => basename($slug, '.html')]]
                 ])->template()->write();
-            });
+            })->name($collection['s']);
             if (isset($collection['partials']) && is_array($collection['partials'])) {
             	foreach ($collection['partials'] as $template) {
 					$app->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {

@@ -49,6 +49,42 @@ class CollectionRoute {
 		        ], $options) . $tail;
 		    }
 		});
+
+		$app->get('/json-collections', function () {
+		$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
+			if (!file_exists($cacheFile)) {
+				return;
+			}
+			$collections = (array)json_decode(file_get_contents($cacheFile), true);
+			if (!is_array($collections)) {
+				return;
+			}
+		    foreach ($collections as &$collection) {
+		    	$collectionClass = $_SERVER['DOCUMENT_ROOT'] . '/collections/' . $collection['p'] . '.php';
+		    	if (!file_exists($collectionClass)) {
+		        	exit ($collection['p'] . ': unknown file.');
+		    	}
+			    require_once($collectionClass);
+		    	$reflection = new ReflectionClass($collection['p']);
+				$methods = $reflection->getMethods();
+				foreach ($methods as $method) {
+					if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
+						continue;
+					}
+					$collection['methods'][] = $method->name;
+				}
+		    }
+		    $head = '';
+		    $tail = '';
+		    if (isset($_GET['callback'])) {
+		        if ($_GET['callback'] == '?') {
+		            $_GET['callback'] = 'callback';
+		        }
+		        $head = $_GET['callback'] . '(';
+		        $tail = ');';
+		    }
+		    echo $head . json_encode($collections) . $tail;
+		});
 	}
 
 	public static function pages (&$app) {
@@ -76,21 +112,21 @@ class CollectionRoute {
 		                	${$option} = $_GET[$key];
 		            	}
 		            }
-		            $separation = Separation::layout($collection['p'] . '.html')->template()->write();
+		            $separation = Separation::layout($collection['p'])->template()->write();
 		        })->name($collection['p']);
 		    }
 	        if (!isset($collection['s'])) {
 	        	continue;
 	        }
             $app->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
-                $separation = Separation::layout($collection['s'] . '.html')->set([
+                $separation = Separation::layout($collection['s'])->set([
                 	['Sep' => $collection['p'], 'a' => ['slug' => basename($slug, '.html')]]
                 ])->template()->write();
             })->name($collection['s']);
             if (isset($collection['partials']) && is_array($collection['partials'])) {
             	foreach ($collection['partials'] as $template) {
 					$app->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {
-		               	$separation = Separation::html($collection['s'] . '-' . $template . '.html')->template()->write();
+		               	$separation = Separation::layout($collection['s'] . '-' . $template)->template()->write();
         			});
         		}
             }

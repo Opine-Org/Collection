@@ -45,7 +45,11 @@ trait Collection {
 			$template = '-' . $document['template_separation'];
 		}
 		if ($this->local) {
-			$path = $this::$singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document['_id'] . '"}}';
+			$key = '_id';
+			if (!empty($this->pathKey)) {
+				$key = $this->pathKey;
+			}
+			$path = $this::$singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document[$key] . '"}}';
 		} else {
 			if (empty($this->path)) {
 				$path = '/' . $this::$singular . $template;

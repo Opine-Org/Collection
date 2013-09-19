@@ -1,7 +1,10 @@
 <?php
 class CollectionRoute {
 	public static function json ($app) {
-		$app->get('/json-data/:collection/:method(/:limit(/:skip(/:sort)))', function ($collection, $method, $limit=20, $skip=0, $sort=[]) {
+		$app->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
+			if ($page == 0) {
+				$page = 1;
+			}
 		    $collectionClass = $_SERVER['DOCUMENT_ROOT'] . '/collections/' . $collection . '.php';
 		    if (!file_exists($collectionClass)) {
 		        exit ($collection . ': unknown file.');
@@ -10,7 +13,7 @@ class CollectionRoute {
 		    if (!class_exists($collection)) {
 		        exit ($collection . ': unknown class.');
 		    }
-		    $collectionObj = new $collection($limit, $skip, $sort);
+		    $collectionObj = new $collection($limit, $page, $sort);
 		    if (isset($_REQUEST['Sep-local'])) {
 		        $collectionObj->localSet();
 		    }
@@ -39,15 +42,13 @@ class CollectionRoute {
 		            $name => $collectionObj->$method($limit)
 		        ], $options) . $tail;
 		    } else {
-		    	$total = $collectionObj->totalGet();
 		        echo $head . json_encode([
 		            $name => $collectionObj->$method(),
 		            'pagination' => [
 		                'limit' => $limit,
-		                'skip'  => $skip,
-		                'total' => $total,
-		                'page' => ($skip / $limit) + 1,
-		                'pageCount' => ceil($total / $limit)
+		                'total' => $collectionObj->totalGet(),
+		                'page' => $page,
+		                'pageCount' => ceil($collectionObj->totalGet() / $limit)
 		            ]
 		        ], $options) . $tail;
 		    }
@@ -101,7 +102,7 @@ class CollectionRoute {
 		}
 	    foreach ($collections as $collection) {
 	        if (isset($collection['p'])) {
-	            $app->get('/' . $collection['p'] . '(/:method(/:limit(/:skip(/:sort))))', function ($method='all', $limit=null, $skip=0, $sort=[]) use ($collection) {
+	            $app->get('/' . $collection['p'] . '(/:method(/:limit(/:page(/:sort))))', function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection) {
 		            if ($limit === null) {
 		            	if (isset($collection['limit'])) {
 		                	$limit = $collection['limit'];
@@ -109,7 +110,7 @@ class CollectionRoute {
 			            	$limit = 10;
 			            }
 		            }
-		            foreach (['limit', 'skip', 'sort'] as $option) {
+		            foreach (['limit', 'page', 'sort'] as $option) {
 		            	$key = $collection['p'] . '-' . $method . '-' . $option;
 		            	if (isset($_GET[$key])) {
 		                	${$option} = $_GET[$key];

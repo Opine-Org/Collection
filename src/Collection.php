@@ -9,10 +9,10 @@ trait Collection {
 	public $name = null;
 	private $local = false;
 
-	public function __construct ($limit=20, $skip=0, $sort=[]) {
+	public function __construct ($limit=20, $page=1, $sort=[]) {
 		$this->collection = get_class($this);
 		$this->limit = $limit;
-		$this->skip = $skip;
+		$this->skip = ($page - 1) * $limit;
 		if (is_string($sort)) {
 			$this->sort = json_decode($sort);
 		} else {

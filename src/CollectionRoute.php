@@ -39,12 +39,15 @@ class CollectionRoute {
 		            $name => $collectionObj->$method($limit)
 		        ], $options) . $tail;
 		    } else {
+		    	$total = $collectionObj->totalGet();
 		        echo $head . json_encode([
 		            $name => $collectionObj->$method(),
 		            'pagination' => [
 		                'limit' => $limit,
 		                'skip'  => $skip,
-		                'total' => $collectionObj->totalGet()
+		                'total' => $total,
+		                'page' => ($skip / $limit) + 1,
+		                'pageCount' => ceil($total / $limit)
 		            ]
 		        ], $options) . $tail;
 		    }

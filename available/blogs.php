@@ -3,6 +3,7 @@ class blogs {
 	use Collection;
 	public $publishable = true;
 	public static $singular = 'blog';
+	public $tagCacheCollection = 'blogsTags';
 
 	public function document (&$document) {
 		//format date
@@ -14,5 +15,12 @@ class blogs {
 		
 
 		//lookup categories
+	}
+
+	public function documentTags (&$document) {
+		$document['tag'] = $document['_id'];
+		$document['count'] = $document['value'];
+		unset($document['_id']);
+		unset($document['value']);
 	}
 }

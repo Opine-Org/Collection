@@ -30,6 +30,7 @@ class CollectionRoute {
 		        $tail = ');';
 		    }
 		    $options = null;
+		    $data = $collectionObj->$method($limit);
 		    $name = $collectionObj->collection;
 		    if (isset($_GET['pretty'])) {
 		        $options = JSON_PRETTY_PRINT;
@@ -39,11 +40,11 @@ class CollectionRoute {
 		    if (in_array($method, ['byId', 'bySlug'])) {
 		        $name = $collectionObj::$singular;
 		        echo $head . json_encode([
-		            $name => $collectionObj->$method($limit)
+		            $name => $data
 		        ], $options) . $tail;
 		    } else {
 		        echo $head . json_encode([
-		            $name => $collectionObj->$method(),
+		            $name => $data,
 		            'pagination' => [
 		                'limit' => $limit,
 		                'total' => $collectionObj->totalGet(),

@@ -7,6 +7,8 @@ trait Collection {
 	public $skip = 0;
 	public $total = 0;
 	public $name = null;
+	public $transform = 'document';
+	public $myTransform = 'myDocument';
 	private $local = false;
 
 	public function __construct ($limit=20, $page=1, $sort=[]) {
@@ -30,6 +32,14 @@ trait Collection {
 
 	private function decorate (&$document) {
 		$document['_id'] = (string)$document['_id'];
+		if (method_exists($this, $this->transform)) {
+			$method = $this->transform;
+			$this->$method($document);
+		}
+		if (method_exists($this, $this->myTransform)) {
+			$method = $this->myTransform;
+			$this->$method($document);
+		}
 		$template = '';
 		if (isset($document['template_separation'])) {
 			$template = '-' . $document['template_separation'];
@@ -37,20 +47,18 @@ trait Collection {
 		if ($this->local) {
 			$path = $this::$singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document['_id'] . '"}}';
 		} else {
-			$path = '/' . $this::$singular . $template;
-			if (isset($document['code_name'])) {
-				$path .= '/' . $document['code_name'] . '.html';
+			if (empty($this->path)) {
+				$path = '/' . $this::$singular . $template;
+				if (isset($document['code_name'])) {
+					$path .= '/' . $document['code_name'] . '.html';
+				} else {
+					$path .= '/id/' . (string)$document['_id'] . '.html';
+				}
 			} else {
-				$path .= '/id/' . (string)$document['_id'] . '.html';
+				$path =	$this->path . $document[$this->pathKey] . '.html';
 			}
 		}
 		$document['separation_path'] = $path;
-		if (method_exists($this, 'document')) {
-			$this->document($document);
-		}
-		if (method_exists($this, 'myDocument')) {
-			$this->myDocument($document);
-		}
 	}
 
 	private function fetchAll ($collection, $cursor) {
@@ -143,6 +151,13 @@ trait Collection {
 		if (!isset($this->tagCacheCollection)) {
 			throw new Exception('Model configuration missing tagCacheCollection field');
 		}
+		$this->path = '/' . $this->collection . '/byTag/';
+		$this->pathKey = 'tag';
+		$this->collection = $this->tagCacheCollection;
+		$this->publishable = false;
+		$this->transform = 'documentTags';
+		$this->myTransform = 'myDocumentTags';
+		return $this->all();
 	}
 
 //Todo: wrap up additional functions

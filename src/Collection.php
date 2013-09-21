@@ -1,7 +1,11 @@
 <?php
+namespace Collection;
+use DB\Mongo;
+
 trait Collection {
-	public $collection = false;
+	public $collection;
 	public $criteria = [];
+	public $tagCacheCollection;
 	public $sort = [];
 	public $limit = 100;
 	public $skip = 0;
@@ -13,6 +17,7 @@ trait Collection {
 
 	public function __construct ($limit=20, $page=1, $sort=[]) {
 		$this->collection = get_class($this);
+		$this->tagCacheCollection = $this->collection . 'Tags';
 		$this->limit = $limit;
 		$this->skip = ($page - 1) * $limit;
 		if (is_string($sort)) {
@@ -80,18 +85,18 @@ trait Collection {
 		if ($this->publishable) {
 			$this->criteria['status'] = 'published';
 		}
-		$this->total = DB::collection($this->collection)->find($this->criteria)->count();
-		return $this->fetchAll($this->collection, DB::collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+		$this->total = Mongo::collection($this->collection)->find($this->criteria)->count();
+		return $this->fetchAll($this->collection, Mongo::collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 	}
 
 	public function byId ($id) {
 		$this->name = $this::$singular;
-		return DB::collection($this->collection)->findOne(['_id' => DB::id($id)]);
+		return Mongo::collection($this->collection)->findOne(['_id' => Mongo::id($id)]);
 	}
 
 	public function bySlug ($slug) {
 		$this->name = $this::$singular;
-		return DB::collection($this->collection)->findOne(['code_name' => $slug]); 
+		return Mongo::collection($this->collection)->findOne(['code_name' => $slug]); 
 	}
 
 	public function featured () {
@@ -100,7 +105,7 @@ trait Collection {
 	}
 
 	public function byCategoryId ($categoryId) {
-		$this->criteria['category'] = DB::id($categoryId);
+		$this->criteria['category'] = Mongo::id($categoryId);
 		return $this->all();
 	}
 
@@ -114,7 +119,7 @@ trait Collection {
 	}
 
 	public function byCategoryIdFeatured ($categoryId) {
-		$this->criteria['category'] = DB::id($categoryId);
+		$this->criteria['category'] = Mongo::id($categoryId);
 		$this->criteria['featured'] = 't';
 		return $this->all();
 	}
@@ -127,33 +132,33 @@ trait Collection {
 
 	private function dateFieldValidate() {
 		if (isset($this->dateField)) {
-			throw new Exception('Model configuration mmissing dateField');
+			throw new \Exception('Model configuration mmissing dateField');
 		}
 	}
 
 	public function byDateUpcoming () {
 		$this->dateFieldValidate();
-		$this->criteria[$this->dateField] = ['$gte' => new MongoDate(strtorime('today'))];
+		$this->criteria[$this->dateField] = ['$gte' => new \MongoDate(strtorime('today'))];
 		$this->all();
 	}
 
 	public function byDatePast () {
 		$this->dateFieldValidate();
-		$this->criteria[$this->dateField] = ['$lt' => new MongoDate(strtorime('today'))];
+		$this->criteria[$this->dateField] = ['$lt' => new \MongoDate(strtorime('today'))];
 		$this->all();
 	}
 
 	public function byAuthorId ($id) {
-		$this->criteria['author'] = DB::id($id);
+		$this->criteria['author'] = Mongo::id($id);
 	}
 
 	public function byAuthorSlug ($slug) {
-		$this->criteria['author'] = DB::id($id);
+		$this->criteria['author'] = Mongo::id($id);
 	}
 
 	public function tags () {
 		if (!isset($this->tagCacheCollection)) {
-			throw new Exception('Model configuration missing tagCacheCollection field');
+			throw new \Exception('Model configuration missing tagCacheCollection field');
 		}
 		$this->path = '/' . $this->collection . '/byTag/';
 		$this->pathKey = 'tag';
@@ -162,6 +167,24 @@ trait Collection {
 		$this->transform = 'documentTags';
 		$this->myTransform = 'myDocumentTags';
 		return $this->all();
+	}
+
+	public function document (&$document) {
+		//format date
+		if (isset($document['display_date'])) {
+			$document['display_date__MdY'] = date('M d, Y', $document['display_date']->sec);
+		}
+
+		//lookup authors		
+
+		//lookup categories
+	}
+
+	public function documentTags (&$document) {
+		$document['tag'] = $document['_id'];
+		$document['count'] = $document['value'];
+		unset($document['_id']);
+		unset($document['value']);
 	}
 
 //Todo: wrap up additional functions

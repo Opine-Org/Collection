@@ -1,4 +1,6 @@
 <?php
+namespace Collection;
+
 class CollectionRoute {
 	public static function json ($app) {
 		$app->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
@@ -56,7 +58,7 @@ class CollectionRoute {
 		});
 
 		$app->get('/json-collections', function () {
-		$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
+			$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
 			if (!file_exists($cacheFile)) {
 				return;
 			}
@@ -70,7 +72,7 @@ class CollectionRoute {
 		        	exit ($collection['p'] . ': unknown file.');
 		    	}
 			    require_once($collectionClass);
-		    	$reflection = new ReflectionClass($collection['p']);
+		    	$reflection = new \ReflectionClass($collection['p']);
 				$methods = $reflection->getMethods();
 				foreach ($methods as $method) {
 					if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {

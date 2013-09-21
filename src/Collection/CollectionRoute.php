@@ -1,5 +1,6 @@
 <?php
 namespace Collection;
+use Separation\Separation;
 
 class CollectionRoute {
 	public static function json ($app) {

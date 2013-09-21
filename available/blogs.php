@@ -1,4 +1,6 @@
 <?php
+use Collection\Collection;
+
 class blogs {
 	use Collection;
 	public $publishable = true;

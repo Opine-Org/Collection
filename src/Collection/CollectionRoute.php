@@ -140,4 +140,51 @@ class CollectionRoute {
             }
 	    }
 	}
+
+	public static function build ($root) {
+		$cache = [];
+		$dirFiles = glob($root . '/collections/*.php');
+		foreach ($dirFiles as $collection) {
+			require_once($collection);
+			$class = basename($collection, '.php');
+			$cache[] = [
+				'p' => $class,
+				's' => $class::$singular
+			];
+		}
+		$json = json_encode($cache, JSON_PRETTY_PRINT);
+		file_put_contents($root . '/collections/cache.json', $json);
+		foreach ($cache as $collection) {
+			$filename = $root . '/layouts/' . $collection['p'] . '.html';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('layout-collection.html', $collection));
+			}
+			$filename = $root . '/partials/' . $collection['p'] . '.hbs';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('partial-collection.hbs', $collection));
+			}
+			$filename = $root . '/layouts/' . $collection['s'] . '.html';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('layout-document.html', $collection));
+			}
+			$filename = $root . '/partials/' . $collection['s'] . '.hbs';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('partial-document.hbs', $collection));	
+			}
+			$filename = $root . '/sep/' . $collection['p'] . '.js';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('collection.js', $collection));	
+			}
+			$filename = $root . '/sep/' . $collection['s'] . '.js';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('document.js', $collection));	
+			}
+		}
+		return $json;
+	}
+
+	private static function stubRead ($name, &$collection) {
+		$data = file_get_contents(__DIR__ . '/../static/' . $name);
+		return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$this->url, $collection['p'], $collection['s']], $data);
+	}
 }

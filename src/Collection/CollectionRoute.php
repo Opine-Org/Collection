@@ -3,6 +3,12 @@ namespace Collection;
 use Separation\Separation;
 
 class CollectionRoute {
+	public static $cache = false;
+
+	public static function cacheSet ($cache) {
+		self::$cache = $cache;
+	}
+
 	public static function json ($app) {
 		$app->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
 			if ($page == 0) {
@@ -59,11 +65,15 @@ class CollectionRoute {
 		});
 
 		$app->get('/json-collections', function () {
-			$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
-			if (!file_exists($cacheFile)) {
-				return;
+			if (!empty(self::$cache)) {
+				$collections = self::$cache;
+			} else {
+				$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
+				if (!file_exists($cacheFile)) {
+					return;
+				}
+				$collections = (array)json_decode(file_get_contents($cacheFile), true);
 			}
-			$collections = (array)json_decode(file_get_contents($cacheFile), true);
 			if (!is_array($collections)) {
 				return;
 			}
@@ -96,11 +106,15 @@ class CollectionRoute {
 	}
 
 	public static function pages (&$app) {
-		$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
-		if (!file_exists($cacheFile)) {
-			return;
+		if (!empty(self::$cache)) {
+			$collections = self::$cache;
+		} else {
+			$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
+			if (!file_exists($cacheFile)) {
+				return;
+			}
+			$collections = (array)json_decode(file_get_contents($cacheFile), true);
 		}
-		$collections = (array)json_decode(file_get_contents($cacheFile), true);
 		if (!is_array($collections)) {
 			return;
 		}
@@ -141,7 +155,7 @@ class CollectionRoute {
 	    }
 	}
 
-	public static function build ($root) {
+	public static function build ($root, $url) {
 		$cache = [];
 		$dirFiles = glob($root . '/collections/*.php');
 		foreach ($dirFiles as $collection) {
@@ -157,34 +171,34 @@ class CollectionRoute {
 		foreach ($cache as $collection) {
 			$filename = $root . '/layouts/' . $collection['p'] . '.html';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('layout-collection.html', $collection));
+				file_put_contents($filename, self::stubRead('layout-collection.html', $collection, $url, $root));
 			}
 			$filename = $root . '/partials/' . $collection['p'] . '.hbs';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('partial-collection.hbs', $collection));
+				file_put_contents($filename, self::stubRead('partial-collection.hbs', $collection, $url, $root));
 			}
 			$filename = $root . '/layouts/' . $collection['s'] . '.html';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('layout-document.html', $collection));
+				file_put_contents($filename, self::stubRead('layout-document.html', $collection, $url, $root));
 			}
 			$filename = $root . '/partials/' . $collection['s'] . '.hbs';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('partial-document.hbs', $collection));	
+				file_put_contents($filename, self::stubRead('partial-document.hbs', $collection, $url, $root));
 			}
 			$filename = $root . '/sep/' . $collection['p'] . '.js';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('collection.js', $collection));	
+				file_put_contents($filename, self::stubRead('collection.js', $collection, $url, $root));
 			}
 			$filename = $root . '/sep/' . $collection['s'] . '.js';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('document.js', $collection));	
+				file_put_contents($filename, self::stubRead('document.js', $collection, $url, $root));
 			}
 		}
 		return $json;
 	}
 
-	private static function stubRead ($name, &$collection) {
-		$data = file_get_contents(__DIR__ . '/../static/' . $name);
-		return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$this->url, $collection['p'], $collection['s']], $data);
+	private static function stubRead ($name, &$collection, $url, $root) {
+		$data = file_get_contents($root . '/vendor/virtuecenter/build/static/' . $name);
+		return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$url, $collection['p'], $collection['s']], $data);
 	}
 }

@@ -3,6 +3,6 @@ use Collection\Collection;
 
 class menus {
 	use Collection;
-	public $publishable = true;
+	public $publishable = false;
 	public static $singular = 'menu';
 }

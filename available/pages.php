@@ -3,6 +3,6 @@ use Collection\Collection;
 
 class pages {
 	use Collection;
-	public $publishable = true;
+	public $publishable = false;
 	public static $singular = 'page';
 }

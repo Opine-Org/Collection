@@ -28,7 +28,7 @@ MAP;
 REDUCE;
 		
 		\DB\Mongo::mapReduce($map, $reduce, [
-			'mapreduce' => 'blurb',
+			'mapreduce' => 'blurbs',
 			'out' => 'blurbsMR'
 		]);
 

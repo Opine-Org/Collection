@@ -29,7 +29,7 @@ REDUCE;
 		
 		\DB\Mongo::mapReduce($map, $reduce, [
 			'mapreduce' => 'blurbs',
-			'out' => 'blurbsMR'
+			'out' => ' ns does not exist'
 		]);
 
 

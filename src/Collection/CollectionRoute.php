@@ -187,11 +187,19 @@ class CollectionRoute {
 			}
 			$filename = $root . '/sep/' . $collection['p'] . '.js';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('collection.js', $collection, $url, $root));
+				file_put_contents($filename, self::stubRead('sep-collection.js', $collection, $url, $root));
+			}
+			$filename = $root . '/app/' . $collection['p'] . '.json';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('app-collection.json', $collection, $url, $root));
 			}
 			$filename = $root . '/sep/' . $collection['s'] . '.js';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('document.js', $collection, $url, $root));
+				file_put_contents($filename, self::stubRead('sep-document.js', $collection, $url, $root));
+			}
+			$filename = $root . '/app/' . $collection['s'] . '.json';
+			if (!file_exists($filename)) {
+				file_put_contents($filename, self::stubRead('app-document.json', $collection, $url, $root));
 			}
 		}
 		return $json;

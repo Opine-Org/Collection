@@ -70,7 +70,7 @@ trait Collection {
 				$path =	$this->path . $document[$this->pathKey] . '.html';
 			}
 		}
-		$document['separation_path'] = $path;
+		$document['path'] = $path;
 	}
 
 	private function fetchAll ($collection, $cursor) {

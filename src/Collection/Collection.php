@@ -49,7 +49,7 @@ trait Collection {
 		if (isset($document['template_separation'])) {
 			$template = '-' . $document['template_separation'];
 		}
-		if (property_exists($this, 'path') {
+		if (property_exists($this, 'path')) {
 			if ($this->path === false) {
 				return;
 			}

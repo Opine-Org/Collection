@@ -96,12 +96,22 @@ trait Collection {
 
 	public function byId ($id) {
 		$this->name = $this::$singular;
-		return Mongo::collection($this->collection)->findOne(['_id' => Mongo::id($id)]);
+		$document = Mongo::collection($this->collection)->findOne(['_id' => Mongo::id($id)]);
+		if (!isset($document['_id'])) {
+			return [];
+		}
+		self::decorate($document);
+		return $document;
 	}
 
 	public function bySlug ($slug) {
 		$this->name = $this::$singular;
-		return Mongo::collection($this->collection)->findOne(['code_name' => $slug]); 
+		$document = Mongo::collection($this->collection)->findOne(['code_name' => $slug]);
+		if (!isset($document['_id'])) {
+			return [];
+		}
+		self::decorate($document);
+		return $document;
 	}
 
 	public function featured () {

@@ -49,7 +49,7 @@ trait Collection {
 		if (isset($document['template_separation'])) {
 			$template = '-' . $document['template_separation'];
 		}
-		if (isset($this->path) && $this->path === false) {
+		if (property_exists($this, 'path') && $this->path === false) {
 			return;
 		}
 		if ($this->local) {
@@ -59,7 +59,7 @@ trait Collection {
 			}
 			$path = $this::$singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document[$key] . '"}}';
 		} else {
-			if (empty($this->path)) {
+			if (!property_exists($this, 'path')) {
 				$path = '/' . $this::$singular . $template;
 				if (isset($document['code_name'])) {
 					$path .= '/' . $document['code_name'] . '.html';

@@ -124,8 +124,27 @@ trait Collection {
 		return $this->all();
 	}
 
-	public function byCategorySlug () {
-		//lookup category id
+	public function byCategory ($category) {
+		$category = self::categoryIdFromTitle($category);
+		if (!isset($category['_id'])) {
+			return $this->all();
+		}
+		$this->criteria['categories'] = $category['_id'];
+		return $this->all();
+	}
+
+	private static function categoryIdFromTitle ($title) {
+		return Mongo::collection('categories')->findOne(['title' => urldecode($title)], ['id']);
+	}
+
+	public function byCategoryFeatured ($category) {
+		$category = self::categoryIdFromTitle($category);
+		if (!isset($category['_id'])) {
+			return $this->all();
+		}
+		$this->criteria['categories'] = $category['_id'];
+		$this->criteria['featured'] = 't';
+		return $this->all();
 	}
 
 	public function byTag ($tag) {
@@ -134,7 +153,7 @@ trait Collection {
 	}
 
 	public function byCategoryIdFeatured ($categoryId) {
-		$this->criteria['category'] = Mongo::id($categoryId);
+		$this->criteria['categories'] = Mongo::id($categoryId);
 		$this->criteria['featured'] = 't';
 		return $this->all();
 	}

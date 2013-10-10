@@ -15,7 +15,7 @@ class videos {
 			$document['video_id'] = UrlId::parse($document['video'], $document['video_type']);
 		}
 		$document['category_titles'] = [];
-		if (is_array($document['categories'])) {
+		if (isset($document['categories']) && is_array($document['categories'])) {
 			foreach ($document['categories'] as $id) {
 				$category = Mongo::collection('categories')->findOne(['_id' => Mongo::id($id)], ['title']);
 				if (!isset($category['_id'])) {

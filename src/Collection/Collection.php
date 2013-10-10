@@ -129,7 +129,7 @@ trait Collection {
 		if (!isset($category['_id'])) {
 			return $this->all();
 		}
-		$this->criteria['categories'] = ['$in' => [$category['_id'], (string)$category['_id']];
+		$this->criteria['categories'] = ['$in' => [$category['_id'], (string)$category['_id']]];
 		return $this->all();
 	}
 

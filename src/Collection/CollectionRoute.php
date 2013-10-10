@@ -11,6 +11,10 @@ class CollectionRoute {
 
 	public static function json ($app) {
 		$app->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
+			$value = false;
+            if (substr_count($method, '-') > 0) {
+            	list($method, $value) = explode('-', urldecode($method), 2);
+            }
 			if ($page == 0) {
 				$page = 1;
 			}
@@ -39,7 +43,7 @@ class CollectionRoute {
 		        $tail = ');';
 		    }
 		    $options = null;
-		    $data = $collectionObj->$method($limit);
+		    $data = $collectionObj->$method($value);
 		    $name = $collectionObj->collection;
 		    if (isset($_GET['pretty'])) {
 		        $options = JSON_PRETTY_PRINT;
@@ -128,13 +132,22 @@ class CollectionRoute {
 			            	$limit = 10;
 			            }
 		            }
+		            $args = [];
+		            if ($limit != null) {
+		            	$args['limit'] = $limit;
+		            }
+		            $args['method'] = $method;
+		            $args['page'] = $page;
+		          	$args['sort'] = json_encode($sort);
 		            foreach (['limit', 'page', 'sort'] as $option) {
 		            	$key = $collection['p'] . '-' . $method . '-' . $option;
 		            	if (isset($_GET[$key])) {
-		                	${$option} = $_GET[$key];
+		                	$args[$option] = $_GET[$key];
 		            	}
 		            }
-		            $separation = Separation::layout($collection['p'])->template()->write();
+		            $separation = Separation::layout($collection['p'])->set([
+		            	['id' => $collection['p'], 'args' => $args]
+		            ])->template()->write();
 		        })->name($collection['p']);
 		    }
 	        if (!isset($collection['s'])) {
@@ -142,7 +155,7 @@ class CollectionRoute {
 	        }
             $app->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
                 $separation = Separation::layout($collection['s'])->set([
-                	['Sep' => $collection['p'], 'a' => ['slug' => basename($slug, '.html')]]
+                	['id' => $collection['p'], 'args' => ['slug' => basename($slug, '.html')]]
                 ])->template()->write();
             })->name($collection['s']);
             if (isset($collection['partials']) && is_array($collection['partials'])) {

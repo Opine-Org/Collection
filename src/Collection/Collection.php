@@ -129,7 +129,7 @@ trait Collection {
 	}
 
 	public function byTag ($tag) {
-		$this->criteria['tag'] = $tag;
+		$this->criteria['tags'] = $tag;
 		return $this->all();
 	}
 
@@ -140,7 +140,7 @@ trait Collection {
 	}
 
 	public function byTagFeatured ($tag) {
-		$this->criteria['tag'] = $tag;
+		$this->criteria['tags'] = $tag;
 		$this->criteria['featured'] = 't';
 		return $this->all();
 	}

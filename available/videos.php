@@ -1,6 +1,6 @@
 <?php
 use Collection\Collection;
-use UrlId\Urlid;
+use UrlId\UrlId;
 
 class videos {
 	use Collection;

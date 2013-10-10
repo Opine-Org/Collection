@@ -11,10 +11,14 @@ class CollectionRoute {
 
 	public static function json ($app) {
 		$app->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
-			$value = false;
-            if (substr_count($method, '-') > 0) {
-            	list($method, $value) = explode('-', urldecode($method), 2);
-            }
+			if (in_array($method, ['byId', 'bySlug'])) {
+				$value = $limit;
+	        } else {
+	        	$value = false;
+	            if (substr_count($method, '-') > 0) {
+	            	list($method, $value) = explode('-', urldecode($method), 2);
+	            }
+	        }
 			if ($page == 0) {
 				$page = 1;
 			}

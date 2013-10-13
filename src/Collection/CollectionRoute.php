@@ -234,4 +234,16 @@ class CollectionRoute {
 		$data = file_get_contents($root . '/vendor/virtuecenter/build/static/' . $name);
 		return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$url, $collection['p'], $collection['s']], $data);
 	}
+
+	public function collectionList ($root) {
+		$this->slim->get('/collections', function () use ($root) {
+			$collections = (array)json_decode(file_get_contents($root . '/collections/cache.json'), true);
+			echo '<html><body>';
+			foreach ($collections as $collection) {
+				echo '<a href="/json-data/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';
+			}
+			echo '</body></html>';
+			exit;
+		})->name('collections');
+	}
 }

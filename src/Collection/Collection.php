@@ -1,6 +1,5 @@
 <?php
 namespace Collection;
-use DB\Mongo;
 
 trait Collection {
 	public $collection;
@@ -14,8 +13,10 @@ trait Collection {
 	public $transform = 'document';
 	public $myTransform = 'myDocument';
 	private $local = false;
+	public $db;
 
-	public function __construct ($limit=20, $page=1, $sort=[]) {
+	public function __construct ($db, $limit=20, $page=1, $sort=[]) {
+		$this->db = $db;
 		$this->collection = get_class($this);
 		$this->tagCacheCollection = $this->collection . 'Tags';
 		$this->limit = $limit;
@@ -90,13 +91,13 @@ trait Collection {
 		if ($this->publishable) {
 			$this->criteria['status'] = 'published';
 		}
-		$this->total = Mongo::collection($this->collection)->find($this->criteria)->count();
-		return $this->fetchAll($this->collection, Mongo::collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+		$this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
+		return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 	}
 
 	public function byId ($id) {
 		$this->name = $this::$singular;
-		$document = Mongo::collection($this->collection)->findOne(['_id' => Mongo::id($id)]);
+		$document = $this->db->collection($this->collection)->findOne(['_id' => $this->db->id($id)]);
 		if (!isset($document['_id'])) {
 			return [];
 		}
@@ -106,7 +107,7 @@ trait Collection {
 
 	public function bySlug ($slug) {
 		$this->name = $this::$singular;
-		$document = Mongo::collection($this->collection)->findOne(['code_name' => $slug]);
+		$document = $this->db->collection($this->collection)->findOne(['code_name' => $slug]);
 		if (!isset($document['_id'])) {
 			return [];
 		}
@@ -120,7 +121,7 @@ trait Collection {
 	}
 
 	public function byCategoryId ($categoryId) {
-		$this->criteria['category'] = Mongo::id($categoryId);
+		$this->criteria['category'] = $this->db->id($categoryId);
 		return $this->all();
 	}
 
@@ -134,7 +135,7 @@ trait Collection {
 	}
 
 	private static function categoryIdFromTitle ($title) {
-		return Mongo::collection('categories')->findOne(['title' => urldecode($title)], ['id']);
+		return $this->db->collection('categories')->findOne(['title' => urldecode($title)], ['id']);
 	}
 
 	public function byCategoryFeatured ($category) {
@@ -153,7 +154,7 @@ trait Collection {
 	}
 
 	public function byCategoryIdFeatured ($categoryId) {
-		$this->criteria['categories'] = Mongo::id($categoryId);
+		$this->criteria['categories'] = $this->db->id($categoryId);
 		$this->criteria['featured'] = 't';
 		return $this->all();
 	}
@@ -183,11 +184,11 @@ trait Collection {
 	}
 
 	public function byAuthorId ($id) {
-		$this->criteria['author'] = Mongo::id($id);
+		$this->criteria['author'] = $this->db->id($id);
 	}
 
 	public function byAuthorSlug ($slug) {
-		$this->criteria['author'] = Mongo::id($id);
+		$this->criteria['author'] = $this->db->id($id);
 	}
 
 	public function tags () {

@@ -1,16 +1,24 @@
 <?php
 namespace Collection;
-use Separation\Separation;
 
 class CollectionRoute {
 	public static $cache = false;
+	private $separation;
+	private $slim;
+	private $db;
 
-	public static function cacheSet ($cache) {
+	public function __construct ($slim, $db, $separation) {
+		$this->slim = $slim;
+		$this->db = $db;
+		$this->separation = $separation;
+	}
+
+	public function cacheSet ($cache) {
 		self::$cache = $cache;
 	}
 
-	public static function json ($app) {
-		$app->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
+	public function json ($root) {
+		$this->slim->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) use ($root) {
 			if (in_array($method, ['byId', 'bySlug'])) {
 				$value = $limit;
 	        } else {
@@ -22,7 +30,7 @@ class CollectionRoute {
 			if ($page == 0) {
 				$page = 1;
 			}
-		    $collectionClass = $_SERVER['DOCUMENT_ROOT'] . '/collections/' . $collection . '.php';
+		    $collectionClass = $root . '/collections/' . $collection . '.php';
 		    if (!file_exists($collectionClass)) {
 		        exit ($collection . ': unknown file.');
 		    }
@@ -30,7 +38,7 @@ class CollectionRoute {
 		    if (!class_exists($collection)) {
 		        exit ($collection . ': unknown class.');
 		    }
-		    $collectionObj = new $collection($limit, $page, $sort);
+		    $collectionObj = new $collection($this->db, $limit, $page, $sort);
 		    if (isset($_REQUEST['Sep-local'])) {
 		        $collectionObj->localSet();
 		    }
@@ -72,11 +80,11 @@ class CollectionRoute {
 		    }
 		});
 
-		$app->get('/json-collections', function () {
+		$this->slim->get('/json-collections', function () use ($root) {
 			if (!empty(self::$cache)) {
 				$collections = self::$cache;
 			} else {
-				$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
+				$cacheFile = $root . '/collections/cache.json';
 				if (!file_exists($cacheFile)) {
 					return;
 				}
@@ -86,7 +94,7 @@ class CollectionRoute {
 				return;
 			}
 		    foreach ($collections as &$collection) {
-		    	$collectionClass = $_SERVER['DOCUMENT_ROOT'] . '/collections/' . $collection['p'] . '.php';
+		    	$collectionClass = $root . '/collections/' . $collection['p'] . '.php';
 		    	if (!file_exists($collectionClass)) {
 		        	exit ($collection['p'] . ': unknown file.');
 		    	}
@@ -113,11 +121,11 @@ class CollectionRoute {
 		});
 	}
 
-	public static function pages (&$app) {
+	public function pages ($root) {
 		if (!empty(self::$cache)) {
 			$collections = self::$cache;
 		} else {
-			$cacheFile = $_SERVER['DOCUMENT_ROOT'] . '/collections/cache.json';
+			$cacheFile = $root . '/collections/cache.json';
 			if (!file_exists($cacheFile)) {
 				return;
 			}
@@ -128,7 +136,7 @@ class CollectionRoute {
 		}
 	    foreach ($collections as $collection) {
 	        if (isset($collection['p'])) {
-	            $app->get('/' . $collection['p'] . '(/:method(/:limit(/:page(/:sort))))', function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection) {
+	            $this->slim->get('/' . $collection['p'] . '(/:method(/:limit(/:page(/:sort))))', function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection, $root) {
 		            if ($limit === null) {
 		            	if (isset($collection['limit'])) {
 		                	$limit = $collection['limit'];
@@ -149,7 +157,7 @@ class CollectionRoute {
 		                	$args[$option] = $_GET[$key];
 		            	}
 		            }
-		            $separation = Separation::layout($collection['p'])->set([
+		            $this->separation->layout($collection['p'])->set([
 		            	['id' => $collection['p'], 'args' => $args]
 		            ])->template()->write();
 		        })->name($collection['p']);
@@ -157,22 +165,22 @@ class CollectionRoute {
 	        if (!isset($collection['s'])) {
 	        	continue;
 	        }
-            $app->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
-                $separation = Separation::layout($collection['s'])->set([
+            $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
+                $separation = $this->separation->layout($collection['s'])->set([
                 	['id' => $collection['p'], 'args' => ['slug' => basename($slug, '.html')]]
                 ])->template()->write();
             })->name($collection['s']);
             if (isset($collection['partials']) && is_array($collection['partials'])) {
             	foreach ($collection['partials'] as $template) {
-					$app->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {
-		               	$separation = Separation::layout($collection['s'] . '-' . $template)->template()->write();
+					$this->slim->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {
+		               	$separation = $this->separation->layout($collection['s'] . '-' . $template)->template()->write();
         			});
         		}
             }
 	    }
 	}
 
-	public static function build ($root, $url) {
+	public function build ($root, $url) {
 		$cache = [];
 		$dirFiles = glob($root . '/collections/*.php');
 		foreach ($dirFiles as $collection) {

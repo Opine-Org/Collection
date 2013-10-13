@@ -1,6 +1,5 @@
 <?php
 use Collection\Collection;
-use DB\Mongo;
 
 class blurbs {
 	use Collection;
@@ -27,7 +26,7 @@ MAP;
 		}
 REDUCE;
 		
-		\DB\Mongo::mapReduce($map, $reduce, [
+		$this->db->mapReduce($map, $reduce, [
 			'mapreduce' => 'blurbs',
 			'out' => ' ns does not exist'
 		]);

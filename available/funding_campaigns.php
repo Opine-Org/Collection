@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class funding_campaigns {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = true;
 	public static $singular = 'funding_campaign';
 }

@@ -6,11 +6,13 @@ class CollectionRoute {
 	private $separation;
 	private $slim;
 	private $db;
+	private $response;
 
-	public function __construct ($slim, $db, $separation) {
+	public function __construct ($slim, $db, $separation, $response) {
 		$this->slim = $slim;
 		$this->db = $db;
 		$this->separation = $separation;
+		$this->response = $response;
 	}
 
 	public function cacheSet ($cache) {
@@ -121,7 +123,7 @@ class CollectionRoute {
 		});
 	}
 
-	public function pages ($root) {
+	public function app ($root) {
 		if (!empty(self::$cache)) {
 			$collections = self::$cache;
 		} else {
@@ -168,12 +170,12 @@ class CollectionRoute {
             $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
                 $separation = $this->separation->layout($collection['s'])->set([
                 	['id' => $collection['p'], 'args' => ['slug' => basename($slug, '.html')]]
-                ])->template()->write();
+                ])->template()->write($this->response->body);
             })->name($collection['s']);
             if (isset($collection['partials']) && is_array($collection['partials'])) {
             	foreach ($collection['partials'] as $template) {
 					$this->slim->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {
-		               	$separation = $this->separation->layout($collection['s'] . '-' . $template)->template()->write();
+		               	$separation = $this->separation->layout($collection['s'] . '-' . $template)->template()->write($this->response->body);
         			});
         		}
             }
@@ -214,17 +216,17 @@ class CollectionRoute {
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('sep-collection.js', $collection, $url, $root));
 			}
-			$filename = $root . '/app/' . $collection['p'] . '.json';
+			$filename = $root . '/app/' . $collection['p'] . '.yml';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('app-collection.json', $collection, $url, $root));
+				file_put_contents($filename, self::stubRead('app-collection.yml', $collection, $url, $root));
 			}
 			$filename = $root . '/sep/' . $collection['s'] . '.js';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('sep-document.js', $collection, $url, $root));
 			}
-			$filename = $root . '/app/' . $collection['s'] . '.json';
+			$filename = $root . '/app/' . $collection['s'] . '.yml';
 			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('app-document.json', $collection, $url, $root));
+				file_put_contents($filename, self::stubRead('app-document.yml', $collection, $url, $root));
 			}
 		}
 		return $json;

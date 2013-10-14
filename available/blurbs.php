@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class blurbs {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = false;
 	public static $singular = 'blurb';
 	public $path = false;
@@ -30,7 +28,6 @@ REDUCE;
 			'mapreduce' => 'blurbs',
 			'out' => ' ns does not exist'
 		]);
-
 
 		$this->name = $this->collection;
 		$this->total = Mongo::collection('blurbsMR')->find($this->criteria)->count();

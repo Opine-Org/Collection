@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class social_sharing {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = false;
 	public static $singular = 'social_share';
 }

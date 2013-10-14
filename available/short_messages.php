@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class short_messages {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = false;
 	public static $singular = 'short_message';
 }

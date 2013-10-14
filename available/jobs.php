@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class jobs {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = true;
 	public static $singular = 'job';
 }

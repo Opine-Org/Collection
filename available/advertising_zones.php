@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class advertising_zones {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = false;
 	public static $singular = 'advertising_zone';
 }

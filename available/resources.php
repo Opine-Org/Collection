@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class resources {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = true;
 	public static $singular = 'resource';
 }

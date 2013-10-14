@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class notices {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = false;
 	public static $singular = 'notice';
 }

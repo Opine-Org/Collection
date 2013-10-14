@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class publications {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = true;
 	public static $singular = 'publication';
 }

@@ -1,10 +1,8 @@
 <?php
-use Collection\Collection;
 use UrlId\UrlId;
-use DB\Mongo;
 
 class videos {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = true;
 	public static $singular = 'video';
 
@@ -17,7 +15,7 @@ class videos {
 		$document['category_titles'] = [];
 		if (isset($document['categories']) && is_array($document['categories'])) {
 			foreach ($document['categories'] as $id) {
-				$category = Mongo::collection('categories')->findOne(['_id' => Mongo::id($id)], ['title']);
+				$category = $this->db->collection('categories')->findOne(['_id' => $this->db->id($id)], ['title']);
 				if (!isset($category['_id'])) {
 					continue;
 				}

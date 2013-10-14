@@ -1,8 +1,6 @@
 <?php
-use Collection\Collection;
-
 class films {
-	use Collection;
+	use Collection\Collection;
 	public $publishable = true;
 	public static $singular = 'film';
 }

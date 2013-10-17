@@ -23,15 +23,15 @@ MAP;
 			return count;
 		}
 REDUCE;
-		
+
 		$this->db->mapReduce($map, $reduce, [
 			'mapreduce' => 'blurbs',
-			'out' => ' ns does not exist'
+			'out' => 'blurbsMR'
 		]);
 
 		$this->name = $this->collection;
-		$this->total = Mongo::collection('blurbsMR')->find($this->criteria)->count();
-		$docs = $this->fetchAll('blurbsMR', Mongo::collection('blurbsMR')->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+		$this->total = $this->db->collection('blurbsMR')->find($this->criteria)->count();
+		$docs = $this->fetchAll('blurbsMR', $this->db->collection('blurbsMR')->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 		$docsOut = [];
 		foreach ($docs as $doc) {
 			$docsOut[$doc['_id']] = $doc['value'];

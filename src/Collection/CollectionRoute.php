@@ -32,7 +32,7 @@ class CollectionRoute {
 			if ($page == 0) {
 				$page = 1;
 			}
-		    $collectionClass = $root . '/collections/' . $collection . '.php';
+		    $collectionClass = $root . '/../collections/' . $collection . '.php';
 		    if (!file_exists($collectionClass)) {
 		        exit ($collection . ': unknown file.');
 		    }
@@ -86,7 +86,7 @@ class CollectionRoute {
 			if (!empty(self::$cache)) {
 				$collections = self::$cache;
 			} else {
-				$cacheFile = $root . '/collections/cache.json';
+				$cacheFile = $root . '/../collections/cache.json';
 				if (!file_exists($cacheFile)) {
 					return;
 				}
@@ -96,7 +96,7 @@ class CollectionRoute {
 				return;
 			}
 		    foreach ($collections as &$collection) {
-		    	$collectionClass = $root . '/collections/' . $collection['p'] . '.php';
+		    	$collectionClass = $root . '/../collections/' . $collection['p'] . '.php';
 		    	if (!file_exists($collectionClass)) {
 		        	exit ($collection['p'] . ': unknown file.');
 		    	}
@@ -127,7 +127,7 @@ class CollectionRoute {
 		if (!empty(self::$cache)) {
 			$collections = self::$cache;
 		} else {
-			$cacheFile = $root . '/collections/cache.json';
+			$cacheFile = $root . '/../collections/cache.json';
 			if (!file_exists($cacheFile)) {
 				return;
 			}
@@ -184,7 +184,7 @@ class CollectionRoute {
 
 	public function build ($root, $url) {
 		$cache = [];
-		$dirFiles = glob($root . '/collections/*.php');
+		$dirFiles = glob($root . '/../collections/*.php');
 		foreach ($dirFiles as $collection) {
 			require_once($collection);
 			$class = basename($collection, '.php');
@@ -194,7 +194,7 @@ class CollectionRoute {
 			];
 		}
 		$json = json_encode($cache, JSON_PRETTY_PRINT);
-		file_put_contents($root . '/collections/cache.json', $json);
+		file_put_contents($root . '/../collections/cache.json', $json);
 		foreach ($cache as $collection) {
 			$filename = $root . '/layouts/' . $collection['p'] . '.html';
 			if (!file_exists($filename)) {
@@ -212,18 +212,18 @@ class CollectionRoute {
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('partial-document.hbs', $collection, $url, $root));
 			}
-			$filename = $root . '/sep/' . $collection['p'] . '.js';
-			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('sep-collection.js', $collection, $url, $root));
-			}
+			//$filename = $root . '/sep/' . $collection['p'] . '.js';
+			//if (!file_exists($filename)) {
+			//	file_put_contents($filename, self::stubRead('sep-collection.js', $collection, $url, $root));
+			//}
 			$filename = $root . '/app/' . $collection['p'] . '.yml';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('app-collection.yml', $collection, $url, $root));
 			}
-			$filename = $root . '/sep/' . $collection['s'] . '.js';
-			if (!file_exists($filename)) {
-				file_put_contents($filename, self::stubRead('sep-document.js', $collection, $url, $root));
-			}
+			//$filename = $root . '/sep/' . $collection['s'] . '.js';
+			//if (!file_exists($filename)) {
+			//	file_put_contents($filename, self::stubRead('sep-document.js', $collection, $url, $root));
+			//}
 			$filename = $root . '/app/' . $collection['s'] . '.yml';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('app-document.yml', $collection, $url, $root));
@@ -233,13 +233,13 @@ class CollectionRoute {
 	}
 
 	private static function stubRead ($name, &$collection, $url, $root) {
-		$data = file_get_contents($root . '/vendor/virtuecenter/build/static/' . $name);
+		$data = file_get_contents($root . '/../vendor/virtuecenter/build/static/' . $name);
 		return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$url, $collection['p'], $collection['s']], $data);
 	}
 
 	public function collectionList ($root) {
 		$this->slim->get('/collections', function () use ($root) {
-			$collections = (array)json_decode(file_get_contents($root . '/collections/cache.json'), true);
+			$collections = (array)json_decode(file_get_contents($root . '/../collections/cache.json'), true);
 			echo '<html><body>';
 			foreach ($collections as $collection) {
 				echo '<a href="/json-data/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';

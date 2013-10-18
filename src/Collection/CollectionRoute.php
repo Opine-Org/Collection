@@ -168,17 +168,20 @@ class CollectionRoute {
 	        	continue;
 	        }
             $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
-                $separation = $this->separation->layout($collection['s'])->set([
+                $this->separation->layout($collection['s'])->set([
                 	['id' => $collection['p'], 'args' => ['slug' => basename($slug, '.html')]]
                 ])->template()->write($this->response->body);
             })->name($collection['s']);
+
+/*            
             if (isset($collection['partials']) && is_array($collection['partials'])) {
             	foreach ($collection['partials'] as $template) {
 					$this->slim->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {
-		               	$separation = $this->separation->layout($collection['s'] . '-' . $template)->template()->write($this->response->body);
+		               	$this->separation->layout($collection['s'] . '-' . $template)->template()->write($this->response->body);
         			});
         		}
             }
+            */
 	    }
 	}
 
@@ -216,7 +219,7 @@ class CollectionRoute {
 			//if (!file_exists($filename)) {
 			//	file_put_contents($filename, self::stubRead('sep-collection.js', $collection, $url, $root));
 			//}
-			$filename = $root . '/app/' . $collection['p'] . '.yml';
+			$filename = $root . '/../app/' . $collection['p'] . '.yml';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('app-collection.yml', $collection, $url, $root));
 			}
@@ -224,7 +227,7 @@ class CollectionRoute {
 			//if (!file_exists($filename)) {
 			//	file_put_contents($filename, self::stubRead('sep-document.js', $collection, $url, $root));
 			//}
-			$filename = $root . '/app/' . $collection['s'] . '.yml';
+			$filename = $root . '/../app/' . $collection['s'] . '.yml';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('app-document.yml', $collection, $url, $root));
 			}

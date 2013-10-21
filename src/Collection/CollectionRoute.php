@@ -159,21 +159,17 @@ class CollectionRoute {
 		                	$args[$option] = $_GET[$key];
 		            	}
 		            }
-		            $this->separation->layout($collection['p'])->set([
-		            	['id' => $collection['p'], 'args' => $args]
-		            ])->template()->write();
+		            $this->separation->layout($collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
 		        })->name($collection['p']);
 		    }
 	        if (!isset($collection['s'])) {
 	        	continue;
 	        }
             $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
-                $this->separation->layout($collection['s'])->set([
-                	['id' => $collection['p'], 'args' => ['slug' => basename($slug, '.html')]]
-                ])->template()->write($this->response->body);
+                $this->separation->layout($collection['s'])->args($collection['p'], ['slug' => basename($slug, '.html')])->template()->write($this->response->body);
             })->name($collection['s']);
 
-/*            
+			/*
             if (isset($collection['partials']) && is_array($collection['partials'])) {
             	foreach ($collection['partials'] as $template) {
 					$this->slim->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {

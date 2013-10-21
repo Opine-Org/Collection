@@ -187,7 +187,7 @@ trait Collection {
 		$this->criteria['author'] = $this->db->id($id);
 	}
 
-	public function byAuthorSlug ($slug) {
+	public function byAuthor ($slug) {
 		$this->criteria['author'] = $this->db->id($id);
 	}
 

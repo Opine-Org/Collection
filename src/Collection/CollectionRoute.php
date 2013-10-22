@@ -2,7 +2,7 @@
 namespace Collection;
 
 class CollectionRoute {
-	public static $cache = false;
+	public $cache = false;
 	private $separation;
 	private $slim;
 	private $db;
@@ -16,7 +16,7 @@ class CollectionRoute {
 	}
 
 	public function cacheSet ($cache) {
-		self::$cache = $cache;
+		$this->cache = $cache;
 	}
 
 	public function json ($root) {
@@ -83,8 +83,8 @@ class CollectionRoute {
 		});
 
 		$this->slim->get('/json-collections', function () use ($root) {
-			if (!empty(self::$cache)) {
-				$collections = self::$cache;
+			if (!empty($this->cache)) {
+				$collections = $this->cache;
 			} else {
 				$cacheFile = $root . '/../collections/cache.json';
 				if (!file_exists($cacheFile)) {
@@ -124,8 +124,8 @@ class CollectionRoute {
 	}
 
 	public function app ($root) {
-		if (!empty(self::$cache)) {
-			$collections = self::$cache;
+		if (!empty($this->cache)) {
+			$collections = $this->cache;
 		} else {
 			$cacheFile = $root . '/../collections/cache.json';
 			if (!file_exists($cacheFile)) {
@@ -159,14 +159,14 @@ class CollectionRoute {
 		                	$args[$option] = $_GET[$key];
 		            	}
 		            }
-		            $this->separation->layout($collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
+		            $this->separation->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
 		        })->name($collection['p']);
 		    }
 	        if (!isset($collection['s'])) {
 	        	continue;
 	        }
             $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
-                $this->separation->layout($collection['s'])->args($collection['p'], ['slug' => basename($slug, '.html')])->template()->write($this->response->body);
+                $this->separation->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write($this->response->body);
             })->name($collection['s']);
 
 			/*
@@ -195,35 +195,27 @@ class CollectionRoute {
 		$json = json_encode($cache, JSON_PRETTY_PRINT);
 		file_put_contents($root . '/../collections/cache.json', $json);
 		foreach ($cache as $collection) {
-			$filename = $root . '/layouts/' . $collection['p'] . '.html';
+			$filename = $root . '/layouts/collections/' . $collection['p'] . '.html';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('layout-collection.html', $collection, $url, $root));
 			}
-			$filename = $root . '/partials/' . $collection['p'] . '.hbs';
+			$filename = $root . '/partials/collections/' . $collection['p'] . '.hbs';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('partial-collection.hbs', $collection, $url, $root));
 			}
-			$filename = $root . '/layouts/' . $collection['s'] . '.html';
+			$filename = $root . '/layouts/documents/' . $collection['s'] . '.html';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('layout-document.html', $collection, $url, $root));
 			}
-			$filename = $root . '/partials/' . $collection['s'] . '.hbs';
+			$filename = $root . '/partials/documents/' . $collection['s'] . '.hbs';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('partial-document.hbs', $collection, $url, $root));
 			}
-			//$filename = $root . '/sep/' . $collection['p'] . '.js';
-			//if (!file_exists($filename)) {
-			//	file_put_contents($filename, self::stubRead('sep-collection.js', $collection, $url, $root));
-			//}
-			$filename = $root . '/../app/' . $collection['p'] . '.yml';
+			$filename = $root . '/../app/collections/' . $collection['p'] . '.yml';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('app-collection.yml', $collection, $url, $root));
 			}
-			//$filename = $root . '/sep/' . $collection['s'] . '.js';
-			//if (!file_exists($filename)) {
-			//	file_put_contents($filename, self::stubRead('sep-document.js', $collection, $url, $root));
-			//}
-			$filename = $root . '/../app/' . $collection['s'] . '.yml';
+			$filename = $root . '/../app/documents/' . $collection['s'] . '.yml';
 			if (!file_exists($filename)) {
 				file_put_contents($filename, self::stubRead('app-document.yml', $collection, $url, $root));
 			}

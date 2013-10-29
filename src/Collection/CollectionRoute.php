@@ -42,8 +42,8 @@ class CollectionRoute {
 		$this->cache = $cache;
 	}
 
-	public function json ($root) {
-		$this->slim->get('/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) use ($root) {
+	public function json ($root, $prefix='') {
+		$this->slim->get($prefix . '/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) use ($root) {
 			if (in_array($method, ['byId', 'bySlug'])) {
 				$value = $limit;
 	        } else {
@@ -105,7 +105,7 @@ class CollectionRoute {
 		    }
 		});
 
-		$this->slim->get('/json-collections', function () use ($root) {
+		$this->slim->get($prefix . '/json-collections', function () use ($root) {
 			if (!empty($this->cache)) {
 				$collections = $this->cache;
 			} else {

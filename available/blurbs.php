@@ -1,6 +1,17 @@
 <?php
+namespace Collection;
+
 class blurbs {
-	use Collection\Collection;
 	public $publishable = false;
-	public static $singular = 'blurb';
+	public $singular = 'blurb';
+	public function index ($document) {
+		return [
+			'title' => $document['title'], 
+			'description' => $document['body'], 
+			'image' => null, 
+			'tags' => [], 
+			'categories' => [], 
+			'date' => date('c', $document['created_date']->sec) 
+		];
+	}
 }

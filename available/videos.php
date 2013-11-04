@@ -2,9 +2,8 @@
 use UrlId\UrlId;
 
 class videos {
-	use Collection\Collection;
 	public $publishable = true;
-	public static $singular = 'video';
+	public $singular = 'video';
 
 	public function document (&$document) {
 		$document['video_id'] = null;

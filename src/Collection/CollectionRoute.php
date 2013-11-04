@@ -31,11 +31,12 @@ class CollectionRoute {
 	private $db;
 	private $response;
 
-	public function __construct ($slim, $db, $separation, $response) {
+	public function __construct ($collection, $slim, $db, $separation, $response) {
 		$this->slim = $slim;
 		$this->db = $db;
 		$this->separation = $separation;
 		$this->response = $response;
+		$this->collection = $collection;
 	}
 
 	public function cacheSet ($cache) {
@@ -43,7 +44,7 @@ class CollectionRoute {
 	}
 
 	public function json ($root, $prefix='') {
-		$this->slim->get($prefix . '/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) use ($root) {
+		$this->slim->get($prefix . '/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
 			if (in_array($method, ['byId', 'bySlug'])) {
 				$value = $limit;
 	        } else {
@@ -55,19 +56,11 @@ class CollectionRoute {
 			if ($page == 0) {
 				$page = 1;
 			}
-		    $collectionClass = $root . '/../collections/' . $collection . '.php';
-		    if (!file_exists($collectionClass)) {
-		        exit ($collection . ': unknown file.');
-		    }
-		    require_once($collectionClass);
-		    if (!class_exists($collection)) {
-		        exit ($collection . ': unknown class.');
-		    }
-		    $collectionObj = new $collection($this->db, $limit, $page, $sort);
+		    $collectionObj = $this->collection->factory($collection, $limit, $page, $sort);
 		    if (isset($_REQUEST['Sep-local'])) {
 		        $collectionObj->localSet();
 		    }
-		    if (!method_exists($collection, $method)) {
+		    if (!method_exists($collectionObj, $method)) {
 		        exit ($method . ': unknown method.');
 		    }
 		    $head = '';
@@ -81,7 +74,7 @@ class CollectionRoute {
 		    }
 		    $options = null;
 		    $data = $collectionObj->$method($value);
-		    $name = $collectionObj->collection;
+		    $name = $collectionObj->collection();
 		    if (isset($_GET['pretty'])) {
 		        $options = JSON_PRETTY_PRINT;
 		        $head = '<html><head></head><body style="margin:0; border:0; padding: 0"><textarea wrap="off" style="overflow: auto; margin:0; border:0; padding: 0; width:100%; height: 100%">';
@@ -119,12 +112,8 @@ class CollectionRoute {
 				return;
 			}
 		    foreach ($collections as &$collection) {
-		    	$collectionClass = $root . '/../collections/' . $collection['p'] . '.php';
-		    	if (!file_exists($collectionClass)) {
-		        	exit ($collection['p'] . ': unknown file.');
-		    	}
-			    require_once($collectionClass);
-		    	$reflection = new \ReflectionClass($collection['p']);
+		    	$collectionObj = $this->collection->factory($collection['p']);
+		    	$reflection = new \ReflectionClass($collectionObj);
 				$methods = $reflection->getMethods();
 				foreach ($methods as $method) {
 					if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
@@ -209,10 +198,12 @@ class CollectionRoute {
 		$dirFiles = glob($root . '/../collections/*.php');
 		foreach ($dirFiles as $collection) {
 			require_once($collection);
-			$class = basename($collection, '.php');
+			$collection = basename($collection, '.php');
+			$className = 'Collection\\' . $collection;
+			$instance = new $className();
 			$cache[] = [
-				'p' => $class,
-				's' => $class::$singular
+				'p' => $collection,
+				's' => $instance->singular
 			];
 		}
 		$json = json_encode($cache, JSON_PRETTY_PRINT);

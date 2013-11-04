@@ -12,7 +12,7 @@
  * furnished to do so, subject to the following conditions:
  * 
  * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+s * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,23 +24,49 @@
  */
 namespace Collection;
 
-trait Collection {
-	public $collection;
-	public $criteria = [];
-	public $tagCacheCollection;
-	public $sort = [];
-	public $limit = 100;
-	public $skip = 0;
-	public $total = 0;
-	public $name = null;
-	public $transform = 'document';
-	public $myTransform = 'myDocument';
+class Collection {
+	private $root;
+	private $collection;
+	private $criteria = [];
+	private $tagCacheCollection;
+	private $sort = [];
+	private $limit = 100;
+	private $skip = 0;
+	private $total = 0;
+	private $name = null;
+	private $transform = 'document';
+	private $myTransform = 'myDocument';
 	private $local = false;
-	public $db;
+	private $db;
+	private $publishable = false;
+	private $instance;
 
-	public function __construct ($db, $limit=20, $page=1, $sort=[]) {
+	public function __construct ($root, $db) {
+		$this->root = $root;
 		$this->db = $db;
-		$this->collection = get_class($this);
+	}
+
+	public function factory ($collection, $limit=20, $page=1, $sort=[]) {
+		$collectionClass = $this->root . '/../collections/' . $collection . '.php';
+	    if (!file_exists($collectionClass)) {
+	        return false;
+	    }
+		require_once($collectionClass);
+		$collectionClass = 'Collection\\' . $collection;
+	    if (!class_exists($collectionClass)) {
+	        exit ($collectionClass . ': unknown class.');
+	    }
+		$this->instance = new $collectionClass();
+		if (isset($this->instance->singular)) {
+			$this->singular = $this->instance->singular;
+		}
+		if (isset($this->instance->publishable)) {
+			$this->publishable = $this->instance->publishable;
+		}
+		if (isset($this->instance->path)) {
+			$this->path = $this->instance->path;
+		}
+		$this->collection = $collection;
 		$this->tagCacheCollection = $this->collection . 'Tags';
 		$this->limit = $limit;
 		$this->skip = ($page - 1) * $limit;
@@ -49,6 +75,11 @@ trait Collection {
 		} else {
 			$this->sort = $sort;
 		}
+		return $this;
+	}
+
+	public function collection () {
+		return $this->collection;
 	}
 
 	public function totalGet () {
@@ -83,10 +114,10 @@ trait Collection {
 			if (!empty($this->pathKey)) {
 				$key = $this->pathKey;
 			}
-			$path = $this::$singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document[$key] . '"}}';
+			$path = $this->singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document[$key] . '"}}';
 		} else {
 			if (!property_exists($this, 'path')) {
-				$path = '/' . $this::$singular . $template;
+				$path = '/' . $this->singular . $template;
 				if (isset($document['code_name'])) {
 					$path .= '/' . $document['code_name'] . '.html';
 				} else {
@@ -110,6 +141,9 @@ trait Collection {
 	}
 
 	public function all () {
+		if (method_exists($this->instance, 'all')) {
+			return $this->instance->all($this, $db);
+		}
 		$this->name = $this->collection;
 		if ($this->publishable) {
 			$this->criteria['status'] = 'published';
@@ -119,22 +153,22 @@ trait Collection {
 	}
 
 	public function byId ($id) {
-		$this->name = $this::$singular;
+		$this->name = $this->singular;
 		$document = $this->db->collection($this->collection)->findOne(['_id' => $this->db->id($id)]);
 		if (!isset($document['_id'])) {
 			return [];
 		}
-		self::decorate($document);
+		$this->decorate($document);
 		return $document;
 	}
 
 	public function bySlug ($slug) {
-		$this->name = $this::$singular;
+		$this->name = $this->singular;
 		$document = $this->db->collection($this->collection)->findOne(['code_name' => $slug]);
 		if (!isset($document['_id'])) {
 			return [];
 		}
-		self::decorate($document);
+		$this->decorate($document);
 		return $document;
 	}
 
@@ -149,7 +183,7 @@ trait Collection {
 	}
 
 	public function byCategory ($category) {
-		$category = self::categoryIdFromTitle($category);
+		$category = $this->categoryIdFromTitle($category);
 		if (!isset($category['_id'])) {
 			return $this->all();
 		}
@@ -157,12 +191,12 @@ trait Collection {
 		return $this->all();
 	}
 
-	private static function categoryIdFromTitle ($title) {
+	private function categoryIdFromTitle ($title) {
 		return $this->db->collection('categories')->findOne(['title' => urldecode($title)], ['id']);
 	}
 
 	public function byCategoryFeatured ($category) {
-		$category = self::categoryIdFromTitle($category);
+		$category = $this->categoryIdFromTitle($category);
 		if (!isset($category['_id'])) {
 			return $this->all();
 		}
@@ -243,6 +277,30 @@ trait Collection {
 		$document['count'] = $document['value'];
 		unset($document['_id']);
 		unset($document['value']);
+	}
+
+	public function index ($search, $id, $document) {
+		if (!method_exists($this->instance, 'index')) {
+			return;
+		}
+		$index = $this->instance->index($document);
+		$search->indexMakeDefault (
+			(string)$id, 
+			$this->collection, 
+			(isset($index['title']) ? $index['title'] : null), 
+			(isset($index['description']) ? $index['description'] : null), 
+			(isset($index['image']) ? $index['image'] : null), 
+			(isset($index['tags']) ? $index['tags'] : null), 
+			(isset($index['categories']) ? $index['categories'] : null), 
+			(isset($index['date']) ? $index['date'] : null), 
+			date('c', $document['created_date']->sec),
+			date('c', $document['modified_date']->sec),
+			$document['status'], 
+			$document['featured'], 
+			$document['acl'], 
+			'/Manager/edit/' . $this->collection . '/' . (string)$id,
+			(isset($document['code_name']) ? ('/' . $this->single . '/' . $document['code_name']) : null)
+		);
 	}
 
 //Todo: wrap up additional functions

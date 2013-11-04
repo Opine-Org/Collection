@@ -1,11 +1,10 @@
 <?php
 class blurbsReportByTag {
-	use Collection\Collection;
 	public $publishable = false;
-	public static $singular = 'blurb';
+	public $singular = 'blurb';
 	public $path = false;
 
-	public function all () {
+	public function all ($collection, $db) {
 		$map = <<<MAP
 			function() {
 				if (!this.tags) {
@@ -28,14 +27,13 @@ MAP;
 		}
 REDUCE;
 
-		$this->db->mapReduce($map, $reduce, [
+		$db->mapReduce($map, $reduce, [
 			'mapreduce' => 'blurbs',
 			'out' => 'blurbsReportByTag'
 		]);
 
-		$this->name = $this->collection;
-		$this->total = $this->db->collection('blurbsReportByTag')->find($this->criteria)->count();
-		$docs = $this->fetchAll('blurbsReportByTag', $this->db->collection('blurbsReportByTag')->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+		$collection->total = $db->collection('blurbsReportByTag')->find($collection->criteria)->count();
+		$docs = $collection->fetchAll('blurbsReportByTag', $db->collection('blurbsReportByTag')->find($collection->criteria)->sort($collection->sort)->limit($collection->limit)->skip($collection->skip));
 		$docsOut = [];
 		foreach ($docs as $doc) {
 			$docsOut[$doc['_id']] = $doc['value'];

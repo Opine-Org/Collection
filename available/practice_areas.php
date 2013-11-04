@@ -1,6 +1,5 @@
 <?php
 class practice_areas {
-	use Collection\Collection;
 	public $publishable = false;
-	public static $singular = 'practice_area';
+	public $singular = 'practice_area';
 }

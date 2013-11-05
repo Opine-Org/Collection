@@ -90,7 +90,7 @@ class Collection {
 		$this->local = true;
 	}
 
-	private function decorate (&$document) {
+	public function decorate (&$document) {
 		$document['_id'] = (string)$document['_id'];
 		if (method_exists($this, $this->transform)) {
 			$method = $this->transform;
@@ -130,7 +130,7 @@ class Collection {
 		$document['path'] = $path;
 	}
 
-	private function fetchAll ($collection, $cursor) {
+	public function fetchAll ($collection, $cursor) {
 		$rows = [];
 		while ($cursor->hasNext()) {
 			$document = $cursor->getNext();
@@ -191,7 +191,7 @@ class Collection {
 		return $this->all();
 	}
 
-	private function categoryIdFromTitle ($title) {
+	public function categoryIdFromTitle ($title) {
 		return $this->db->collection('categories')->findOne(['title' => urldecode($title)], ['id']);
 	}
 
@@ -222,7 +222,7 @@ class Collection {
 		return $this->all();
 	}
 
-	private function dateFieldValidate() {
+	public function dateFieldValidate() {
 		if (isset($this->dateField)) {
 			throw new \Exception('Model configuration mmissing dateField');
 		}

@@ -284,7 +284,7 @@ class Collection {
 			return;
 		}
 		$index = $this->instance->index($document);
-		$search->indexMakeDefault (
+		$search->indexToDefault (
 			(string)$id, 
 			$this->collection, 
 			(isset($index['title']) ? $index['title'] : null), 

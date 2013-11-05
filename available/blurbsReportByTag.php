@@ -1,4 +1,11 @@
 <?php
+/*
+ * @version .1
+ * @link https://raw.github.com/virtuecenter/collection/master/available/blurbsReportByTag.php
+ * @mode upgrade
+ */
+namespace Collection;
+
 class blurbsReportByTag {
 	public $publishable = false;
 	public $singular = 'blurb';

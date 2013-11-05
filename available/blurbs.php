@@ -1,4 +1,9 @@
 <?php
+/*
+ * @version .1
+ * @link https://raw.github.com/virtuecenter/collection/master/available/blurbs.php
+ * @mode upgrade
+ */
 namespace Collection;
 
 class blurbs {

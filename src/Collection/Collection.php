@@ -25,21 +25,21 @@ s * all copies or substantial portions of the Software.
 namespace Collection;
 
 class Collection {
-	private $root;
-	private $collection;
-	private $criteria = [];
-	private $tagCacheCollection;
-	private $sort = [];
-	private $limit = 100;
-	private $skip = 0;
-	private $total = 0;
-	private $name = null;
-	private $transform = 'document';
-	private $myTransform = 'myDocument';
-	private $local = false;
-	private $db;
-	private $publishable = false;
-	private $instance;
+	public $root;
+	public $collection;
+	public $criteria = [];
+	public $tagCacheCollection;
+	public $sort = [];
+	public $limit = 100;
+	public $skip = 0;
+	public $total = 0;
+	public $name = null;
+	public $transform = 'document';
+	public $myTransform = 'myDocument';
+	public $local = false;
+	public $db;
+	public $publishable = false;
+	public $instance;
 
 	public function __construct ($root, $db) {
 		$this->root = $root;
@@ -84,22 +84,6 @@ class Collection {
 
 	public function totalGet () {
 		return $this->total;
-	}
-
-	public function criteriaGet () {
-		return $this->criteria;
-	}
-
-	public function limitGet () {
-		return $this->limit;
-	}
-
-	public function skipGet () {
-		return $this->skip;
-	}
-
-	public function sortGet () {
-		return $this->sort;
 	}
 
 	public function localSet() {
@@ -158,7 +142,7 @@ class Collection {
 
 	public function all () {
 		if (method_exists($this->instance, 'all')) {
-			return $this->instance->all($this, $this->db);
+			return $this->instance->all($this);
 		}
 		$this->name = $this->collection;
 		if ($this->publishable) {

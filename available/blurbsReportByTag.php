@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .5
+ * @version .6
  * @link https://raw.github.com/virtuecenter/collection/master/available/blurbsReportByTag.php
  * @mode upgrade
  */

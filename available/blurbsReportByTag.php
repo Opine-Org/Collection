@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .2
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/blurbsReportByTag.php
  * @mode upgrade
  */
@@ -34,7 +34,7 @@ MAP;
 		}
 REDUCE;
 
-		$db->mapReduce($map, $reduce, [
+		$collection->db->mapReduce($map, $reduce, [
 			'mapreduce' => 'blurbs',
 			'out' => 'blurbsReportByTag'
 		]);

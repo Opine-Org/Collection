@@ -142,7 +142,7 @@ class Collection {
 
 	public function all () {
 		if (method_exists($this->instance, 'all')) {
-			return $this->instance->all($this, $db);
+			return $this->instance->all($this, $this->db);
 		}
 		$this->name = $this->collection;
 		if ($this->publishable) {

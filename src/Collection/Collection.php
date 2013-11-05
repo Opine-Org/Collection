@@ -86,6 +86,22 @@ class Collection {
 		return $this->total;
 	}
 
+	public function criteriaGet () {
+		return $this->criteria;
+	}
+
+	public function limitGet () {
+		return $this->limit;
+	}
+
+	public function skipGet () {
+		return $this->skip;
+	}
+
+	public function sortGet () {
+		return $this->sort;
+	}
+
 	public function localSet() {
 		$this->local = true;
 	}

@@ -256,6 +256,7 @@ class CollectionRoute {
 
     public function upgrade ($root) {
         $manifest = (array)json_decode(file_get_contents('https://raw.github.com/virtuecenter/collection/master/available/manifest.json'), true);
+        $upgraded = 0;
         foreach (glob($root . '/../collections/*.php') as $filename) {
             $lines = file($filename);
             $version = false;
@@ -294,7 +295,9 @@ class CollectionRoute {
             if ($newVersion > $version) {
                 file_put_contents($filename, file_get_contents($link));
                 echo 'Upgraded Collection: ', basename($filename, '.php'), ' to version: ', $newVersion, "\n";
+                $upgraded++;
             }
         }
+        echo 'Upgraded ', $upgraded, ' collections.', "\n";
     }
 }

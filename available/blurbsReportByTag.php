@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .3
+ * @version .5
  * @link https://raw.github.com/virtuecenter/collection/master/available/blurbsReportByTag.php
  * @mode upgrade
  */
@@ -11,7 +11,7 @@ class blurbsReportByTag {
 	public $singular = 'blurb';
 	public $path = false;
 
-	public function all ($collection) {
+	public function all ($instance) {
 		$map = <<<MAP
 			function() {
 				if (!this.tags) {
@@ -34,13 +34,13 @@ MAP;
 		}
 REDUCE;
 
-		$collection->db->mapReduce($map, $reduce, [
+		$instance->db->mapReduce($map, $reduce, [
 			'mapreduce' => 'blurbs',
 			'out' => 'blurbsReportByTag'
 		]);
 
-		$collection->total = $collection->db->collection('blurbsReportByTag')->find($collection->criteriaGet())->count();
-		$docs = $collection->fetchAll('blurbsReportByTag', $db->collection('blurbsReportByTag')->find($collection->criteriaGet())->sort($collection->sortGet())->limit($collection->limitGet())->skip($collection->skipGet()));
+		$instance->total = $instance->db->collection('blurbsReportByTag')->find($instance->criteria)->count();
+		$docs = $instance->fetchAll('blurbsReportByTag', $instance->db->collection('blurbsReportByTag')->find($instance->criteria)->sort($instance->sort)->limit($instance->limit)->skip($instance->skip));
 		$docsOut = [];
 		foreach ($docs as $doc) {
 			$docsOut[$doc['_id']] = $doc['value'];

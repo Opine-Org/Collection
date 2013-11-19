@@ -152,6 +152,29 @@ class Collection {
 		return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 	}
 
+	public function byEmbeddedField ($dbURI) {
+		$filter = [];
+		if (substr_count($dbURI, ':') > 0) {
+            $parts = explode(':', $dbURI);
+            $collection = array_shift($parts);
+            $id = array_shift($parts);
+            $filter = [$parts[0]];
+        }
+		$document = $this->db->collection($this->collection)->findOne(['_id' => $this->db->id($id)], $filter);
+		if (!isset($document['_id'])) {
+			return [];
+		}
+		if (sizeof($parts) == 1) {
+			$this->name = $parts[0];
+			if (!isset($document[$parts[0]])) {
+				$this->total = 0;
+				return [];
+			}
+			$this->total = count($document[$parts[0]]);
+			return $document[$parts[0]];
+		}
+	}
+
 	public function byId ($id) {
 		$this->name = $this->singular;
 		$document = $this->db->collection($this->collection)->findOne(['_id' => $this->db->id($id)]);
@@ -281,7 +304,8 @@ class Collection {
 
 	public function index ($search, $id, $document) {
 		if (!method_exists($this->instance, 'index')) {
-			return;
+			var_dump($this->instance);
+			return false;
 		}
 		$index = $this->instance->index($document);
 		$search->indexToDefault (

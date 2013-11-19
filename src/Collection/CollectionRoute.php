@@ -75,13 +75,16 @@ class CollectionRoute {
             $options = null;
             $data = $collectionObj->$method($value);
             $name = $collectionObj->collection();
+            if ($method == 'byEmbeddedField') {
+                $name = $collectionObj->name;
+            }
             if (isset($_GET['pretty'])) {
                 $options = JSON_PRETTY_PRINT;
                 $head = '<html><head></head><body style="margin:0; border:0; padding: 0"><textarea wrap="off" style="overflow: auto; margin:0; border:0; padding: 0; width:100%; height: 100%">';
                 $tail = '</textarea></body></html>';
             }
             if (in_array($method, ['byId', 'bySlug'])) {
-                $name = $collectionObj::$singular;
+                $name = $collectionObj->singular;
                 echo $head . json_encode([
                     $name => $data
                 ], $options) . $tail;

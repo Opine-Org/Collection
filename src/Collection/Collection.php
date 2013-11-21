@@ -290,7 +290,7 @@ class Collection {
 			$document['display_date__MdY'] = date('M d, Y', $document['display_date']->sec);
 		}
 
-		//lookup authors		
+		//lookup authors
 
 		//lookup categories
 	}
@@ -307,6 +307,9 @@ class Collection {
 			return false;
 		}
 		$index = $this->instance->index($document);
+		if ($index === false) {
+			return false;
+		}
 		$search->indexToDefault (
 			(string)$id, 
 			$this->collection, 

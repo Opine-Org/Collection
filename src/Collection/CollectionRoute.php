@@ -44,7 +44,7 @@ class CollectionRoute {
     }
 
     public function json ($root, $prefix='') {
-        $this->slim->get($prefix . '/json-data/:collection/:method(/:limit(/:page(/:sort)))', function ($collection, $method, $limit=20, $page=1, $sort=[]) {
+        $this->slim->get($prefix . '/json-data/:collection/:method(/:limit(/:page(/:sort(/:fields))))', function ($collection, $method, $limit=20, $page=1, $sort=[], $fields=[]) {
             if (in_array($method, ['byId', 'bySlug'])) {
                 $value = $limit;
             } else {

@@ -96,7 +96,11 @@ class CollectionRoute {
                         'total' => $collectionObj->totalGet(),
                         'page' => $page,
                         'pageCount' => ceil($collectionObj->totalGet() / $limit)
-                    ]
+                    ],
+                    'metadata' => array_merge(['display' => [
+                        'collection' => ucwords(str_replace('_', ' ', $collection)),
+                        'document' => ucwords(str_replace('_', ' ', $collectionObj->singular))
+                    ]], get_object_vars($collectionObj))
                 ], $options) . $tail;
             }
         });

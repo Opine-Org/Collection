@@ -92,13 +92,13 @@ class Collection {
 
 	public function decorate (&$document) {
 		$document['_id'] = (string)$document['_id'];
-		if (method_exists($this, $this->transform)) {
+		if (method_exists($this->instance, $this->transform)) {
 			$method = $this->transform;
-			$this->$method($document);
+			$this->instance->{$method}($document);
 		}
-		if (method_exists($this, $this->myTransform)) {
+		if (method_exists($this->instance, $this->myTransform)) {
 			$method = $this->myTransform;
-			$this->$method($document);
+			$this->instance->{$method}($document);
 		}
 		$template = '';
 		if (isset($document['template_separation'])) {
@@ -116,7 +116,7 @@ class Collection {
 			}
 			$path = $this->singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document[$key] . '"}}';
 		} else {
-			if (!property_exists($this, 'path')) {
+			if (!property_exists($this->instance, 'path')) {
 				$path = '/' . $this->singular . $template;
 				if (isset($document['code_name'])) {
 					$path .= '/' . $document['code_name'] . '.html';
@@ -124,7 +124,7 @@ class Collection {
 					$path .= '/id/' . (string)$document['_id'] . '.html';
 				}
 			} else {
-				$path =	$this->path . $document[$this->pathKey] . '.html';
+				$path =	$this->instance->path . $document[$this->pathKey] . '.html';
 			}
 		}
 		$document['path'] = $path;
@@ -304,7 +304,6 @@ class Collection {
 
 	public function index ($search, $id, $document) {
 		if (!method_exists($this->instance, 'index')) {
-			var_dump($this->instance);
 			return false;
 		}
 		$index = $this->instance->index($document);
@@ -321,8 +320,8 @@ class Collection {
 			date('c', $document['modified_date']->sec),
 			$document['status'], 
 			$document['featured'], 
-			$document['acl'], 
-			'/Manager/edit/' . $this->collection . '/' . (string)$id,
+			$document['acl'],
+			'/Manager/edit/' . $this->collection . '/' . $document['dbURI'],
 			(isset($document['code_name']) ? ('/' . $this->single . '/' . $document['code_name']) : null)
 		);
 	}

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .2
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/blurbs.php
  * @mode upgrade
  */
@@ -9,6 +9,7 @@ namespace Collection;
 class blurbs {
 	public $publishable = false;
 	public $singular = 'blurb';
+
 	public function index ($document) {
 		return [
 			'title' => $document['title'], 

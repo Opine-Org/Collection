@@ -9,4 +9,15 @@ namespace Collection;
 class blogs {
 	public $publishable = true;
 	public $singular = 'blog';
+
+	public function index ($document) {
+		return [
+			'title' => $document['title'], 
+			'description' => $document['description'], 
+			'image' => $document['image'], 
+			'tags' => [], 
+			'categories' => [], 
+			'date' => date('c', $document['created_date']->sec) 
+		];
+	}
 }

@@ -9,4 +9,15 @@ namespace Collection;
 class categories {
 	public $publishable = false;
 	public $singular = 'category';
+
+	public function index ($document) {
+		return [
+			'title' => $document['title'], 
+			'description' => '', 
+			'image' => $document['image'], 
+			'tags' => [], 
+			'categories' => [], 
+			'date' => date('c', $document['created_date']->sec) 
+		];
+	}
 }

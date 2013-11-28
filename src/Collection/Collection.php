@@ -325,7 +325,7 @@ class Collection {
 			$document['featured'], 
 			$document['acl'],
 			'/Manager/edit/' . $this->collection . '/' . $document['dbURI'],
-			(isset($document['code_name']) ? ('/' . $this->single . '/' . $document['code_name']) : null)
+			(isset($document['code_name']) ? ('/' . $this->instance->singlePath . '/' . $document['code_name']) : null)
 		);
 	}
 

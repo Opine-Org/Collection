@@ -11,6 +11,10 @@ class menus {
 	public $singular = 'menu';
 
 	public function index ($document) {
+		$depth = substr_count($document['dbURI'], ':');
+		if ($depth > 1) {
+			return false;
+		}
 		return [
 			'title' => $document['label'], 
 			'description' => '', 

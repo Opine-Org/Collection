@@ -15,8 +15,8 @@ class blurbs {
 			'title' => $document['title'], 
 			'description' => $document['body'], 
 			'image' => null, 
-			'tags' => $document['tags'],  
-			'categories' => [], 
+			'tags' => isset($document['tags']) ? $document['tags'] : [], 
+			'categories' => [],
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

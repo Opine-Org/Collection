@@ -325,20 +325,7 @@ class Collection {
 			$document['featured'], 
 			$document['acl'],
 			'/Manager/edit/' . $this->collection . '/' . $document['dbURI'],
-			(isset($document['code_name']) ? ('/' . $this->instance->singlePath . '/' . $document['code_name']) : null)
+			(isset($document['code_name']) ? ('/' . $this->instance->permalink . '/' . $document['code_name']) : null)
 		);
-	}
-
-//Todo: wrap up additional functions
-	public function tagsRandom () {
-
-	}
-
-	public function popular () {
-
-	}
-
-	public function search () {
-		//solr integration
 	}
 }

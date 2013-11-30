@@ -9,7 +9,7 @@ namespace Collection;
 class blogs {
 	public $publishable = true;
 	public $singular = 'blog';
-	public $singlePath = '/blog/';
+	public $permalink = '/blog/';
 
 	public function index ($document) {
 		return [

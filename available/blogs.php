@@ -16,8 +16,8 @@ class blogs {
 			'title' => $document['title'], 
 			'description' => $document['description'], 
 			'image' => isset($document['image']) ? $document['image'] : '', 
-			'tags' => [], 
-			'categories' => [], 
+			'tags' => $document['tags'], 
+			'categories' => $document['categories'], 
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

@@ -15,8 +15,8 @@ class photo_galleries {
 			'title' => $document['title'], 
 			'description' => $document['description'], 
 			'image' => $document['image'], 
-			'tags' => [], 
-			'categories' => [], 
+			'tags' => $document['tags'], 
+			'categories' => $document['catgories'], 
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

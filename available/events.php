@@ -15,8 +15,8 @@ class events {
 			'title' => $document['title'], 
 			'description' => $document['description'], 
 			'image' => $document['image'], 
-			'tags' => [], 
-			'categories' => [], 
+			'tags' => $document['tags'], 
+			'categories' => $document['categories'], 
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

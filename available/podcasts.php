@@ -9,4 +9,15 @@ namespace Collection;
 class podcasts {
 	public $publishable = true;
 	public $singular = 'podcast';
+
+	public function index ($document) {
+		return [
+			'title' => $document['title'], 
+			'description' => $document['description'], 
+			'image' => $document['image'], 
+			'tags' => $document['tags'], 
+			'categories' => $document['categories'], 
+			'date' => date('c', $document['created_date']->sec) 
+		];
+	}
 }

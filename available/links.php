@@ -9,4 +9,15 @@ namespace Collection;
 class links {
 	public $publishable = true;
 	public $singular = 'link';
+
+	public function index ($document) {
+		return [
+			'title' => $document['title'], 
+			'description' => $document['description'], 
+			'image' => $document['image'], 
+			'tags' => [], 
+			'categories' => [], 
+			'date' => date('c', $document['created_date']->sec) 
+		];
+	}
 }

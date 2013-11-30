@@ -9,4 +9,15 @@ namespace Collection;
 class sponsors {
 	public $publishable = true;
 	public $singular = 'sponsor';
+
+	public function index ($document) {
+		return [
+			'title' => $document['title'], 
+			'description' => $document['description'], 
+			'image' => $document['image'], 
+			'tags' => [], 
+			'categories' => $document['categories'], 
+			'date' => date('c', $document['created_date']->sec) 
+		];
+	}
 }

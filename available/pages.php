@@ -16,8 +16,8 @@ class pages {
 			'title' => $document['title'], 
 			'description' => $document['metadata_description'], 
 			'image' => null, 
-			'tags' => [], 
-			'categories' => [], 
+			'tags' => $document['tags'], 
+			'categories' => $document['categories'], 
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

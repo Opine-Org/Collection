@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .1
+ * @version .2
  * @link https://raw.github.com/virtuecenter/collection/master/available/blogs.php
  * @mode upgrade
  */
@@ -13,11 +13,11 @@ class blogs {
 
 	public function index ($document) {
 		return [
-			'title' => $document['title'], 
-			'description' => $document['description'], 
+			'title' => $document['title'],
+			'description' => $document['description'],
 			'image' => isset($document['image']) ? $document['image'] : '', 
-			'tags' => $document['tags'], 
-			'categories' => $document['categories'], 
+			'tags' => isset($document['tags']) ? $document['tags'] : [], 
+			'categories' => isset($document['categories']) ? $document['categories']: [], 
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

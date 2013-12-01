@@ -14,9 +14,9 @@ class peoples_person {
 		return [
 			'title' => $document['title'], 
 			'description' => $document['description'], 
-			'image' => $document['image'], 
-			'tags' => $document['tags'], 
-			'categories' => $document['categories'], 
+			'image' => isset($document['image']) ? $document['image'] : '', 
+			'tags' => isset($document['tags']) ? $document['tags'] : [], 
+			'categories' => isset($document['categories']) ? $document['categories']: [],
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}

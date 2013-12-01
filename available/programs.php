@@ -14,8 +14,8 @@ class programs {
 		return [
 			'title' => $document['title'], 
 			'description' => $document['description'], 
-			'image' => $document['image'], 
-			'tags' => $document['tags'], 
+			'image' => isset($document['image']) ? $document['image'] : '', 
+			'tags' => isset($document['tags']) ? $document['tags'] : [], 
 			'categories' => [], 
 			'date' => date('c', $document['created_date']->sec) 
 		];

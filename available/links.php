@@ -14,7 +14,7 @@ class links {
 		return [
 			'title' => $document['title'], 
 			'description' => $document['description'], 
-			'image' => $document['image'], 
+			'image' => isset($document['image']) ? $document['image'] : '', 
 			'tags' => [], 
 			'categories' => [], 
 			'date' => date('c', $document['created_date']->sec) 

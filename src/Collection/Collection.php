@@ -71,7 +71,7 @@ class Collection {
 		$this->limit = $limit;
 		$this->skip = ($page - 1) * $limit;
 		if (is_string($sort)) {
-			$this->sort = json_decode($sort);
+			$this->sort = (array)json_decode($sort, true);
 		} else {
 			$this->sort = $sort;
 		}
@@ -148,6 +148,15 @@ class Collection {
 		if ($this->publishable) {
 			$this->criteria['status'] = 'published';
 		}
+		$this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
+		return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+	}
+
+	public function manager () {
+		if (method_exists($this->instance, 'manager')) {
+			return $this->instance->manager($this);
+		}
+		$this->name = $this->collection;
 		$this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
 		return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 	}

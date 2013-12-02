@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .1
+ * @version .2
  * @link https://raw.github.com/virtuecenter/collection/master/available/short_messages.php
  * @mode upgrade
  */

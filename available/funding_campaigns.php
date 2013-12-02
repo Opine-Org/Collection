@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .1
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/funding_campaigns.php
  * @mode upgrade
  */

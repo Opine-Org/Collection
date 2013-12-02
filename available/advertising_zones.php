@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .1
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/advertising_zones.php
  * @mode upgrade
  */

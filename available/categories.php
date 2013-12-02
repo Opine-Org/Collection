@@ -1,8 +1,10 @@
 <?php
 /*
- * @version .2
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/categories.php
  * @mode upgrade
+ *
+ * .3 don't index sub documents for now
  */
 namespace Collection;
 
@@ -11,6 +13,10 @@ class categories {
 	public $singular = 'category';
 
 	public function index ($document) {
+		$depth = substr_count($document['dbURI'], ':');
+		if ($depth > 1) {
+			return false;
+		}
 		return [
 			'title' => $document['title'], 
 			'description' => '', 

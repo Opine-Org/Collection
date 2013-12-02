@@ -334,7 +334,7 @@ class Collection {
 			$document['featured'], 
 			$document['acl'],
 			'/Manager/edit/' . $this->collection . '/' . $document['dbURI'],
-			(isset($document['code_name']) ? ('/' . $this->instance->permalink . '/' . $document['code_name']) : null)
+			(isset($document['code_name']) ? ('/' . $this->instance->singular . '/' . $document['code_name']) : null)
 		);
 	}
 }

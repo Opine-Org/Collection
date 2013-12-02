@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .3
+ * @version .4
  * @link https://raw.github.com/virtuecenter/collection/master/available/photo_galleries.php
  * @mode upgrade
  */

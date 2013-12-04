@@ -37,8 +37,9 @@
         "social_sharing": ".3",
         "sponsors": ".2",
         "testimonials": ".1",
+        "tweets": ".1",
         "video_playlists": ".2",
         "video_series": ".2",
-        "videos": ".2"
+        "videos": ".3"
     }
 }

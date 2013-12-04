@@ -1,8 +1,10 @@
 <?php
 /*
- * @version .2
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/videos.php
  * @mode upgrade
+ *
+ * .3 add youtube image
  */
 namespace Collection;
 use UrlId\UrlId;
@@ -16,6 +18,12 @@ class videos {
 		$document['video_type'] = null;
 		if (!empty($document['video'])) {
 			$document['video_id'] = UrlId::parse($document['video'], $document['video_type']);
+		}
+		if ($document['video_type'] == 'youtube') {
+			$document['image'] = ['url' => 'http://img.youtube.com/vi/' . $document['video_id'] . '/0.jpg'];
+		}
+		if ($document['video_type'] == 'vimeo') {
+			
 		}
 		$document['category_titles'] = [];
 		if (isset($document['categories']) && is_array($document['categories'])) {

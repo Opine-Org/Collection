@@ -1,8 +1,10 @@
 <?php
 /*
- * @version .1
+ * @version .2
  * @link https://raw.github.com/virtuecenter/collection/master/available/carouselsReportByTag.php
  * @mode upgrade
+ *
+ * .2 correct field to provide
  */
 namespace Collection;
 
@@ -19,7 +21,7 @@ class carouselsReportByTag {
 					return;
 				}
 				for (var i=0; i < this.tags.length; i++) {
-					emit(this.tags[i], this.body);
+					emit(this.tags[i], this.carousel_individual);
 				}
 			}
 MAP;

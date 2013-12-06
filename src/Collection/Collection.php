@@ -38,12 +38,14 @@ class Collection {
 	public $myTransform = 'myDocument';
 	public $local = false;
 	public $db;
+	public $queue;
 	public $publishable = false;
 	public $instance;
 
-	public function __construct ($root, $db) {
+	public function __construct ($root, $db, $queue) {
 		$this->root = $root;
 		$this->db = $db;
+		$this->queue = $queue;
 	}
 
 	public function factory ($collection, $limit=20, $page=1, $sort=[]) {
@@ -66,6 +68,8 @@ class Collection {
 		if (isset($this->instance->path)) {
 			$this->path = $this->instance->path;
 		}
+		$this->instance->db = $this->db;
+		$this->instance->queue = $this->queue;
 		$this->collection = $collection;
 		$this->tagCacheCollection = $this->collection . 'Tags';
 		$this->limit = $limit;
@@ -336,5 +340,16 @@ class Collection {
 			'/Manager/edit/' . $this->collection . '/' . $document['dbURI'],
 			(isset($document['code_name']) ? ('/' . $this->instance->singular . '/' . $document['code_name']) : null)
 		);
+	}
+
+	public function views ($mode, $id, $document=[]) {
+		$reflector = new \ReflectionClass($this->instance);
+		$methods = $reflector->getMethods();
+		foreach ($methods as $method) {
+			if (preg_match('/View$/', (string)$method->name) == 0) {
+				continue;
+			}
+			$method->invoke($this->instance, $mode, $id, $document);
+		}
 	}
 }

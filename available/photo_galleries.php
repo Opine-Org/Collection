@@ -1,10 +1,11 @@
 <?php
 /*
- * @version .4
+ * @version .5
  * @link https://raw.github.com/virtuecenter/collection/master/available/photo_galleries.php
  * @mode upgrade
  *
  * .4 remove dead code
+ * .5 tag view
  */
 namespace Collection;
 
@@ -25,5 +26,9 @@ class photo_galleries {
 			'categories' => [],
 			'date' => date('c', $document['created_date']->sec) 
 		];
+	}
+
+	public function tagsView ($mode, $id, $document) {
+		$this->queue->add('CollectionTags', ['collection' => 'photo_galleries']);
 	}
 }

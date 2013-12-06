@@ -1,8 +1,10 @@
 <?php
 /*
- * @version .2
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/pages.php
  * @mode upgrade
+ *
+ * .3 tag view
  */
 namespace Collection;
 
@@ -20,5 +22,9 @@ class pages {
 			'categories' => isset($document['categories']) ? $document['categories']: [],
 			'date' => date('c', $document['created_date']->sec) 
 		];
+	}
+
+	public function tagsView ($mode, $id, $document) {
+		$this->queue->add('CollectionTags', ['collection' => 'pages']);
 	}
 }

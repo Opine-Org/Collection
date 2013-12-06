@@ -1,10 +1,11 @@
 <?php
 /*
- * @version .3
+ * @version .4
  * @link https://raw.github.com/virtuecenter/collection/master/available/videos.php
  * @mode upgrade
  *
  * .3 add youtube image
+ * .4 tag view
  */
 namespace Collection;
 use UrlId\UrlId;
@@ -46,5 +47,9 @@ class videos {
 			'categories' => isset($document['categories']) ? $document['categories']: [],
 			'date' => date('c', $document['created_date']->sec) 
 		];
+	}
+
+	public function tagsView ($mode, $id, $document) {
+		$this->queue->add('CollectionTags', ['collection' => 'videos']);
 	}
 }

@@ -20,4 +20,8 @@ class blurbs {
 			'date' => date('c', $document['created_date']->sec) 
 		];
 	}
+
+	public function tagsView ($mode, $id, $document) {
+		$this->queue->add('CollectionTags', ['collection' => 'blogs']);
+	}
 }

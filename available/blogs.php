@@ -24,7 +24,7 @@ class blogs {
 		];
 	}
 
-	public function tagsView ($mode, $id, $document) {
-		$this->queue->add('CollectionTags', ['collection' => 'blogs']);
+	public function byTagsView ($mode, $id, $document) {
+		$this->queue->add('BlurbsByTag', []);
 	}
 }

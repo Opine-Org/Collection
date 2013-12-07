@@ -1,6 +1,6 @@
 <?php
 /*
- * @version .4
+ * @version .5
  * @link https://raw.github.com/virtuecenter/collection/master/available/tweets.php
  * @mode upgrade
  *
@@ -11,7 +11,8 @@
  * .1 initial load
  * .2 typo
  * .3 missing logic
- * .4 warm cache 
+ * .4 warm cache
+ * .5 add html links
  */
 namespace Collection;
 
@@ -31,5 +32,9 @@ class tweets {
 		}
 		$container->twitter->tweets($query, 10, 600, $type);
 		return $collection->all();
+	}
+
+	public function document (&$document) {
+		$document['text'] = \Twitter_Autolink::create()->setNoFollow(false)->autoLink($document['text']);
 	}
 }

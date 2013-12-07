@@ -1,12 +1,13 @@
 <?php
 /*
- * @version .3
+ * @version .4
  * @link https://raw.github.com/virtuecenter/collection/master/available/tweets.php
  * @mode upgrade
  *
  * .1 initial load
  * .2 typo
  * .3 missing logic
+ * .4 warm cache 
  */
 namespace Collection;
 
@@ -15,25 +16,16 @@ class tweets {
 	public $singular = 'tweet';
 	public $path = false;
 
-	public function __construct () {
-		
-	}
+	public function byField ($collection, $field) {
+		list ($field, $value) = explode('-', $field, 2);
+		$collection->criteria[$field] = $value;
 
-	public function all ($instance) {
+		list ($type, $query) = explode('-', $value, 2);
 		$container = \Framework\container();
-		$twitterquery = false;
-		if (isset($_GET['twitterquery'])) {
-			$twitterquery = $_GET['twitterquery'];
-		} else {
-			$config = $container->config;
-			$config = $config->twitter;
-			if (isset($config['default'])) {
-				$twitterquery = $config['default'];
-			}
+		if (empty($query)) {
+			return $collection->all();
 		}
-		if ($twitterquery === false) {
-			return [];
-		}	
-		return $container->twitter->tweets($twitterquery);
+		$container->twitter->tweets($query, 10, 600, $type);
+		return $collection->all();
 	}
 }

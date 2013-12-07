@@ -199,8 +199,12 @@ class Collection {
 	}
 
 	public function byField ($field) {
+		if (method_exists($this->instance, 'byField')) {
+			return $this->instance->byField($this, $field);
+		}
 		list ($field, $value) = explode('-', $field, 2);
 		$this->criteria[$field] = $value;
+		return $this->all();
 	}
 
 	public function bySlug ($slug) {

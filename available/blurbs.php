@@ -1,10 +1,11 @@
 <?php
 /*
- * @version .5
+ * @version .6
  * @link https://raw.github.com/virtuecenter/collection/master/available/blurbs.php
  * @mode upgrade
  *
  * .5 add view for generating alternate collection of blurbs
+ * .6 typeo
  */
 namespace Collection;
 
@@ -24,6 +25,6 @@ class blurbs {
 	}
 
 	public function tagsView ($mode, $id, $document) {
-		$this->queue->add('BlurbsToTags', []);
+		$this->queue->add('BlurbsByTag', []);
 	}
 }

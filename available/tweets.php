@@ -15,6 +15,10 @@ class tweets {
 	public $singular = 'tweet';
 	public $path = false;
 
+	public function __construct () {
+		
+	}
+
 	public function all ($instance) {
 		$container = \Framework\container();
 		$twitterquery = false;

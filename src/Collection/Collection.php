@@ -198,6 +198,11 @@ class Collection {
 		return $document;
 	}
 
+	public function byField ($field) {
+		list ($field, $value) = explode('-', $field, 2);
+		$this->criteria[$field] = $value;
+	}
+
 	public function bySlug ($slug) {
 		$this->name = $this->singular;
 		$document = $this->db->collection($this->collection)->findOne(['code_name' => $slug]);

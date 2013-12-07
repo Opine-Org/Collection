@@ -1,10 +1,12 @@
 <?php
 /*
- * @version .1
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/tweets.php
  * @mode upgrade
  *
  * .1 initial load
+ * .2 typo
+ * .3 missing logic
  */
 namespace Collection;
 
@@ -14,7 +16,20 @@ class tweets {
 	public $path = false;
 
 	public function all ($instance) {
-		$container = \Framework::container();
-		$tweets = $container->twitter->tweets();
+		$container = \Framework\container();
+		$twitterquery = false;
+		if (isset($_GET['twitterquery'])) {
+			$twitterquery = $_GET['twitterquery'];
+		} else {
+			$config = $container->config;
+			$config = $config->twitter;
+			if (isset($config['default'])) {
+				$twitterquery = $config['default'];
+			}
+		}
+		if ($twitterquery === false) {
+			return [];
+		}	
+		return $container->twitter->tweets($twitterquery);
 	}
 }

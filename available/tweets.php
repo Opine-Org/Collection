@@ -4,6 +4,10 @@
  * @link https://raw.github.com/virtuecenter/collection/master/available/tweets.php
  * @mode upgrade
  *
+ *
+ *  Use like this:  /json-data/tweets/byField-key-TYPE-QUERY/1/1/{"created_date":-1}
+ *  where type is either "user" or "search" 
+ * 
  * .1 initial load
  * .2 typo
  * .3 missing logic

@@ -1,8 +1,10 @@
 <?php
 /*
- * @version .3
+ * @version .4
  * @link https://raw.github.com/virtuecenter/collection/master/available/blurbs.php
  * @mode upgrade
+ *
+ * .4 add view for generating alternate collection of blurbs
  */
 namespace Collection;
 

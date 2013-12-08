@@ -11,7 +11,11 @@ class blurbs_by_tag {
 	public $singular = 'blurb';
 	public $path = false;
 
-//	public function document (&$document) {
-//		$document[$document['_id']] = $document['value'];
-//	}
+	public function document (&$document) {
+		$document[$document['_id']] = $document['value'];
+		$tmp = [
+			$document['_id'] => $document['value']
+		];
+		$document = $tmp;
+	}
 }

@@ -152,6 +152,11 @@ class Collection {
 		if ($this->publishable) {
 			$this->criteria['status'] = 'published';
 		}
+		return $this->fetch();
+	}
+
+	public function fetch () {
+		$this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
 		$this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
 		return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
 	}

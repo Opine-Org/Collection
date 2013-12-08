@@ -98,9 +98,11 @@ class CollectionRoute {
                         'pageCount' => ceil($collectionObj->totalGet() / $limit)
                     ],
                     'metadata' => array_merge(['display' => [
-                        'collection' => ucwords(str_replace('_', ' ', $collection)),
-                        'document' => ucwords(str_replace('_', ' ', $collectionObj->singular))
-                    ]], get_object_vars($collectionObj))
+                            'collection' => ucwords(str_replace('_', ' ', $collection)),
+                            'document' => ucwords(str_replace('_', ' ', $collectionObj->singular)),
+                        ],
+                        'method' => $method
+                    ], get_object_vars($collectionObj))
                 ], $options) . $tail;
             }
         });
@@ -171,7 +173,7 @@ class CollectionRoute {
                     }
                     $args['method'] = $method;
                     $args['page'] = $page;
-                      $args['sort'] = json_encode($sort);
+                    $args['sort'] = json_encode($sort);
                     foreach (['limit', 'page', 'sort'] as $option) {
                         $key = $collection['p'] . '-' . $method . '-' . $option;
                         if (isset($_GET[$key])) {

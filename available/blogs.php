@@ -1,11 +1,12 @@
 <?php
 /*
- * @version .5
+ * @version .6
  * @link https://raw.github.com/virtuecenter/collection/master/available/blogs.php
  * @mode upgrade
  *
  * .4 remove dead code
  * .5 tag view
+ * .6 tag view fix
  */
 namespace Collection;
 
@@ -24,7 +25,7 @@ class blogs {
 		];
 	}
 
-	public function byTagsView ($mode, $id, $document) {
-		$this->queue->add('BlurbsByTag', []);
+	public function tagsView ($mode, $id, $document) {
+		$this->queue->add('CollectionTags', ['collection' => 'blogs']);
 	}
 }

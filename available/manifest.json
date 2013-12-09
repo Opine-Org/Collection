@@ -2,7 +2,7 @@
     "collections": {
         "advertisements": ".3",
         "advertising_zones": ".3",
-        "blogs": ".5",
+        "blogs": ".6",
         "blogs_tags": ".1",
         "blurbs": ".6",
         "blurbs_by_tag": ".5",

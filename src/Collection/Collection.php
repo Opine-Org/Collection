@@ -366,4 +366,29 @@ class Collection {
 			$method->invoke($this->instance, $mode, $id, $document);
 		}
 	}
+
+	public function statsUpdate ($dbURI) {
+		$this->queue->add('CollectionStats', ['dbURI' => $dbURI]);
+	}
+
+	public function statsSet ($dbURI) {
+		$collection = explode(':', $dbURI)[0];
+		$this->db->collection('collection_stats')->update(
+			['collection' => $collection],
+			['$set' => [
+				'collection' => $collection,
+				'count' => $this->db->collection($collection)->count(),
+				'modified_date' => new \MongoDate(strtotime('now'))
+			]],
+			['upsert' => true]
+		);
+	}
+
+	public function statsAll () {
+		$collections = (array)json_decode(file_get_contents($this->root . '/../collections/cache.json'), true);
+        foreach ($collections as $collection) {
+            $count = $this->db($collection['p'])->count();
+            echo $collection['p'], ': ', $count, "\n";
+        }
+	}
 }

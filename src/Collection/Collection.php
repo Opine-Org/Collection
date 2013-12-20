@@ -368,7 +368,10 @@ class Collection {
 	}
 
 	public function statsUpdate ($dbURI) {
-		$this->queue->add('CollectionStats', ['dbURI' => $dbURI]);
+		$this->queue->add('CollectionStats', [
+			'dbURI' => $dbURI,
+			'root'	=> $this->root
+		]);
 	}
 
 	public function statsSet ($dbURI) {
@@ -387,8 +390,14 @@ class Collection {
 	public function statsAll () {
 		$collections = (array)json_decode(file_get_contents($this->root . '/../collections/cache.json'), true);
         foreach ($collections as $collection) {
-            $count = $this->db($collection['p'])->count();
-            echo $collection['p'], ': ', $count, "\n";
+            $this->db->collection('collection_stats')->update(
+				['collection' => $collection['p']],
+				['$set' => [
+					'collection' => $collection['p'],
+					'count' => $this->db->collection($collection['p'])->count()
+				]],
+				['upsert' => true]
+			);
         }
 	}
 }

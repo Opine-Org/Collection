@@ -157,48 +157,46 @@ class CollectionRoute {
         if (!is_array($collections)) {
             return;
         }
+        $routed = [];
         foreach ($collections as $collection) {
             if (isset($collection['p'])) {
-                $this->slim->get('/' . $collection['p'] . '(/:method(/:limit(/:page(/:sort))))', function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection, $root) {
-                    if ($limit === null) {
-                        if (isset($collection['limit'])) {
-                            $limit = $collection['limit'];
-                        } else {
-                            $limit = 10;
+                if (!isset($routed[$collection['p']])) {
+                    $this->slim->get('/' . $collection['p'] . '(/:method(/:limit(/:page(/:sort))))', function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection, $root) {
+                        if ($limit === null) {
+                            if (isset($collection['limit'])) {
+                                $limit = $collection['limit'];
+                            } else {
+                                $limit = 10;
+                            }
                         }
-                    }
-                    $args = [];
-                    if ($limit != null) {
-                        $args['limit'] = $limit;
-                    }
-                    $args['method'] = $method;
-                    $args['page'] = $page;
-                    $args['sort'] = json_encode($sort);
-                    foreach (['limit', 'page', 'sort'] as $option) {
-                        $key = $collection['p'] . '-' . $method . '-' . $option;
-                        if (isset($_GET[$key])) {
-                            $args[$option] = $_GET[$key];
+                        $args = [];
+                        if ($limit != null) {
+                            $args['limit'] = $limit;
                         }
-                    }
-                    $this->separation->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
-                })->name($collection['p']);
+                        $args['method'] = $method;
+                        $args['page'] = $page;
+                        $args['sort'] = json_encode($sort);
+                        foreach (['limit', 'page', 'sort'] as $option) {
+                            $key = $collection['p'] . '-' . $method . '-' . $option;
+                            if (isset($_GET[$key])) {
+                                $args[$option] = $_GET[$key];
+                            }
+                        }
+                        $this->separation->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
+                    })->name(ucfirst($collection['p']) . ': list page');
+                    $routed[$collection['p']] =  true;
+                }
             }
             if (!isset($collection['s'])) {
                 continue;
             }
+            if (isset($routed[$collection['s']])) {
+                continue;
+            }
             $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
                 $this->separation->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write($this->response->body);
-            })->name($collection['s']);
-
-            /*
-            if (isset($collection['partials']) && is_array($collection['partials'])) {
-                foreach ($collection['partials'] as $template) {
-                    $this->slim->get('/' . $collection['s'] . '-' . $template . '/:slug', function ($slug) use ($collection, $template) {
-                           $this->separation->layout($collection['s'] . '-' . $template)->template()->write($this->response->body);
-                    });
-                }
-            }
-            */
+            })->name(ucfirst($collection['s']) . ': single page');
+            $routed[$collection['s']] =  true;
         }
     }
 

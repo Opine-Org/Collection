@@ -1,10 +1,11 @@
 <?php
 /*
- * @version .3
+ * @version .4
  * @link https://raw.github.com/virtuecenter/collection/master/available/events.php
  * @mode upgrade
  *
  * .3 tag view
+ * .4 index enhancement
  */
 namespace Collection;
 

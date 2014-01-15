@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/virtuecenter/collection/master/available/profiles.php
+ * @link https://raw.github.com/virtuecenter/collection/master/available/lawyer_directory_profiles.php
  * @mode upgrade
  */
 namespace Collection;
 
-class profiles {
+class lawyer_directory_profiles {
 	public $publishable = true;
-	public $singular = 'profile';
+	public $singular = 'lawyer_directory_profile';
 
 	public function index ($document) {
 		return [

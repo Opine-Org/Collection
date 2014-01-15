@@ -1,8 +1,10 @@
 <?php
 /*
- * @version .2
+ * @version .3
  * @link https://raw.github.com/virtuecenter/collection/master/available/profiles.php
  * @mode upgrade
+ *
+ * .3 wrong singular
  */
 namespace Collection;
 

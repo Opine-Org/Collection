@@ -2,7 +2,7 @@
 /**
  * Opine\CollectionRoute
  *
- * Copyright (c)2013 Ryan Mahoney, https://github.com/virtuecenter <ryan@virtuecenter.com>
+ * Copyright (c)2013, 2014 Ryan Mahoney, https://github.com/Opine-Org <ryan@virtuecenter.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -245,7 +245,7 @@ class CollectionRoute {
     }
 
     private static function stubRead ($name, &$collection, $url, $root) {
-        $data = file_get_contents($root . '/../vendor/virtuecenter/build/static/' . $name);
+        $data = file_get_contents($root . '/../vendor/opine/build/static/' . $name);
         return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$url, $collection['p'], $collection['s']], $data);
     }
 
@@ -262,7 +262,7 @@ class CollectionRoute {
     }
 
     public function upgrade ($root) {
-        $manifest = (array)json_decode(file_get_contents('https://raw.github.com/virtuecenter/collection/master/available/manifest.json'), true);
+        $manifest = (array)json_decode(file_get_contents('https://raw.github.com/Opine-Org/Collection/master/available/manifest.json'), true);
         $upgraded = 0;
         foreach (glob($root . '/../collections/*.php') as $filename) {
             $lines = file($filename);

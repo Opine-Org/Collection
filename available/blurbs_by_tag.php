@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/virtuecenter/collection/master/available/blurbs_by_tag.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/blurbs_by_tag.php
  * @mode upgrade
  *
  * .2 reshape output
@@ -12,18 +12,18 @@
 namespace Collection;
 
 class blurbs_by_tag {
-	public $publishable = false;
-	public $singular = 'blurb';
-	public $path = false;
+    public $publishable = false;
+    public $singular = 'blurb';
+    public $path = false;
 
-	public function all ($collection) {
-		$documents = $collection->fetch();
-		$newDocs = [];
-		
-		foreach ($documents as $document) {
-			$newDocs[$document['_id']] = $document['value'];
-		}
+    public function all ($collection) {
+        $documents = $collection->fetch();
+        $newDocs = [];
+        
+        foreach ($documents as $document) {
+            $newDocs[$document['_id']] = $document['value'];
+        }
 
-		return $newDocs;
-	}
+        return $newDocs;
+    }
 }

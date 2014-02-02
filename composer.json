@@ -14,7 +14,7 @@
     ],
     "require": {
     	"php": ">=5.3.0",
-        "opin/urlid": "dev-master"
+        "opine/urlid": "dev-master"
     },
     "autoload": {
         "psr-4": {"Opine\\": "src/"}

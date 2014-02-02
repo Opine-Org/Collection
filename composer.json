@@ -1,7 +1,7 @@
 {
-    "name": "virtuecenter/collection",
+    "name": "opine/collection",
     "type": "library",
-    "description": "REST/JSON wrapper for MongoDB collections",
+    "description": "RESTful API for MongoDB collections",
     "keywords": ["MongoDB", "JSON", "REST"],
     "license": "MIT",
     "authors": [
@@ -14,9 +14,9 @@
     ],
     "require": {
     	"php": ">=5.3.0",
-        "virtuecenter/urlid": "dev-master"
+        "opin/urlid": "dev-master"
     },
     "autoload": {
-        "psr-0": {"Collection": "src/"}
+        "psr-4": {"Opine\\": "src/"}
     }
 }

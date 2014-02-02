@@ -1,3 +1,4 @@
-collections
+Collections
 ===========
-This is a general API for accessing MongoDB collections via a REST API using Slim.
+
+RESTful API for MongoDB collections

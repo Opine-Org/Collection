@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/peoples_person.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/users.php
  * @mode upgrade
  */
 namespace Collection;

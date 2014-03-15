@@ -27,12 +27,12 @@ namespace Opine;
 class CollectionRoute {
     public $cache = false;
     private $separation;
-    private $slim;
+    private $route;
     private $db;
     private $response;
 
-    public function __construct ($collection, $slim, $db, $separation, $response) {
-        $this->slim = $slim;
+    public function __construct ($collection, $route, $db, $separation, $response) {
+        $this->route = $route;
         $this->db = $db;
         $this->separation = $separation;
         $this->response = $response;
@@ -44,7 +44,7 @@ class CollectionRoute {
     }
 
     public function json ($root, $prefix='') {
-        $this->slim->get($prefix . '/json-data/:collection/:method(/:limit(/:page(/:sort(/:fields))))', function ($collection, $method, $limit=20, $page=1, $sort=[], $fields=[]) {
+        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
             if (in_array($method, ['byId', 'bySlug'])) {
                 $value = $limit;
             } else {
@@ -105,9 +105,15 @@ class CollectionRoute {
                     ], get_object_vars($collectionObj))
                 ], $options) . $tail;
             }
-        });
+        };
+        $this->route->get($prefix . '/json-data/{collection}', $callback);
+        $this->route->get($prefix . '/json-data/{collection}/{method}', $callback);
+        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}', $callback);
+        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}/{page}', $callback);
+        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
+        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
 
-        $this->slim->get($prefix . '/json-collections', function () use ($root) {
+        $this->route->get($prefix . '/json-collections', function () use ($root) {
             if (!empty($this->cache)) {
                 $collections = $this->cache;
             } else {
@@ -159,43 +165,44 @@ class CollectionRoute {
         }
         $routed = [];
         foreach ($collections as $collection) {
-            if (isset($collection['p'])) {
-                if (!isset($routed[$collection['p']])) {
-                    $this->slim->get('/' . $collection['p'] . '(/:method(/:limit(/:page(/:sort))))', function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection, $root) {
-                        if ($limit === null) {
-                            if (isset($collection['limit'])) {
-                                $limit = $collection['limit'];
-                            } else {
-                                $limit = 10;
-                            }
-                        }
-                        $args = [];
-                        if ($limit != null) {
-                            $args['limit'] = $limit;
-                        }
-                        $args['method'] = $method;
-                        $args['page'] = $page;
-                        $args['sort'] = json_encode($sort);
-                        foreach (['limit', 'page', 'sort'] as $option) {
-                            $key = $collection['p'] . '-' . $method . '-' . $option;
-                            if (isset($_GET[$key])) {
-                                $args[$option] = $_GET[$key];
-                            }
-                        }
-                        $this->separation->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
-                    })->name(ucfirst($collection['p']) . ': list page');
-                    $routed[$collection['p']] =  true;
+            $callbackList = function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection) {
+                if ($limit === null) {
+                    if (isset($collection['limit'])) {
+                        $limit = $collection['limit'];
+                    } else {
+                        $limit = 10;
+                    }
                 }
-            }
-            if (!isset($collection['s'])) {
-                continue;
-            }
-            if (isset($routed[$collection['s']])) {
-                continue;
-            }
-            $this->slim->get('/' . $collection['s'] . '/:slug', function ($slug) use ($collection) {
+                $args = [];
+                if ($limit != null) {
+                    $args['limit'] = $limit;
+                }
+                $args['method'] = $method;
+                $args['page'] = $page;
+                $args['sort'] = json_encode($sort);
+                foreach (['limit', 'page', 'sort'] as $option) {
+                    $key = $collection['p'] . '-' . $method . '-' . $option;
+                    if (isset($_GET[$key])) {
+                        $args[$option] = $_GET[$key];
+                    }
+                }
+                $this->separation->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write($this->response->body);
+            };
+            $callbackSingle = function ($slug) use ($collection) {
                 $this->separation->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write($this->response->body);
-            })->name(ucfirst($collection['s']) . ': single page');
+            };
+            if (isset($collection['p']) && !isset($routed[$collection['p']])) {                    
+                $this->route->get('/' . $collection['p'], $callbackList);
+                $this->route->get('/' . $collection['p'] . '/{method}', $callbackList);
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}', $callbackList);
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}', $callbackList);
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}/{sort}', $callbackList);
+                $routed[$collection['p']] =  true;
+            }
+            if (!isset($collection['s']) || isset($routed[$collection['s']])) {
+                continue;
+            }
+            $this->route->get('/' . $collection['s'] . '/{slug}', $callbackSingle);
             $routed[$collection['s']] =  true;
         }
     }
@@ -250,7 +257,7 @@ class CollectionRoute {
     }
 
     public function collectionList ($root) {
-        $this->slim->get('/collections', function () use ($root) {
+        $this->route->get('/collections', function () use ($root) {
             $collections = (array)json_decode(file_get_contents($root . '/../collections/cache.json'), true);
             echo '<html><body>';
             foreach ($collections as $collection) {

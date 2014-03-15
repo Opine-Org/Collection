@@ -26,7 +26,7 @@ class tweets {
         $collection->criteria[$field] = $value;
 
         list ($type, $query) = explode('-', $value, 2);
-        $container = \Framework\container();
+        $container = \Opine\container();
         if (empty($query)) {
             return $collection->all();
         }

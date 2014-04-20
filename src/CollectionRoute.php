@@ -203,6 +203,7 @@ class CollectionRoute {
                 continue;
             }
             $this->route->get('/' . $collection['s'] . '/{slug}', $callbackSingle);
+            $this->route->get('/' . $collection['s'] . '/byId/{id}', $callbackSingle);
             $routed[$collection['s']] =  true;
         }
     }

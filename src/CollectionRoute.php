@@ -186,7 +186,7 @@ class CollectionRoute {
                 $this->separation->app()->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write();
             };
             $callbackSingle = function ($slug) use ($collection) {
-                $this->separation->app()->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write($this->response->body);
+                $this->separation->app()->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write();
             };
             if (isset($collection['p']) && !isset($routed[$collection['p']])) {                    
                 $this->route->get('/' . $collection['p'], $callbackList);

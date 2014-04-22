@@ -49,6 +49,7 @@ class Collection {
     }
 
     public function factory ($collection, $limit=20, $page=1, $sort=[]) {
+        $collectionInstance = new Collection($this->root, $this->db, $this->queue);
         $collectionClass = $this->root . '/../collections/' . $collection . '.php';
         if (!file_exists($collectionClass)) {
             return false;
@@ -58,28 +59,28 @@ class Collection {
         if (!class_exists($collectionClass)) {
             exit ($collectionClass . ': unknown class.');
         }
-        $this->instance = new $collectionClass();
-        if (isset($this->instance->singular)) {
-            $this->singular = $this->instance->singular;
+        $collectionInstance->instance = new $collectionClass();
+        if (isset($collectionInstance->instance->singular)) {
+            $collectionInstance->singular = $collectionInstance->instance->singular;
         }
-        if (isset($this->instance->publishable)) {
-            $this->publishable = $this->instance->publishable;
+        if (isset($collectionInstance->instance->publishable)) {
+            $collectionInstance->publishable = $collectionInstance->instance->publishable;
         }
-        if (isset($this->instance->path)) {
-            $this->path = $this->instance->path;
+        if (isset($collectionInstance->instance->path)) {
+            $collectionInstance->path = $collectionInstance->instance->path;
         }
-        $this->instance->db = $this->db;
-        $this->instance->queue = $this->queue;
-        $this->collection = $collection;
-        $this->tagCacheCollection = $this->collection . 'Tags';
-        $this->limit = $limit;
-        $this->skip = ($page - 1) * $limit;
+        $collectionInstance->instance->db = $collectionInstance->db;
+        $collectionInstance->instance->queue = $collectionInstance->queue;
+        $collectionInstance->collection = $collection;
+        $collectionInstance->tagCacheCollection = $collectionInstance->collection . 'Tags';
+        $collectionInstance->limit = $limit;
+        $collectionInstance->skip = ($page - 1) * $limit;
         if (is_string($sort)) {
-            $this->sort = (array)json_decode($sort, true);
+            $collectionInstance->sort = (array)json_decode($sort, true);
         } else {
-            $this->sort = $sort;
+            $collectionInstance->sort = $sort;
         }
-        return $this;
+        return $collectionInstance;
     }
 
     public function collection () {
@@ -157,7 +158,12 @@ class Collection {
 
     public function fetch () {
         $this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
-        $this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
+
+        if ($this->collection == 'blogs') {
+//            var_dump($this->criteria);
+//            exit;
+        }
+
         return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
     }
 

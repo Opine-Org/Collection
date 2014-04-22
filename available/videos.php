@@ -1,14 +1,15 @@
 <?php
 /*
- * @version .4
+ * @version .5
  * @link https://raw.github.com/Opine-Org/Collection/master/available/videos.php
  * @mode upgrade
  *
  * .3 add youtube image
  * .4 tag view
+ * .5 fix namespace issue
  */
 namespace Collection;
-use UrlId\UrlId;
+use Opine\UrlId;
 
 class videos {
     public $publishable = true;

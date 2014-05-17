@@ -29,13 +29,13 @@ class CollectionRoute {
     private $separation;
     private $route;
     private $db;
-    private $response;
+    private $root;
 
-    public function __construct ($collection, $route, $db, $separation, $response) {
+    public function __construct ($root, $collection, $route, $db, $separation) {
+        $this->root = $root;
         $this->route = $route;
         $this->db = $db;
         $this->separation = $separation;
-        $this->response = $response;
         $this->collection = $collection;
     }
 
@@ -43,8 +43,13 @@ class CollectionRoute {
         $this->cache = $cache;
     }
 
-    public function json ($root, $prefix='') {
-        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
+    //public function json ($root, $prefix='') {
+    public function json ($bundle='', $path='collections', $namespace='Collection\\', $route='data', $prefix='') {
+        $bundlePath = '';
+        if ($bundle != '') {
+            $bundlePath = '/' . $bundle;
+        }
+        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) use ($bundle, $namespace, $path) {
             if (in_array($method, ['byId', 'bySlug'])) {
                 $value = $limit;
             } else {
@@ -56,7 +61,7 @@ class CollectionRoute {
             if ($page == 0) {
                 $page = 1;
             }
-            $collectionObj = $this->collection->factory($collection, $limit, $page, $sort);
+            $collectionObj = $this->collection->factory($collection, $limit, $page, $sort, $bundle, $path, $namespace);
             if (!method_exists($collectionObj, $method)) {
                 exit ($method . ': unknown method.');
             }
@@ -103,18 +108,18 @@ class CollectionRoute {
                 ], $options) . $tail;
             }
         };
-        $this->route->get($prefix . '/json-data/{collection}', $callback);
-        $this->route->get($prefix . '/json-data/{collection}/{method}', $callback);
-        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}', $callback);
-        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}/{page}', $callback);
-        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
-        $this->route->get($prefix . '/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
+        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}', $callback);
+        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}', $callback);
+        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}', $callback);
+        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}', $callback);
+        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}/{sort}', $callback);
+        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
 
-        $this->route->get($prefix . '/json-collections', function () use ($root) {
+        $this->route->get($prefix . '/json-collections', function () {
             if (!empty($this->cache)) {
                 $collections = $this->cache;
             } else {
-                $cacheFile = $root . '/../collections/cache.json';
+                $cacheFile = $this->root . '/../collections/cache.json';
                 if (!file_exists($cacheFile)) {
                     return;
                 }

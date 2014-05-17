@@ -12,7 +12,7 @@
  * furnished to do so, subject to the following conditions:
  * 
  * The above copyright notice and this permission notice shall be included in
-s * all copies or substantial portions of the Software.
+ * all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -48,14 +48,18 @@ class Collection {
         $this->queue = $queue;
     }
 
-    public function factory ($collection, $limit=20, $page=1, $sort=[]) {
+    public function factory ($collection, $limit=20, $page=1, $sort=[], $bundle='', $path='', $namespace='Collection\\') {
         $collectionInstance = new Collection($this->root, $this->db, $this->queue);
-        $collectionClass = $this->root . '/../collections/' . $collection . '.php';
-        if (!file_exists($collectionClass)) {
+        if ($bundle == '') {
+            $collectionClassFile = $this->root . '/../collections/' . $collection . '.php';
+        } else {
+            $collectionClassFiles = $this->root . '/../bundles/' . $bundle . '/collections/' . $collection . '.php';
+        }
+        $collectionClass = $namespace . $collection;
+        if (!file_exists($collectionClassFile)) {
             return false;
         }
-        require_once($collectionClass);
-        $collectionClass = 'Collection\\' . $collection;
+        require_once($collectionClassFile);
         if (!class_exists($collectionClass)) {
             exit ($collectionClass . ': unknown class.');
         }

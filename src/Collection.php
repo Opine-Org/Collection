@@ -48,12 +48,12 @@ class Collection {
         $this->queue = $queue;
     }
 
-    public function factory ($collection, $limit=20, $page=1, $sort=[], $bundle='', $path='', $namespace='Collection\\') {
+    public function factory ($collection, $limit=20, $page=1, $sort=[], $bundle='', $namespace='Collection\\') {
         $collectionInstance = new Collection($this->root, $this->db, $this->queue);
         if ($bundle == '') {
             $collectionClassFile = $this->root . '/../collections/' . $collection . '.php';
         } else {
-            $collectionClassFiles = $this->root . '/../bundles/' . $bundle . '/collections/' . $collection . '.php';
+            $collectionClassFile = $this->root . '/../bundles/' . $bundle . '/collections/' . $collection . '.php';
         }
         $collectionClass = $namespace . $collection;
         if (!file_exists($collectionClassFile)) {
@@ -162,12 +162,6 @@ class Collection {
 
     public function fetch () {
         $this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
-
-        if ($this->collection == 'blogs') {
-//            var_dump($this->criteria);
-//            exit;
-        }
-
         return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
     }
 

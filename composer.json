@@ -16,9 +16,16 @@
             "role": "Developer"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0",
-        "opine\/urlid": "dev-master"
+        "opine\/urlid": "dev-master",
+        "opine\/db": "dev-master",
+        "opine\/route": "dev-master",
+        "opine\/separation": "dev-master",
+        "opine\/queue": "dev-master",
+        "opine\/config": "dev-master",
+        "opine\/pubsub": "dev-master"
     },
     "autoload": {
         "psr-4": {

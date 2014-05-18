@@ -43,6 +43,66 @@ class CollectionRoute {
         $this->cache = $cache;
     }
 
+    public function generate ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[], $bundle, $namespace) {
+        if (in_array($method, ['byId', 'bySlug'])) {
+            $value = $limit;
+        } else {
+            $value = false;
+            if (substr_count($method, '-') > 0) {
+                list($method, $value) = explode('-', urldecode($method), 2);
+            }
+        }
+        if ($page == 0) {
+            $page = 1;
+        }
+        $collectionObj = $this->collection->factory($collection, $limit, $page, $sort, $bundle, $namespace);
+        if (!method_exists($collectionObj, $method)) {
+            exit ($method . ': unknown method.');
+        }
+        $head = '';
+        $tail = '';
+        if (isset($_GET['callback'])) {
+            if ($_GET['callback'] == '?') {
+                $_GET['callback'] = 'callback';
+            }
+            $head = $_GET['callback'] . '(';
+            $tail = ');';
+        }
+        $options = null;
+        $data = $collectionObj->$method($value);
+        $name = $collectionObj->collection();
+        if ($method == 'byEmbeddedField') {
+            $name = $collectionObj->name;
+        }
+        if (isset($_GET['pretty'])) {
+            $options = JSON_PRETTY_PRINT;
+            $head = '<html><head></head><body style="margin:0; border:0; padding: 0"><textarea wrap="off" style="overflow: auto; margin:0; border:0; padding: 0; width:100%; height: 100%">';
+            $tail = '</textarea></body></html>';
+        }
+        if (in_array($method, ['byId', 'bySlug'])) {
+            $name = $collectionObj->singular;
+            echo $head . json_encode([
+                $name => $data
+            ], $options) . $tail;
+        } else {
+            echo $head . json_encode([
+                $name => $data,
+                'pagination' => [
+                    'limit' => $limit,
+                    'total' => $collectionObj->totalGet(),
+                    'page' => $page,
+                    'pageCount' => ceil($collectionObj->totalGet() / $limit)
+                ],
+                'metadata' => array_merge(['display' => [
+                        'collection' => ucwords(str_replace('_', ' ', $collection)),
+                        'document' => ucwords(str_replace('_', ' ', $collectionObj->singular)),
+                    ],
+                    'method' => $method
+                ], get_object_vars($collectionObj))
+            ], $options) . $tail;
+        }
+    }
+
     //public function json ($root, $prefix='') {
     public function json ($bundle='', $path='collections', $namespace='Collection\\', $route='data', $prefix='') {
         $bundlePath = '';
@@ -50,63 +110,7 @@ class CollectionRoute {
             $bundlePath = '/' . $bundle;
         }
         $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) use ($bundle, $namespace, $path) {
-            if (in_array($method, ['byId', 'bySlug'])) {
-                $value = $limit;
-            } else {
-                $value = false;
-                if (substr_count($method, '-') > 0) {
-                    list($method, $value) = explode('-', urldecode($method), 2);
-                }
-            }
-            if ($page == 0) {
-                $page = 1;
-            }
-            $collectionObj = $this->collection->factory($collection, $limit, $page, $sort, $bundle, $path, $namespace);
-            if (!method_exists($collectionObj, $method)) {
-                exit ($method . ': unknown method.');
-            }
-            $head = '';
-            $tail = '';
-            if (isset($_GET['callback'])) {
-                if ($_GET['callback'] == '?') {
-                    $_GET['callback'] = 'callback';
-                }
-                $head = $_GET['callback'] . '(';
-                $tail = ');';
-            }
-            $options = null;
-            $data = $collectionObj->$method($value);
-            $name = $collectionObj->collection();
-            if ($method == 'byEmbeddedField') {
-                $name = $collectionObj->name;
-            }
-            if (isset($_GET['pretty'])) {
-                $options = JSON_PRETTY_PRINT;
-                $head = '<html><head></head><body style="margin:0; border:0; padding: 0"><textarea wrap="off" style="overflow: auto; margin:0; border:0; padding: 0; width:100%; height: 100%">';
-                $tail = '</textarea></body></html>';
-            }
-            if (in_array($method, ['byId', 'bySlug'])) {
-                $name = $collectionObj->singular;
-                echo $head . json_encode([
-                    $name => $data
-                ], $options) . $tail;
-            } else {
-                echo $head . json_encode([
-                    $name => $data,
-                    'pagination' => [
-                        'limit' => $limit,
-                        'total' => $collectionObj->totalGet(),
-                        'page' => $page,
-                        'pageCount' => ceil($collectionObj->totalGet() / $limit)
-                    ],
-                    'metadata' => array_merge(['display' => [
-                            'collection' => ucwords(str_replace('_', ' ', $collection)),
-                            'document' => ucwords(str_replace('_', ' ', $collectionObj->singular)),
-                        ],
-                        'method' => $method
-                    ], get_object_vars($collectionObj))
-                ], $options) . $tail;
-            }
+            $this->generate($collection, $method, $limit, $page, $sort, $fields, $bundle, $namespace, $path);
         };
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}', $callback);
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}', $callback);

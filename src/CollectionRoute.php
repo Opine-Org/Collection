@@ -37,6 +37,7 @@ class CollectionRoute {
         $this->db = $db;
         $this->separation = $separation;
         $this->collection = $collection;
+        $this->showAllRoute();
     }
 
     public function cacheSet ($cache) {
@@ -118,42 +119,6 @@ class CollectionRoute {
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}', $callback);
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}/{sort}', $callback);
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
-
-        $this->route->get($prefix . '/json-collections', function () {
-            if (!empty($this->cache)) {
-                $collections = $this->cache;
-            } else {
-                $cacheFile = $this->root . '/../collections/cache.json';
-                if (!file_exists($cacheFile)) {
-                    return;
-                }
-                $collections = (array)json_decode(file_get_contents($cacheFile), true);
-            }
-            if (!is_array($collections)) {
-                return;
-            }
-            foreach ($collections as &$collection) {
-                $collectionObj = $this->collection->factory($collection['p']);
-                $reflection = new \ReflectionClass($collectionObj);
-                $methods = $reflection->getMethods();
-                foreach ($methods as $method) {
-                    if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
-                        continue;
-                    }
-                    $collection['methods'][] = $method->name;
-                }
-            }
-            $head = '';
-            $tail = '';
-            if (isset($_GET['callback'])) {
-                if ($_GET['callback'] == '?') {
-                    $_GET['callback'] = 'callback';
-                }
-                $head = $_GET['callback'] . '(';
-                $tail = ');';
-            }
-            echo $head . json_encode($collections) . $tail;
-        });
     }
 
     public function app ($root) {
@@ -320,5 +285,43 @@ class CollectionRoute {
             }
         }
         echo 'Upgraded ', $upgraded, ' collections.', "\n";
+    }
+
+    public function showAllRoute () {
+        $this->route->get('/json-collections', function () {
+            if (!empty($this->cache)) {
+                $collections = $this->cache;
+            } else {
+                $cacheFile = $this->root . '/../collections/cache.json';
+                if (!file_exists($cacheFile)) {
+                    return;
+                }
+                $collections = (array)json_decode(file_get_contents($cacheFile), true);
+            }
+            if (!is_array($collections)) {
+                return;
+            }
+            foreach ($collections as &$collection) {
+                $collectionObj = $this->collection->factory($collection['p']);
+                $reflection = new \ReflectionClass($collectionObj);
+                $methods = $reflection->getMethods();
+                foreach ($methods as $method) {
+                    if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
+                        continue;
+                    }
+                    $collection['methods'][] = $method->name;
+                }
+            }
+            $head = '';
+            $tail = '';
+            if (isset($_GET['callback'])) {
+                if ($_GET['callback'] == '?') {
+                    $_GET['callback'] = 'callback';
+                }
+                $head = $_GET['callback'] . '(';
+                $tail = ');';
+            }
+            echo $head . json_encode($collections) . $tail;
+        });
     }
 }

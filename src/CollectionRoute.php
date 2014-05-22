@@ -105,13 +105,13 @@ class CollectionRoute {
     }
 
     //public function json ($root, $prefix='') {
-    public function json ($bundle='', $path='collections', $namespace='Collection\\', $route='data', $prefix='') {
+    public function json ($bundle='', $namespace='Collection\\', $route='data', $prefix='') {
         $bundlePath = '';
         if ($bundle != '') {
             $bundlePath = '/' . $bundle;
         }
-        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) use ($bundle, $namespace, $path) {
-            $this->generate($collection, $method, $limit, $page, $sort, $fields, $bundle, $namespace, $path);
+        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) use ($bundle, $namespace) {
+            $this->generate($collection, $method, $limit, $page, $sort, $fields, $bundle, $namespace);
         };
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}', $callback);
         $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}', $callback);

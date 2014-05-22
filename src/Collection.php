@@ -36,6 +36,8 @@ class Collection {
     public $name = null;
     public $transform = 'document';
     public $myTransform = 'myDocument';
+    public $transformChunk = 'chunk';
+    public $myTransformChunk = 'myChunk';
     public $local = false;
     public $db;
     public $queue;
@@ -145,6 +147,14 @@ class Collection {
             $document = $cursor->getNext();
             $this->decorate($document);
             $rows[] = $document;
+        }
+        if (method_exists($this->instance, $this->transformChunk)) {
+            $method = $this->transformChunk;
+            $this->instance->{$method}($rows);
+        }
+        if (method_exists($this->instance, $this->myTransformChunk)) {
+            $method = $this->myTransformChunk;
+            $this->instance->{$method}($rows);
         }
         return $rows;
     }

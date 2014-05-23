@@ -157,10 +157,10 @@ class CollectionRoute {
                         $args[$option] = $_GET[$key];
                     }
                 }
-                $this->separation->app()->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write();
+                $this->separation->app('app/collections/' . $collection['p'])->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write();
             };
             $callbackSingle = function ($slug) use ($collection) {
-                $this->separation->app()->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write();
+                $this->separation->app('app/documents/' . $collection['s'])->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write();
             };
             if (isset($collection['p']) && !isset($routed[$collection['p']])) {                    
                 $this->route->get('/' . $collection['p'], $callbackList);

@@ -105,7 +105,7 @@ class CollectionRoute {
         }
     }
 
-    public function json () {
+    public function paths () {
         $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
             $collectionClass = '\Collection\\' . $collection;
             $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields);
@@ -127,9 +127,7 @@ class CollectionRoute {
         $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}', $callback);
         $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
         $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
-    }
-
-    public function app () {
+   
         if (!empty($this->cache)) {
             $collections = $this->cache;
         } else {
@@ -185,6 +183,15 @@ class CollectionRoute {
             $this->route->get('/' . $collection['s'] . '/id/{id}', $callbackSingle);
             $routed[$collection['s']] =  true;
         }
+
+        $this->route->get('/collections', function () {
+            $collections = (array)json_decode(file_get_contents($this->root . '/../collections/cache.json'), true);
+            echo '<html><body>';
+            foreach ($collections as $collection) {
+                echo '<a href="/json-data/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';
+            }
+            echo '</body></html>';
+        });
     }
 
     public function build ($root, $url) {
@@ -234,18 +241,6 @@ class CollectionRoute {
     private static function stubRead ($name, &$collection, $url, $root) {
         $data = file_get_contents($root . '/../vendor/opine/build/static/' . $name);
         return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$url, $collection['p'], $collection['s']], $data);
-    }
-
-    public function collectionList ($root) {
-        $this->route->get('/collections', function () use ($root) {
-            $collections = (array)json_decode(file_get_contents($root . '/../collections/cache.json'), true);
-            echo '<html><body>';
-            foreach ($collections as $collection) {
-                echo '<a href="/json-data/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';
-            }
-            echo '</body></html>';
-            exit;
-        })->name('collections');
     }
 
     public function upgrade ($root) {

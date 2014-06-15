@@ -129,11 +129,11 @@ class CollectionRoute {
         $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
     }
 
-    public function app ($root) {
+    public function app () {
         if (!empty($this->cache)) {
             $collections = $this->cache;
         } else {
-            $cacheFile = $root . '/../collections/cache.json';
+            $cacheFile = $this->root . '/../collections/cache.json';
             if (!file_exists($cacheFile)) {
                 return;
             }

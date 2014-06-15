@@ -50,21 +50,9 @@ class Collection {
         $this->queue = $queue;
     }
 
-    public function factory ($collection, $limit=20, $page=1, $sort=[], $bundle='', $namespace='Collection\\') {
+    public function factory ($collectionClass, $limit=20, $page=1, $sort=[]) {
+        $collection = array_pop(explode('\\', get_class($collectionClass)));
         $collectionInstance = new Collection($this->root, $this->db, $this->queue);
-        if ($bundle == '') {
-            $collectionClassFile = $this->root . '/../collections/' . $collection . '.php';
-        } else {
-            $collectionClassFile = $this->root . '/../bundles/' . $bundle . '/collections/' . $collection . '.php';
-        }
-        $collectionClass = $namespace . $collection;
-        if (!file_exists($collectionClassFile)) {
-            return false;
-        }
-        require_once($collectionClassFile);
-        if (!class_exists($collectionClass)) {
-            exit ($collectionClass . ': unknown class.');
-        }
         $collectionInstance->instance = new $collectionClass();
         if (isset($collectionInstance->instance->singular)) {
             $collectionInstance->singular = $collectionInstance->instance->singular;
@@ -77,7 +65,7 @@ class Collection {
         }
         $collectionInstance->instance->db = $collectionInstance->db;
         $collectionInstance->instance->queue = $collectionInstance->queue;
-        $collectionInstance->collection = $collection;
+        $collectionInstance->collection = $this->toUnderscore($collection);
         $collectionInstance->tagCacheCollection = $collectionInstance->collection . 'Tags';
         $collectionInstance->limit = $limit;
         $collectionInstance->skip = ($page - 1) * $limit;
@@ -413,5 +401,9 @@ class Collection {
                 ['upsert' => true]
             );
         }
+    }
+
+    private function toUnderscore ($value) {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $value));
     }
 }

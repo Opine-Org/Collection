@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/carouselsReportByTag.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/CarouselsReportByTag.php
  * @mode upgrade
  *
  * .2 correct field to provide
  */
 namespace Collection;
 
-class carouselsReportByTag {
+class CarouselsReportByTag {
     public $publishable = false;
     public $singular = 'carousels';
     public $path = false;

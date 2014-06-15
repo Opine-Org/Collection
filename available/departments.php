@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/departments.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Departments.php
  * @mode upgrade
  */
 namespace Collection;
 
-class departments {
+class Departments {
     public $publishable = true;
     public $singular = 'event';
 

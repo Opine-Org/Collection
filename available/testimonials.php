@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .1
- * @link https://raw.github.com/Opine-Org/Collection/master/available/testimonials.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Testimonials.php
  * @mode upgrade
  */
 namespace Collection;
 
-class testimonials {
+class Testimonials {
     public $publishable = true;
     public $singular = 'testimonial';
 }

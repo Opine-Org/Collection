@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .6
- * @link https://raw.github.com/Opine-Org/Collection/master/available/blurbs.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Blurbs.php
  * @mode upgrade
  *
  * .5 add view for generating alternate collection of blurbs
@@ -9,7 +9,7 @@
  */
 namespace Collection;
 
-class blurbs {
+class Blurbs {
     public $publishable = false;
     public $singular = 'blurb';
 

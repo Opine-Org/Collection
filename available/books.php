@@ -1,14 +1,14 @@
 <?php
 /*
- * @version .4
- * @link https://raw.github.com/Opine-Org/Collection/master/available/books.php
+ * @version .5
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Books.php
  * @mode upgrade
  *
- * .4 tag view
+ * .5 rename
  */
 namespace Collection;
 
-class books {
+class Books {
     public $publishable = true;
     public $singular = 'book';
 

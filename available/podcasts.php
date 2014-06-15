@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/podcasts.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Podcasts.php
  * @mode upgrade
  *
  * .3 tag view
  */
 namespace Collection;
 
-class podcasts {
+class Podcasts {
     public $publishable = true;
     public $singular = 'podcast';
 

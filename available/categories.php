@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/categories.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Categories.php
  * @mode upgrade
  *
  * .3 don't index sub documents for now
  */
 namespace Collection;
 
-class categories {
+class Categories {
     public $publishable = false;
     public $singular = 'category';
 

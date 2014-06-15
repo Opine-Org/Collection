@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/users.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Users.php
  * @mode upgrade
  */
 namespace Collection;
 
-class users {
+class Users {
     public $publishable = true;
     public $singular = 'user';
 

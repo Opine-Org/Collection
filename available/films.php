@@ -1,11 +1,11 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/films.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Films.php
  * @mode upgrade
  */
 namespace Collection;
-class films {
+class Films {
     public $publishable = true;
     public $singular = 'film';
 }

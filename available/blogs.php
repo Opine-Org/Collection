@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .6
- * @link https://raw.github.com/Opine-Org/Collection/master/available/blogs.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Blogs.php
  * @mode upgrade
  *
  * .4 remove dead code
@@ -10,7 +10,7 @@
  */
 namespace Collection;
 
-class blogs {
+class Blogs {
     public $publishable = true;
     public $singular = 'blog';
 

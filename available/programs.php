@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/programs.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Programs.php
  * @mode upgrade
  */
 namespace Collection;
 
-class programs {
+class Programs {
     public $publishable = true;
     public $singular = 'program';
 

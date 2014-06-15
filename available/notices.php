@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/notices.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Notices.php
  * @mode upgrade
  */
 namespace Collection;
 
-class notices {
+class Notices {
     public $publishable = false;
     public $singular = 'notice';
 }

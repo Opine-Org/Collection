@@ -1,20 +1,20 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/file_uploads.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/MembershipLevels.php
  * @mode upgrade
  */
 namespace Collection;
 
-class file_uploads {
+class MembershipLevels {
     public $publishable = true;
-    public $singular = 'book';
+    public $singular = 'membership_level';
 
     public function index ($document) {
         return [
             'title' => $document['title'], 
-            'description' => '', 
-            'image' => isset($document['image']) ? $document['image'] : '', 
+            'description' => $document['description'], 
+            'image' => [], 
             'tags' => [], 
             'categories' => [], 
             'date' => date('c', $document['created_date']->sec) 

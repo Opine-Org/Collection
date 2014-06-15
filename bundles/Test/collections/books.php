@@ -1,7 +1,7 @@
 <?php
 namespace Test\Collection;
 
-class books {
+class Books {
     public $publishable = true;
     public $singular = 'book';
 

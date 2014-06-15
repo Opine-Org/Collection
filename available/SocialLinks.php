@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/social_links.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/SocialLinks.php
  * @mode upgrade
  */
 namespace Collection;
 
-class social_links {
+class SocialLinks {
     public $publishable = false;
     public $singular = 'social_link';
 

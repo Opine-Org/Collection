@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/menus.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Menus.php
  * @mode upgrade
  */
 namespace Collection;
 
-class menus {
+class Menus {
     public $publishable = false;
     public $singular = 'menu';
 

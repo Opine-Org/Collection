@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/video_series.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/VideoSeries.php
  * @mode upgrade
  */
 namespace Collection;
 
-class video_series {
+class VideoSeries {
     public $publishable = false;
     public $singular = 'video_series_item';
 }

@@ -1,16 +1,16 @@
 <?php
 /*
  * @version .1
- * @link https://raw.github.com/Opine-Org/Collection/master/available/publications_tags.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/BooksTags.php
  * @mode upgrade
  *
  * .1 initial load
  */
 namespace Collection;
 
-class publications_tags {
+class BooksTags {
     public $publishable = false;
-    public $singular = 'publications_tag';
+    public $singular = 'books_tag';
     public $path = false;
 
     public function document (&$document) {

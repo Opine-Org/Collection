@@ -1,11 +1,11 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/Opine-Org/Collection/master/available/tweets.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Tweets.php
  * @mode upgrade
  *
  *
- *  Use like this:  /json-data/tweets/byField-key-TYPE-QUERY/1/1/{"created_date":-1}
+ *  Use like this:  /json-data/Tweets/byField-key-TYPE-QUERY/1/1/{"created_date":-1}
  *  where type is either "user" or "search" 
  * 
  * .1 initial load
@@ -16,7 +16,7 @@
  */
 namespace Collection;
 
-class tweets {
+class Tweets {
     public $publishable = false;
     public $singular = 'tweet';
     public $path = false;

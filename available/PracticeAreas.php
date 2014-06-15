@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/practice_areas.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/PracticeAreas.php
  * @mode upgrade
  */
 namespace Collection;
 
-class practice_areas {
+class PracticeAreas {
     public $publishable = false;
     public $singular = 'practice_area';
 

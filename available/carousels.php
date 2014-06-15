@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .4
- * @link https://raw.github.com/Opine-Org/Collection/master/available/carousels.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Carousels.php
  * @mode upgrade
  *
  * .4 remove dead code
  */
 namespace Collection;
 
-class carousels {
+class Carousels {
     public $publishable = false;
     public $singular = 'carousel';
 

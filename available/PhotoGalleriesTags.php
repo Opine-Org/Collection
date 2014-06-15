@@ -1,16 +1,16 @@
 <?php
 /*
  * @version .1
- * @link https://raw.github.com/Opine-Org/Collection/master/available/books_tags.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/PhotoGalleriesTags.php
  * @mode upgrade
  *
  * .1 initial load
  */
 namespace Collection;
 
-class books_tags {
+class PhotoGalleriesTags {
     public $publishable = false;
-    public $singular = 'books_tag';
+    public $singular = 'photo_galleries_tag';
     public $path = false;
 
     public function document (&$document) {

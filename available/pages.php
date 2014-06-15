@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/pages.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Pages.php
  * @mode upgrade
  *
  * .3 tag view
  */
 namespace Collection;
 
-class pages {
+class Pages {
     public $publishable = false;
     public $singular = 'page';
 

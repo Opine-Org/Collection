@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/profiles.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Profiles.php
  * @mode upgrade
  *
  * .3 wrong singular
  */
 namespace Collection;
 
-class profiles {
+class Profiles {
     public $publishable = true;
     public $singular = 'profile';
 

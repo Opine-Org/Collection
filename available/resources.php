@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/resources.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Resources.php
  * @mode upgrade
  */
 namespace Collection;
 
-class resources {
+class Resources {
     public $publishable = true;
     public $singular = 'resource';
     public function index ($document) {

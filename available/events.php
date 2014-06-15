@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .4
- * @link https://raw.github.com/Opine-Org/Collection/master/available/events.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Events.php
  * @mode upgrade
  *
  * .3 tag view
@@ -9,7 +9,7 @@
  */
 namespace Collection;
 
-class events {
+class Events {
     public $publishable = true;
     public $singular = 'event';
 

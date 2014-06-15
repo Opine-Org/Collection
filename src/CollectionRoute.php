@@ -44,7 +44,7 @@ class CollectionRoute {
         $this->cache = $cache;
     }
 
-    public function generate ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[], $bundle, $namespace) {
+    public function generate ($collectionClass, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
         if (in_array($method, ['byId', 'bySlug'])) {
             $value = $limit;
         } else {
@@ -56,7 +56,7 @@ class CollectionRoute {
         if ($page == 0) {
             $page = 1;
         }
-        $collectionObj = $this->collection->factory($collection, $limit, $page, $sort, $bundle, $namespace);
+        $collectionObj = $this->collection->factory($collectionClass, $limit, $page, $sort);
         if (!method_exists($collectionObj, $method)) {
             exit ($method . ': unknown method.');
         }
@@ -94,8 +94,9 @@ class CollectionRoute {
                     'page' => $page,
                     'pageCount' => ceil($collectionObj->totalGet() / $limit)
                 ],
-                'metadata' => array_merge(['display' => [
-                        'collection' => ucwords(str_replace('_', ' ', $collection)),
+                'metadata' => array_merge(
+                    ['display' => [
+                        'collection' => ucwords(str_replace('_', ' ', $collectionObj->collection)),
                         'document' => ucwords(str_replace('_', ' ', $collectionObj->singular)),
                     ],
                     'method' => $method
@@ -104,21 +105,28 @@ class CollectionRoute {
         }
     }
 
-    //public function json ($root, $prefix='') {
-    public function json ($bundle='', $namespace='Collection\\', $route='data', $prefix='') {
-        $bundlePath = '';
-        if ($bundle != '') {
-            $bundlePath = '/' . $bundle;
-        }
-        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) use ($bundle, $namespace) {
-            $this->generate($collection, $method, $limit, $page, $sort, $fields, $bundle, $namespace);
+    public function json () {
+        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
+            $collectionClass = '\Collection\\' . $collection;
+            $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields);
         };
-        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}', $callback);
-        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}', $callback);
-        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}', $callback);
-        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}', $callback);
-        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}/{sort}', $callback);
-        $this->route->get($prefix . $bundlePath . '/json-' . $route . '/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
+        $this->route->get('/json-data/{collection}', $callback);
+        $this->route->get('/json-data/{collection}/{method}', $callback);
+        $this->route->get('/json-data/{collection}/{method}/{limit}', $callback);
+        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}', $callback);
+        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
+        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
+
+        $callback = function ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
+            $collectionClass = '\\' . $bundle . '\Collection\\' . $collection;
+            $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields, $bundle, $namespace);
+        };
+        $this->route->get('/{bundle}/json-data/{collection}', $callback);
+        $this->route->get('/{bundle}/json-data/{collection}/{method}', $callback);
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}', $callback);
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}', $callback);
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
     }
 
     public function app ($root) {

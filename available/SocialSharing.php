@@ -1,12 +1,12 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/social_sharing.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/SocialSharing.php
  * @mode upgrade
  */
 namespace Collection;
 
-class social_sharing {
+class SocialSharing {
     public $publishable = false;
     public $singular = 'social_share';
 }

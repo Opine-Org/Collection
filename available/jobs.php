@@ -1,14 +1,14 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/jobs.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Jobs.php
  * @mode upgrade
  *
  * .3 indexind
  */
 namespace Collection;
 
-class jobs {
+class Jobs {
     public $publishable = true;
     public $singular = 'job';
 

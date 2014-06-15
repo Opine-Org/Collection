@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/Opine-Org/Collection/master/available/photo_galleries.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/PhotoGalleries.php
  * @mode upgrade
  *
  * .4 remove dead code
@@ -9,7 +9,7 @@
  */
 namespace Collection;
 
-class photo_galleries {
+class PhotoGalleries {
     public $publishable = true;
     public $singular = 'photo_gallery';
 

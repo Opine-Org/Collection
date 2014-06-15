@@ -1,7 +1,7 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/Opine-Org/Collection/master/available/videos.php
+ * @link https://raw.github.com/Opine-Org/Collection/master/available/Videos.php
  * @mode upgrade
  *
  * .3 add youtube image
@@ -11,7 +11,7 @@
 namespace Collection;
 use Opine\UrlId;
 
-class videos {
+class Videos {
     public $publishable = true;
     public $singular = 'video';
 

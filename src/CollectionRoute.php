@@ -37,7 +37,6 @@ class CollectionRoute {
         $this->db = $db;
         $this->separation = $separation;
         $this->collection = $collection;
-        $this->showAllRoute();
     }
 
     public function cacheSet ($cache) {
@@ -105,100 +104,101 @@ class CollectionRoute {
         }
     }
 
-    public function paths () {
-        $callback = function ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
-            $collectionClass = '\Collection\\' . $collection;
-            $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields);
-        };
-        $this->route->get('/json-data/{collection}', $callback);
-        $this->route->get('/json-data/{collection}/{method}', $callback);
-        $this->route->get('/json-data/{collection}/{method}/{limit}', $callback);
-        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}', $callback);
-        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
-        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
+    public function jsonData ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
+        $collectionClass = '\Collection\\' . $collection;
+        $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields);
+    }
 
-        $callback = function ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
-            $collectionClass = '\\' . $bundle . '\Collection\\' . $collection;
-            $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields, $bundle, $namespace);
-        };
-        $this->route->get('/{bundle}/json-data/{collection}', $callback);
-        $this->route->get('/{bundle}/json-data/{collection}/{method}', $callback);
-        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}', $callback);
-        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}', $callback);
-        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}', $callback);
-        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', $callback);
-   
-        if (!empty($this->cache)) {
-            $collections = $this->cache;
-        } else {
-            $cacheFile = $this->root . '/../collections/cache.json';
-            if (!file_exists($cacheFile)) {
-                return;
+    public function jsonBundleData ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
+        $collectionClass = '\\' . $bundle . '\Collection\\' . $collection;
+        $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields, $bundle, $namespace);
+    }
+
+    public function frontendDatum ($method='all', $limit=10, $page=1, $sort=[]) {
+        $name = explode('/', trim($_SERVER['REQUEST_URI'], '/'))[0];
+        if ($limit === null) {
+            $limit = 10;
+        }
+        $args = [];
+        if ($limit != null) {
+            $args['limit'] = $limit;
+        }
+        $args['method'] = $method;
+        $args['page'] = $page;
+        $args['sort'] = json_encode($sort);
+        foreach (['limit', 'page', 'sort'] as $option) {
+            $key = $name . '-' . $method . '-' . $option;
+            if (isset($_GET[$key])) {
+                $args[$option] = $_GET[$key];
             }
-            $collections = (array)json_decode(file_get_contents($cacheFile), true);
         }
-        if (!is_array($collections)) {
-            return;
+        $this->separation->
+            app('app/collections/' . $name)->
+            layout('collections/' . $name)->
+            args($name, $args)->
+            template()->
+            write();
+    }
+
+    public function frontendData ($slug) {
+        $name = explode('/', trim($_SERVER['REQUEST_URI'], '/'))[0];
+        $this->separation->
+            app('app/documents/' . $name)->
+            layout('documents/' . $name)->
+            args($name, ['slug' => basename($slug, '.html')])->
+            template()->
+            write();
+    }
+
+    public function frontendList () {
+        $collections = $this->collections();
+        echo '<html><body>';
+        foreach ($collections as $collection) {
+            echo '<a href="/json-data/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';
         }
+        echo '</body></html>';
+    }
+
+    public function paths () {
+        $this->route->get('/json-data/{collection}', 'collectionRoute@jsonData');
+        $this->route->get('/json-data/{collection}/{method}', 'collectionRoute@jsonData');
+        $this->route->get('/json-data/{collection}/{method}/{limit}', 'collectionRoute@jsonData');
+        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}', 'collectionRoute@jsonData');
+        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}/{sort}', 'collectionRoute@jsonData');
+        $this->route->get('/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', 'collectionRoute@jsonData');
+
+        $this->route->get('/{bundle}/json-data/{collection}', 'collectionRoute@jsonBundleData');
+        $this->route->get('/{bundle}/json-data/{collection}/{method}', 'collectionRoute@jsonBundleData');
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}', 'collectionRoute@jsonBundleData');
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}', 'collectionRoute@jsonBundleData');
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}', 'collectionRoute@jsonBundleData');
+        $this->route->get('/{bundle}/json-data/{collection}/{method}/{limit}/{page}/{sort}/{fields}', 'collectionRoute@jsonBundleData');
+   
+        $collections = $this->collections();
         $routed = [];
         foreach ($collections as $collection) {
-            $callbackList = function ($method='all', $limit=null, $page=1, $sort=[]) use ($collection) {
-                if ($limit === null) {
-                    if (isset($collection['limit'])) {
-                        $limit = $collection['limit'];
-                    } else {
-                        $limit = 10;
-                    }
-                }
-                $args = [];
-                if ($limit != null) {
-                    $args['limit'] = $limit;
-                }
-                $args['method'] = $method;
-                $args['page'] = $page;
-                $args['sort'] = json_encode($sort);
-                foreach (['limit', 'page', 'sort'] as $option) {
-                    $key = $collection['p'] . '-' . $method . '-' . $option;
-                    if (isset($_GET[$key])) {
-                        $args[$option] = $_GET[$key];
-                    }
-                }
-                $this->separation->app('app/collections/' . $collection['p'])->layout('collections/' . $collection['p'])->args($collection['p'], $args)->template()->write();
-            };
-            $callbackSingle = function ($slug) use ($collection) {
-                $this->separation->app('app/documents/' . $collection['s'])->layout('documents/' . $collection['s'])->args($collection['s'], ['slug' => basename($slug, '.html')])->template()->write();
-            };
-            if (isset($collection['p']) && !isset($routed[$collection['p']])) {                    
-                $this->route->get('/' . $collection['p'], $callbackList);
-                $this->route->get('/' . $collection['p'] . '/{method}', $callbackList);
-                $this->route->get('/' . $collection['p'] . '/{method}/{limit}', $callbackList);
-                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}', $callbackList);
-                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}/{sort}', $callbackList);
+            if (isset($collection['p']) && !isset($routed[$collection['p']])) {
+                $this->route->get('/' . $collection['p'], 'collectionRoute@frontendDatum');
+                $this->route->get('/' . $collection['p'] . '/{method}', 'collectionRoute@frontendDatum');
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}', 'collectionRoute@frontendDatum');
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}', 'collectionRoute@frontendDatum');
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}/{sort}', 'collectionRoute@frontendDatum');
                 $routed[$collection['p']] =  true;
             }
             if (!isset($collection['s']) || isset($routed[$collection['s']])) {
                 continue;
             }
-            $this->route->get('/' . $collection['s'] . '/{slug}', $callbackSingle);
-            $this->route->get('/' . $collection['s'] . '/id/{id}', $callbackSingle);
-            $routed[$collection['s']] =  true;
+            $this->route->get('/' . $collection['s'] . '/{slug}', 'collectionRoute@frontendData');
+            $this->route->get('/' . $collection['s'] . '/id/{id}', 'collectionRoute@frontendData');
+            $routed[$collection['s']] = true;
         }
-
-        $this->route->get('/collections', function () {
-            $collections = (array)json_decode(file_get_contents($this->root . '/../collections/cache.json'), true);
-            echo '<html><body>';
-            foreach ($collections as $collection) {
-                echo '<a href="/json-data/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';
-            }
-            echo '</body></html>';
-        });
+        $this->route->get('/collections', 'collectionRoute@FrontendList');
     }
 
     public function build ($root, $url) {
         $cache = [];
         $dirFiles = glob($root . '/../collections/*.php');
         foreach ($dirFiles as $collection) {
-            require_once($collection);
             $collection = basename($collection, '.php');
             $className = 'Collection\\' . $collection;
             $instance = new $className();
@@ -290,41 +290,48 @@ class CollectionRoute {
         echo 'Upgraded ', $upgraded, ' collections.', "\n";
     }
 
-    public function showAllRoute () {
-        $this->route->get('/json-collections', function () {
-            if (!empty($this->cache)) {
-                $collections = $this->cache;
-            } else {
-                $cacheFile = $this->root . '/../collections/cache.json';
-                if (!file_exists($cacheFile)) {
-                    return;
-                }
-                $collections = (array)json_decode(file_get_contents($cacheFile), true);
-            }
-            if (!is_array($collections)) {
+    public function collections () {
+        if (!empty($this->cache)) {
+            $collections = $this->cache;
+        } else {
+            $cacheFile = $this->root . '/../collections/cache.json';
+            if (!file_exists($cacheFile)) {
                 return;
             }
-            foreach ($collections as &$collection) {
-                $collectionObj = $this->collection->factory($collection['p']);
-                $reflection = new \ReflectionClass($collectionObj);
-                $methods = $reflection->getMethods();
-                foreach ($methods as $method) {
-                    if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
-                        continue;
-                    }
-                    $collection['methods'][] = $method->name;
+            $collections = (array)json_decode(file_get_contents($cacheFile), true);
+        }
+        if (!is_array($collections)) {
+            return [];
+        }
+        return $collections;
+    }
+
+    public function jsonList () {
+        $collections = $this->collections();
+        foreach ($collections as &$collection) {
+            $collectionObj = $this->collection->factory($collection['p']);
+            $reflection = new \ReflectionClass($collectionObj);
+            $methods = $reflection->getMethods();
+            foreach ($methods as $method) {
+                if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
+                    continue;
                 }
+                $collection['methods'][] = $method->name;
             }
-            $head = '';
-            $tail = '';
-            if (isset($_GET['callback'])) {
-                if ($_GET['callback'] == '?') {
-                    $_GET['callback'] = 'callback';
-                }
-                $head = $_GET['callback'] . '(';
-                $tail = ');';
+        }
+        $head = '';
+        $tail = '';
+        if (isset($_GET['callback'])) {
+            if ($_GET['callback'] == '?') {
+                $_GET['callback'] = 'callback';
             }
-            echo $head . json_encode($collections) . $tail;
-        });
+            $head = $_GET['callback'] . '(';
+            $tail = ');';
+        }
+        echo $head . json_encode($collections) . $tail;
+    }
+
+    public function showAllRoute () {
+        $this->route->get('/json-collections', 'collectionRoute@jsonList');
     }
 }

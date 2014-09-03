@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  */
 namespace Opine;
+use Exception;
 
 class CollectionRoute {
     public $cache = false;
@@ -30,6 +31,7 @@ class CollectionRoute {
     private $route;
     private $db;
     private $root;
+    private $cacheFile;
 
     public function __construct ($root, $collection, $route, $db, $separation) {
         $this->root = $root;
@@ -37,6 +39,15 @@ class CollectionRoute {
         $this->db = $db;
         $this->separation = $separation;
         $this->collection = $collection;
+        $this->cacheFile = $this->root . '/../cache/collections.json';
+    }
+
+    private function cacheWrite ($collections) {
+        file_put_contents($this->cacheFile, json_encode($collections, JSON_PRETTY_PRINT));
+    }
+
+    public function cacheRead () {
+        return (array)json_decode(file_get_contents($this->cacheFile), true);
     }
 
     public function cacheSet ($cache) {
@@ -106,11 +117,17 @@ class CollectionRoute {
 
     public function jsonData ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
         $collectionClass = '\Collection\\' . $collection;
+        if (!class_exists($collectionClass)) {
+            throw new CollectionException ('Collection not found: ' . $collectionClass);
+        }
         $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields);
     }
 
     public function jsonBundleData ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
         $collectionClass = '\\' . $bundle . '\Collection\\' . $collection;
+        if (!class_exists($collectionClass)) {
+            throw new CollectionException ('Bundled Collection not found: ' . $collectionClass);
+        }
         $this->generate(new $collectionClass, $method, $limit, $page, $sort, $fields, $bundle, $namespace);
     }
 
@@ -196,20 +213,19 @@ class CollectionRoute {
     }
 
     public function build ($root, $url) {
-        $cache = [];
+        $collections = [];
         $dirFiles = glob($root . '/../collections/*.php');
         foreach ($dirFiles as $collection) {
             $collection = basename($collection, '.php');
             $className = 'Collection\\' . $collection;
             $instance = new $className();
-            $cache[] = [
+            $collections[] = [
                 'p' => $collection,
                 's' => $instance->singular
             ];
         }
-        $json = json_encode($cache, JSON_PRETTY_PRINT);
-        file_put_contents($root . '/../collections/cache.json', $json);
-        foreach ($cache as $collection) {
+        $this->cacheWrite($collections);
+        foreach ($collections as $collection) {
             $filename = $root . '/layouts/collections/' . $collection['p'] . '.html';
             if (!file_exists($filename)) {
                 file_put_contents($filename, self::stubRead('layout-collection.html', $collection, $url, $root));
@@ -235,7 +251,7 @@ class CollectionRoute {
                 file_put_contents($filename, self::stubRead('app-document.yml', $collection, $url, $root));
             }
         }
-        return $json;
+        return json_encode($collections);
     }
 
     private static function stubRead ($name, &$collection, $url, $root) {
@@ -294,11 +310,7 @@ class CollectionRoute {
         if (!empty($this->cache)) {
             $collections = $this->cache;
         } else {
-            $cacheFile = $this->root . '/../collections/cache.json';
-            if (!file_exists($cacheFile)) {
-                return;
-            }
-            $collections = (array)json_decode(file_get_contents($cacheFile), true);
+            $collections = $this->cacheRead();
         }
         if (!is_array($collections)) {
             return [];
@@ -335,3 +347,5 @@ class CollectionRoute {
         $this->route->get('/json-collections', 'collectionRoute@jsonList');
     }
 }
+
+class CollectionException extends Exception {}

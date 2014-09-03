@@ -43,16 +43,18 @@ class Collection {
     public $queue;
     public $publishable = false;
     public $instance;
+    private $search;
 
-    public function __construct ($root, $db, $queue) {
+    public function __construct ($root, $db, $queue, $search) {
         $this->root = $root;
         $this->db = $db;
         $this->queue = $queue;
+        $this->search = $search;
     }
 
     public function factory ($collectionClass, $limit=20, $page=1, $sort=[]) {
         $collection = array_pop(explode('\\', get_class($collectionClass)));
-        $collectionInstance = new Collection($this->root, $this->db, $this->queue);
+        $collectionInstance = new Collection($this->root, $this->db, $this->queue, $this->search);
         $collectionInstance->instance = new $collectionClass();
         if (isset($collectionInstance->instance->singular)) {
             $collectionInstance->singular = $collectionInstance->instance->singular;
@@ -331,7 +333,7 @@ class Collection {
         unset($document['value']);
     }
 
-    public function index ($search, $id, $document) {
+    public function index ($id, $document) {
         if (!method_exists($this->instance, 'index')) {
             return false;
         }
@@ -339,7 +341,7 @@ class Collection {
         if ($index === false) {
             return false;
         }
-        $search->indexToDefault (
+        $this->search->indexToDefault (
             (string)$id, 
             $this->collection, 
             (isset($index['title']) ? $index['title'] : null), 
@@ -405,5 +407,12 @@ class Collection {
 
     private function toUnderscore ($value) {
         return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $value));
+    }
+
+    public function toCamelCase ($value, $capitalise_first_char=true) {
+        if ($capitalise_first_char) {
+            $value[0] = strtoupper($value[0]);
+        }
+        return preg_replace_callback('/_([a-z])/', function ($c) { return strtoupper($c[1]); }, $value);
     }
 }

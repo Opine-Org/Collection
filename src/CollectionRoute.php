@@ -47,6 +47,9 @@ class CollectionRoute {
     }
 
     public function cacheRead () {
+        if (!file_exists($this->cacheFile)) {
+            return [];
+        }
         return (array)json_decode(file_get_contents($this->cacheFile), true);
     }
 

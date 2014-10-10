@@ -26,11 +26,13 @@
         "opine\/separation": "dev-master",
         "opine\/queue": "dev-master",
         "opine\/config": "dev-master",
-        "opine\/pubsub": "dev-master"
+        "opine\/pubsub": "dev-master",
+        "opine\/search": "dev-master",
+        "opine\/build": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "Opine\\": "src\/"
+            "Opine\\Collection\\": "src\/"
         }
     }
 }

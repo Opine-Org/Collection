@@ -1,22 +1,244 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "51351bad47905053f552843f37f1b58d",
+    "hash": "53449167574000091f6ca15415b44888",
     "packages": [
+        {
+            "name": "elasticsearch/elasticsearch",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elasticsearch/elasticsearch-php.git",
+                "reference": "fb8241c8c148047d282ddbaddc377dd0690b1ae2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elasticsearch/elasticsearch-php/zipball/fb8241c8c148047d282ddbaddc377dd0690b1ae2",
+                "reference": "fb8241c8c148047d282ddbaddc377dd0690b1ae2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "guzzle/guzzle": "~3.7",
+                "monolog/monolog": "~1.5",
+                "php": ">=5.3.9",
+                "pimple/pimple": "~1.0",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1",
+                "cpliakas/git-wrapper": "~1.0",
+                "mikey179/vfsstream": "~1.2",
+                "mockery/mockery": "dev-master@dev",
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "dev-master",
+                "symfony/yaml": "2.4.3 as 2.4.2",
+                "twig/twig": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Elasticsearch": "src/",
+                    "Elasticsearch\\Tests": "tests/",
+                    "Elasticsearch\\Benchmarks": "benchmarks/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2"
+            ],
+            "authors": [
+                {
+                    "name": "Zachary Tong"
+                }
+            ],
+            "description": "PHP Client for Elasticsearch",
+            "keywords": [
+                "client",
+                "elasticsearch",
+                "search"
+            ],
+            "time": "2014-03-31 18:32:47"
+        },
+        {
+            "name": "guzzle/guzzle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle3.git",
+                "reference": "d27346b6c8cb6a42092e763f8a2f674dfc560956"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle3/zipball/d27346b6c8cb6a42092e763f8a2f674dfc560956",
+                "reference": "d27346b6c8cb6a42092e763f8a2f674dfc560956",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3",
+                "symfony/event-dispatcher": "~2.1"
+            },
+            "replace": {
+                "guzzle/batch": "self.version",
+                "guzzle/cache": "self.version",
+                "guzzle/common": "self.version",
+                "guzzle/http": "self.version",
+                "guzzle/inflection": "self.version",
+                "guzzle/iterator": "self.version",
+                "guzzle/log": "self.version",
+                "guzzle/parser": "self.version",
+                "guzzle/plugin": "self.version",
+                "guzzle/plugin-async": "self.version",
+                "guzzle/plugin-backoff": "self.version",
+                "guzzle/plugin-cache": "self.version",
+                "guzzle/plugin-cookie": "self.version",
+                "guzzle/plugin-curlauth": "self.version",
+                "guzzle/plugin-error-response": "self.version",
+                "guzzle/plugin-history": "self.version",
+                "guzzle/plugin-log": "self.version",
+                "guzzle/plugin-md5": "self.version",
+                "guzzle/plugin-mock": "self.version",
+                "guzzle/plugin-oauth": "self.version",
+                "guzzle/service": "self.version",
+                "guzzle/stream": "self.version"
+            },
+            "require-dev": {
+                "doctrine/cache": "~1.3",
+                "monolog/monolog": "~1.0",
+                "phpunit/phpunit": "3.7.*",
+                "psr/log": "~1.0",
+                "symfony/class-loader": "~2.1",
+                "zendframework/zend-cache": "2.*,<2.3",
+                "zendframework/zend-log": "2.*,<2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.9-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle": "src/",
+                    "Guzzle\\Tests": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Guzzle Community",
+                    "homepage": "https://github.com/guzzle/guzzle/contributors"
+                }
+            ],
+            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "rest",
+                "web service"
+            ],
+            "time": "2014-09-16 21:19:27"
+        },
+        {
+            "name": "monolog/monolog",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "940cbe15abe36924e5693abb585215bb322686a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/940cbe15abe36924e5693abb585215bb322686a7",
+                "reference": "940cbe15abe36924e5693abb585215bb322686a7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/log": "~1.0"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "~2.4, >2.4.8",
+                "doctrine/couchdb": "~1.0@dev",
+                "graylog2/gelf-php": "~1.0",
+                "phpunit/phpunit": "~3.7.0",
+                "raven/raven": "~0.5",
+                "ruflin/elastica": "0.90.*",
+                "videlalvaro/php-amqplib": "~2.4"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-mongo": "Allow sending log messages to a MongoDB server",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "raven/raven": "Allow sending log messages to a Sentry server",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
+                "videlalvaro/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.11.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Monolog\\": "src/Monolog"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "http://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "time": "2014-10-04 15:43:06"
+        },
         {
             "name": "nikic/fast-route",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/FastRoute.git",
-                "reference": "bb016fd62e8410a65ab21daebc24b058a24a90eb"
+                "reference": "88ac2888aa29d888cf3f447899753a4a1e599759"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/bb016fd62e8410a65ab21daebc24b058a24a90eb",
-                "reference": "bb016fd62e8410a65ab21daebc24b058a24a90eb",
+                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/88ac2888aa29d888cf3f447899753a4a1e599759",
+                "reference": "88ac2888aa29d888cf3f447899753a4a1e599759",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +268,83 @@
                 "router",
                 "routing"
             ],
-            "time": "2014-04-29 05:20:49"
+            "time": "2014-09-30 16:53:49"
+        },
+        {
+            "name": "opine/build",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Opine-Org/Build.git",
+                "reference": "212f571c7ca7f9a6c80094b72a584247157bf1b1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Opine-Org/Build/zipball/212f571c7ca7f9a6c80094b72a584247157bf1b1",
+                "reference": "212f571c7ca7f9a6c80094b72a584247157bf1b1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Opine\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Mahoney",
+                    "email": "ryan@virtuecenter.com",
+                    "homepage": "http://opine-php.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Build system for constructing and maintaining Opine projects",
+            "time": "2014-10-08 20:33:28"
+        },
+        {
+            "name": "opine/bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Opine-Org/Bundle.git",
+                "reference": "18fc3666ec12304c7b30454cad92d9151fdbe427"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Opine-Org/Bundle/zipball/18fc3666ec12304c7b30454cad92d9151fdbe427",
+                "reference": "18fc3666ec12304c7b30454cad92d9151fdbe427",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Opine\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Mahoney",
+                    "email": "ryan@virtuecenter.com",
+                    "homepage": "http://opine-php.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Embed Opine projects withing other Opine projects",
+            "time": "2014-10-09 19:33:05"
         },
         {
             "name": "opine/cache",
@@ -54,12 +352,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/Cache.git",
-                "reference": "22e46f1807a85c663b5ea5b14b63e8af4c6fcbb3"
+                "reference": "7eb3327506e02737c1077bb7bfe0597f6340ef62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/Cache/zipball/22e46f1807a85c663b5ea5b14b63e8af4c6fcbb3",
-                "reference": "22e46f1807a85c663b5ea5b14b63e8af4c6fcbb3",
+                "url": "https://api.github.com/repos/Opine-Org/Cache/zipball/7eb3327506e02737c1077bb7bfe0597f6340ef62",
+                "reference": "7eb3327506e02737c1077bb7bfe0597f6340ef62",
                 "shasum": ""
             },
             "require": {
@@ -87,7 +385,7 @@
             "keywords": [
                 "memcached"
             ],
-            "time": "2014-05-07 03:01:55"
+            "time": "2014-10-09 19:33:31"
         },
         {
             "name": "opine/config",
@@ -95,12 +393,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/Config.git",
-                "reference": "fb4b190c6fe42a69ed22b13602069cfa5362c4bd"
+                "reference": "7fb0518503d810c98b60c6baa10f59aade151cbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/Config/zipball/fb4b190c6fe42a69ed22b13602069cfa5362c4bd",
-                "reference": "fb4b190c6fe42a69ed22b13602069cfa5362c4bd",
+                "url": "https://api.github.com/repos/Opine-Org/Config/zipball/7fb0518503d810c98b60c6baa10f59aade151cbd",
+                "reference": "7fb0518503d810c98b60c6baa10f59aade151cbd",
                 "shasum": ""
             },
             "require": {
@@ -130,7 +428,7 @@
                 "cache",
                 "configuration"
             ],
-            "time": "2014-05-07 03:02:35"
+            "time": "2014-10-09 19:34:16"
         },
         {
             "name": "opine/container",
@@ -138,15 +436,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/Container.git",
-                "reference": "fd57d5ea2ae7215fbb8f47dcc34e0583d8e9cca6"
+                "reference": "9a4c8b651bbafcb21df20d8969f33387b41fb4b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/Container/zipball/fd57d5ea2ae7215fbb8f47dcc34e0583d8e9cca6",
-                "reference": "fd57d5ea2ae7215fbb8f47dcc34e0583d8e9cca6",
+                "url": "https://api.github.com/repos/Opine-Org/Container/zipball/9a4c8b651bbafcb21df20d8969f33387b41fb4b9",
+                "reference": "9a4c8b651bbafcb21df20d8969f33387b41fb4b9",
                 "shasum": ""
             },
             "require": {
+                "opine/bundle": "dev-master",
+                "opine/cache": "dev-master",
                 "php": ">=5.4.0",
                 "symfony/yaml": "2.4.*@dev"
             },
@@ -173,7 +473,7 @@
                 "Dependecy Injection",
                 "yaml"
             ],
-            "time": "2014-05-08 00:33:17"
+            "time": "2014-10-10 15:33:04"
         },
         {
             "name": "opine/db",
@@ -181,12 +481,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/DB.git",
-                "reference": "957f0396b6ee894a31e85b33492afb07ea9728e9"
+                "reference": "06005d01b60b38ca668c579ba8f2ef8b296d81de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/DB/zipball/957f0396b6ee894a31e85b33492afb07ea9728e9",
-                "reference": "957f0396b6ee894a31e85b33492afb07ea9728e9",
+                "url": "https://api.github.com/repos/Opine-Org/DB/zipball/06005d01b60b38ca668c579ba8f2ef8b296d81de",
+                "reference": "06005d01b60b38ca668c579ba8f2ef8b296d81de",
                 "shasum": ""
             },
             "require": {
@@ -217,7 +517,7 @@
                 "mongodb",
                 "rest"
             ],
-            "time": "2014-05-08 15:27:54"
+            "time": "2014-05-22 14:21:20"
         },
         {
             "name": "opine/handlebars.php",
@@ -267,12 +567,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/PubSub.git",
-                "reference": "981d0dbaafa209a6a650f42e3c02188292187055"
+                "reference": "fa56fb4cd9fa946c40fa1e35113b3d027b39247e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/PubSub/zipball/981d0dbaafa209a6a650f42e3c02188292187055",
-                "reference": "981d0dbaafa209a6a650f42e3c02188292187055",
+                "url": "https://api.github.com/repos/Opine-Org/PubSub/zipball/fa56fb4cd9fa946c40fa1e35113b3d027b39247e",
+                "reference": "fa56fb4cd9fa946c40fa1e35113b3d027b39247e",
                 "shasum": ""
             },
             "require": {
@@ -303,7 +603,7 @@
                 "events",
                 "pubsub"
             ],
-            "time": "2014-05-07 03:05:51"
+            "time": "2014-09-03 14:49:05"
         },
         {
             "name": "opine/queue",
@@ -311,12 +611,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/Queue.git",
-                "reference": "6f58c28bce88e7549ade60bca4951de423f4567f"
+                "reference": "821e6f05b1e2b09d22c73c3414d97e6436a1677c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/Queue/zipball/6f58c28bce88e7549ade60bca4951de423f4567f",
-                "reference": "6f58c28bce88e7549ade60bca4951de423f4567f",
+                "url": "https://api.github.com/repos/Opine-Org/Queue/zipball/821e6f05b1e2b09d22c73c3414d97e6436a1677c",
+                "reference": "821e6f05b1e2b09d22c73c3414d97e6436a1677c",
                 "shasum": ""
             },
             "require": {
@@ -346,7 +646,7 @@
                 "beanstalkd",
                 "queue"
             ],
-            "time": "2014-05-07 03:06:00"
+            "time": "2014-06-14 15:24:35"
         },
         {
             "name": "opine/route",
@@ -354,12 +654,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/Route.git",
-                "reference": "c89ce1a66b690fefb8df7782bba7b128d891f43b"
+                "reference": "ef1d637bea316220727b2c76f9e9d3a93116accd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/Route/zipball/c89ce1a66b690fefb8df7782bba7b128d891f43b",
-                "reference": "c89ce1a66b690fefb8df7782bba7b128d891f43b",
+                "url": "https://api.github.com/repos/Opine-Org/Route/zipball/ef1d637bea316220727b2c76f9e9d3a93116accd",
+                "reference": "ef1d637bea316220727b2c76f9e9d3a93116accd",
                 "shasum": ""
             },
             "require": {
@@ -392,7 +692,50 @@
                 "Opine",
                 "routing"
             ],
-            "time": "2014-04-24 18:26:28"
+            "time": "2014-10-08 20:39:58"
+        },
+        {
+            "name": "opine/search",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Opine-Org/Search.git",
+                "reference": "54368a1536e009b5ca7fb4313f7e8b9ea09e786d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Opine-Org/Search/zipball/54368a1536e009b5ca7fb4313f7e8b9ea09e786d",
+                "reference": "54368a1536e009b5ca7fb4313f7e8b9ea09e786d",
+                "shasum": ""
+            },
+            "require": {
+                "elasticsearch/elasticsearch": "v1.0.2",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Opine\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Mahoney",
+                    "email": "ryan@virtuecenter.com",
+                    "homepage": "http://opine-php.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Service for indexing and searching using Elasticsearch",
+            "keywords": [
+                "elasticsearch",
+                "search"
+            ],
+            "time": "2014-06-14 15:25:33"
         },
         {
             "name": "opine/separation",
@@ -400,12 +743,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/Separation.git",
-                "reference": "62ace3ef6c08104903d439bf2a5c18bd82119b06"
+                "reference": "c060316d52a445b47e93805a7a7f6eb49e8ae47e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/Separation/zipball/62ace3ef6c08104903d439bf2a5c18bd82119b06",
-                "reference": "62ace3ef6c08104903d439bf2a5c18bd82119b06",
+                "url": "https://api.github.com/repos/Opine-Org/Separation/zipball/c060316d52a445b47e93805a7a7f6eb49e8ae47e",
+                "reference": "c060316d52a445b47e93805a7a7f6eb49e8ae47e",
                 "shasum": ""
             },
             "require": {
@@ -436,7 +779,7 @@
                 "handlebars",
                 "templating"
             ],
-            "time": "2014-05-07 03:00:49"
+            "time": "2014-07-05 20:01:48"
         },
         {
             "name": "opine/urlid",
@@ -444,12 +787,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Opine-Org/UrlId.git",
-                "reference": "0f345f2738d1aa28a820489aae3f0d2b2fe325b2"
+                "reference": "3a12183edd8b138288667e39632280a8efb5460a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Opine-Org/UrlId/zipball/0f345f2738d1aa28a820489aae3f0d2b2fe325b2",
-                "reference": "0f345f2738d1aa28a820489aae3f0d2b2fe325b2",
+                "url": "https://api.github.com/repos/Opine-Org/UrlId/zipball/3a12183edd8b138288667e39632280a8efb5460a",
+                "reference": "3a12183edd8b138288667e39632280a8efb5460a",
                 "shasum": ""
             },
             "require": {
@@ -474,7 +817,7 @@
                 }
             ],
             "description": "Service for extracting ids from youtube and vimeo URLs",
-            "time": "2014-05-07 03:08:29"
+            "time": "2014-05-18 03:41:00"
         },
         {
             "name": "pda/pheanstalk",
@@ -524,19 +867,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "6ef2bf3a1c47eca07ea95f0d8a902a6340390b34"
+                "reference": "fe2466802556d3fe4e4d1d58ffd3ccfd0a19be0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/6ef2bf3a1c47eca07ea95f0d8a902a6340390b34",
-                "reference": "6ef2bf3a1c47eca07ea95f0d8a902a6340390b34",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/fe2466802556d3fe4e4d1d58ffd3ccfd0a19be0b",
+                "reference": "fe2466802556d3fe4e4d1d58ffd3ccfd0a19be0b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "phpunit/php-file-iterator": ">=1.3.0@stable",
                 "phpunit/php-text-template": ">=1.2.0@stable",
-                "phpunit/php-token-stream": ">=1.1.3@stable"
+                "phpunit/php-token-stream": ">=1.1.3,<1.3.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "3.7.*@dev"
@@ -577,7 +920,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-28 10:53:45"
+            "time": "2014-09-02 10:13:14"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -585,12 +928,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb"
+                "reference": "4a5b99b2bebab02cbea0d7517cf2ccce10cb5875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/acd690379117b042d1c8af1fafd61bde001bf6bb",
-                "reference": "acd690379117b042d1c8af1fafd61bde001bf6bb",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/4a5b99b2bebab02cbea0d7517cf2ccce10cb5875",
+                "reference": "4a5b99b2bebab02cbea0d7517cf2ccce10cb5875",
                 "shasum": ""
             },
             "require": {
@@ -603,9 +946,6 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                ""
-            ],
             "license": [
                 "BSD-3-Clause"
             ],
@@ -622,7 +962,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2013-10-10 15:34:57"
+            "time": "2014-08-14 16:01:21"
         },
         {
             "name": "phpunit/php-text-template",
@@ -630,12 +970,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-text-template.git",
-                "reference": "206dfefc0ffe9cebf65c413e3d0e809c82fbf00a"
+                "reference": "4f0275302d7776e0470f2cc59b744bdec3cd6f12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-text-template/zipball/206dfefc0ffe9cebf65c413e3d0e809c82fbf00a",
-                "reference": "206dfefc0ffe9cebf65c413e3d0e809c82fbf00a",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-text-template/zipball/4f0275302d7776e0470f2cc59b744bdec3cd6f12",
+                "reference": "4f0275302d7776e0470f2cc59b744bdec3cd6f12",
                 "shasum": ""
             },
             "require": {
@@ -648,9 +988,6 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                ""
-            ],
             "license": [
                 "BSD-3-Clause"
             ],
@@ -666,7 +1003,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2014-01-30 17:20:04"
+            "time": "2014-08-14 15:59:22"
         },
         {
             "name": "phpunit/php-timer",
@@ -674,12 +1011,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-timer.git",
-                "reference": "19689d4354b295ee3d8c54b4f42c3efb69cbc17c"
+                "reference": "c22baf744a31f12c936c2e731decd9aad6a14d7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/19689d4354b295ee3d8c54b4f42c3efb69cbc17c",
-                "reference": "19689d4354b295ee3d8c54b4f42c3efb69cbc17c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/c22baf744a31f12c936c2e731decd9aad6a14d7c",
+                "reference": "c22baf744a31f12c936c2e731decd9aad6a14d7c",
                 "shasum": ""
             },
             "require": {
@@ -692,9 +1029,6 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                ""
-            ],
             "license": [
                 "BSD-3-Clause"
             ],
@@ -710,20 +1044,20 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2013-08-02 07:42:54"
+            "time": "2014-08-14 16:53:32"
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "dev-master",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "955c24b708f8bfd6a05f303217a8dac3a443d531"
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/955c24b708f8bfd6a05f303217a8dac3a443d531",
-                "reference": "955c24b708f8bfd6a05f303217a8dac3a443d531",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/ad4e1e23ae01b483c16f600ff1bebec184588e32",
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32",
                 "shasum": ""
             },
             "require": {
@@ -760,7 +1094,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2014-05-12 05:34:42"
+            "time": "2014-03-03 05:10:30"
         },
         {
             "name": "phpunit/phpunit",
@@ -894,18 +1228,167 @@
             "time": "2014-02-16 12:43:56"
         },
         {
+            "name": "pimple/pimple",
+            "version": "1.1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Pimple.git",
+                "reference": "bc2fc12cdf1f29bcad9e650d493a54a8fd1f3d85"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Pimple/zipball/bc2fc12cdf1f29bcad9e650d493a54a8fd1f3d85",
+                "reference": "bc2fc12cdf1f29bcad9e650d493a54a8fd1f3d85",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "container",
+                "dependency injection"
+            ],
+            "time": "2014-04-20 07:24:09"
+        },
+        {
+            "name": "psr/log",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "a78d6504ff5d4367497785ab2ade91db3a9fbe11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/a78d6504ff5d4367497785ab2ade91db3a9fbe11",
+                "reference": "a78d6504ff5d4367497785ab2ade91db3a9fbe11",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Psr\\Log\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2014-01-18 15:33:09"
+        },
+        {
+            "name": "symfony/event-dispatcher",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/EventDispatcher",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/EventDispatcher.git",
+                "reference": "e133748fd9165e24f8e9498ef5862f8bd37004e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/e133748fd9165e24f8e9498ef5862f8bd37004e5",
+                "reference": "e133748fd9165e24f8e9498ef5862f8bd37004e5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/config": "~2.0",
+                "symfony/dependency-injection": "~2.6",
+                "symfony/expression-language": "~2.6",
+                "symfony/stopwatch": "~2.2"
+            },
+            "suggest": {
+                "symfony/dependency-injection": "",
+                "symfony/http-kernel": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\EventDispatcher\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony EventDispatcher Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-10-04 06:08:58"
+        },
+        {
             "name": "symfony/yaml",
             "version": "2.4.x-dev",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "fd22bb88c3a6f73c898b39bec185a9e211b06265"
+                "reference": "297fd84aa9377e54268e9ff74cb81377350e230f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/fd22bb88c3a6f73c898b39bec185a9e211b06265",
-                "reference": "fd22bb88c3a6f73c898b39bec185a9e211b06265",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/297fd84aa9377e54268e9ff74cb81377350e230f",
+                "reference": "297fd84aa9377e54268e9ff74cb81377350e230f",
                 "shasum": ""
             },
             "require": {
@@ -928,27 +1411,21 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-12 09:27:48"
+            "time": "2014-09-22 08:51:05"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
         "opine/urlid": 20,
@@ -957,12 +1434,13 @@
         "opine/separation": 20,
         "opine/queue": 20,
         "opine/config": 20,
-        "opine/pubsub": 20
+        "opine/pubsub": 20,
+        "opine/search": 20,
+        "opine/build": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.0"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

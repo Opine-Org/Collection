@@ -1,4 +1,7 @@
 services:
+    containerCache:
+        class:     'Opine\Container\Cache'
+        arguments: ['%root%', '@container', '@bundleRoute', '@cache']
     cache:
         class:     'Opine\Cache'
     topic:
@@ -11,23 +14,22 @@ services:
         class:     'Opine\Mongo'
         arguments: ['@config', '@topic']
     collectionRoute:
-        class:     'Opine\CollectionRoute'
-        arguments: ['%root%', '@collection', '@route', '@db', '@separation']
+        class:     'Opine\Collection\Route'
+        arguments: ['@route', '@collectionModel']
     collection:
-        class:     'Opine\Collection'
-        arguments: ['%root%', '@db', '@queue']
+        class:     'Opine\Collection\Service'
+        arguments: ['%root%', '@db', '@queue', '@search']
+    collectionModel:
+        class:     'Opine\Collection\Model'
+        arguments: ['%root%', '@collection']
+    collectionController:
+        class:     'Opine\Collection\Controller'
+        arguments: ['@collectionModel', '@collectionView']
+    collectionView:
+        class:     'Opine\Collection\View'
+        arguments: ['@separation']
     yamlSlow:
         class:     'Symfony\Component\Yaml\Yaml'
-    route:
-        class:     'Opine\Route'
-        arguments: ['@fastrouteCollector']
-    fastrouteCollector:
-        class:     'FastRoute\RouteCollector'
-        arguments: ['@fastrouteParser', '@fastrouteGenerator']
-    fastrouteParser:
-        class:     'FastRoute\RouteParser\Std'
-    fastrouteGenerator:
-        class:     'FastRoute\DataGenerator\GroupCountBased'
     separation:
         class:     'Opine\Separation'
         arguments: ['%root%', '@handlebars', '@cache', '@config', '@yamlSlow', '@route']
@@ -39,3 +41,21 @@ services:
     queue:
         class:     'Opine\Queue'
         arguments: ['@queueGateway', '%root%']
+    searchGateway:
+        class:     'Elasticsearch\Client'
+    search:
+        class:     'Opine\Search'
+        arguments: ['%root%', '@searchGateway']
+    route:
+        class:     'Opine\Route'
+        arguments: ['%root%', '@fastrouteCollector', '@container']
+    redirect:
+        class:     'Opine\Redirect'
+        arguments: ['@route']
+    fastrouteCollector:
+        class:     'FastRoute\RouteCollector'
+        arguments: ['@fastrouteParser', '@fastrouteGenerator']
+    fastrouteParser:
+        class:     'FastRoute\RouteParser\Std'
+    fastrouteGenerator:
+        class:     'FastRoute\DataGenerator\GroupCountBased'

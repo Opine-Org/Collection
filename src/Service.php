@@ -22,15 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-namespace Opine;
+namespace Opine\Collection;
 
-class Collection {
+class Service {
     public $root;
     public $collection;
     public $criteria = [];
     public $tagCacheCollection;
     public $sort = [];
     public $limit = 100;
+    public $page = 1;
     public $skip = 0;
     public $total = 0;
     public $name = null;
@@ -44,6 +45,8 @@ class Collection {
     public $publishable = false;
     public $instance;
     private $search;
+    public $method = false;
+    public $value = false;
 
     public function __construct ($root, $db, $queue, $search) {
         $this->root = $root;
@@ -52,10 +55,11 @@ class Collection {
         $this->search = $search;
     }
 
-    public function factory ($collectionClass, $limit=20, $page=1, $sort=[]) {
-        $collection = array_pop(explode('\\', get_class($collectionClass)));
-        $collectionInstance = new Collection($this->root, $this->db, $this->queue, $this->search);
-        $collectionInstance->instance = new $collectionClass();
+    public function factory ($collectionObj, $limit=20, $page=1, $sort=[], $method=false, $value=false) {
+        $collection = explode('\\', get_class($collectionObj));
+        $collection = array_pop($collection);
+        $collectionInstance = new Service($this->root, $this->db, $this->queue, $this->search);
+        $collectionInstance->instance = new $collectionObj();
         if (isset($collectionInstance->instance->singular)) {
             $collectionInstance->singular = $collectionInstance->instance->singular;
         }
@@ -71,6 +75,13 @@ class Collection {
         $collectionInstance->tagCacheCollection = $collectionInstance->collection . 'Tags';
         $collectionInstance->limit = $limit;
         $collectionInstance->skip = ($page - 1) * $limit;
+        $collectionInstance->page = $page;
+        if ($method !== false) {
+            $collectionInstance->method = $method;
+        }
+        if ($value !== false) {
+            $collectionInstance->value = $value;
+        }
         if (is_string($sort)) {
             $collectionInstance->sort = (array)json_decode($sort, true);
         } else {

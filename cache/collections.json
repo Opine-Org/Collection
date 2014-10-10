@@ -1,0 +1,202 @@
+[
+    {
+        "p": "Advertisements",
+        "s": "advertisement"
+    },
+    {
+        "p": "AdvertisingZones",
+        "s": "advertising_zone"
+    },
+    {
+        "p": "Blogs",
+        "s": "blog"
+    },
+    {
+        "p": "BlogsTags",
+        "s": "blogs_tag"
+    },
+    {
+        "p": "Blurbs",
+        "s": "blurb"
+    },
+    {
+        "p": "BlurbsByTag",
+        "s": "blurb"
+    },
+    {
+        "p": "Books",
+        "s": "book"
+    },
+    {
+        "p": "BooksTags",
+        "s": "books_tag"
+    },
+    {
+        "p": "Carousels",
+        "s": "carousel"
+    },
+    {
+        "p": "CarouselsReportByTag",
+        "s": "carousels"
+    },
+    {
+        "p": "Categories",
+        "s": "category"
+    },
+    {
+        "p": "Departments",
+        "s": "event"
+    },
+    {
+        "p": "Events",
+        "s": "event"
+    },
+    {
+        "p": "EventsTags",
+        "s": "events_tag"
+    },
+    {
+        "p": "FileUploads",
+        "s": "book"
+    },
+    {
+        "p": "Films",
+        "s": "film"
+    },
+    {
+        "p": "FundingCampaigns",
+        "s": "funding_campaign"
+    },
+    {
+        "p": "Initiatives",
+        "s": "initiative"
+    },
+    {
+        "p": "Jobs",
+        "s": "job"
+    },
+    {
+        "p": "Keywords",
+        "s": "keyword"
+    },
+    {
+        "p": "Links",
+        "s": "link"
+    },
+    {
+        "p": "MembershipCampaigns",
+        "s": "membership_campaign"
+    },
+    {
+        "p": "MembershipLevels",
+        "s": "membership_level"
+    },
+    {
+        "p": "Menus",
+        "s": "menu"
+    },
+    {
+        "p": "News",
+        "s": "newsitem"
+    },
+    {
+        "p": "Notices",
+        "s": "notice"
+    },
+    {
+        "p": "Pages",
+        "s": "page"
+    },
+    {
+        "p": "PagesTags",
+        "s": "pages_tag"
+    },
+    {
+        "p": "PhotoGalleries",
+        "s": "photo_gallery"
+    },
+    {
+        "p": "PhotoGalleriesTags",
+        "s": "photo_galleries_tag"
+    },
+    {
+        "p": "Podcasts",
+        "s": "podcast"
+    },
+    {
+        "p": "PracticeAreas",
+        "s": "practice_area"
+    },
+    {
+        "p": "Profiles",
+        "s": "profile"
+    },
+    {
+        "p": "Programs",
+        "s": "program"
+    },
+    {
+        "p": "Publications",
+        "s": "publication"
+    },
+    {
+        "p": "PublicationsTags",
+        "s": "publications_tag"
+    },
+    {
+        "p": "Quotes",
+        "s": "quote"
+    },
+    {
+        "p": "Resources",
+        "s": "resource"
+    },
+    {
+        "p": "ShortMessages",
+        "s": "short_message"
+    },
+    {
+        "p": "SocialLinks",
+        "s": "social_link"
+    },
+    {
+        "p": "SocialSharing",
+        "s": "social_share"
+    },
+    {
+        "p": "Sponsors",
+        "s": "sponsor"
+    },
+    {
+        "p": "SponsorsTags",
+        "s": "sponsors_tag"
+    },
+    {
+        "p": "Testimonials",
+        "s": "testimonial"
+    },
+    {
+        "p": "Tweets",
+        "s": "tweet"
+    },
+    {
+        "p": "Users",
+        "s": "user"
+    },
+    {
+        "p": "VideoPlaylists",
+        "s": "video_playlist"
+    },
+    {
+        "p": "VideoSeries",
+        "s": "video_series_item"
+    },
+    {
+        "p": "Videos",
+        "s": "video"
+    },
+    {
+        "p": "VideosTags",
+        "s": "videos_tag"
+    }
+]

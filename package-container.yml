@@ -1,4 +1,4 @@
-services:    
+services:
     collectionRoute:
         class:     'Opine\Collection\Route'
         arguments: ['@route', '@collectionModel']
@@ -7,10 +7,10 @@ services:
         arguments: ['%root%', '@db', '@queue', '@search']
     collectionModel:
         class:     'Opine\Collection\Model'
-        arguments: ['%root%', '@collection']
+        arguments: ['%root%', '@collection', '@bundleRoute']
     collectionController:
         class:     'Opine\Collection\Controller'
-        arguments: ['@collectionModel', '@collectionView']
+        arguments: ['@collectionModel', '@collectionView', '@collection']
     collectionView:
         class:     'Opine\Collection\View'
         arguments: ['@separation']

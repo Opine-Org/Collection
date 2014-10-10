@@ -6,6 +6,9 @@ services:
     containerCache:
         class:     'Opine\Container\Cache'
         arguments: ['%root%', '@container', '@bundleRoute', '@cache']
+    bundleRoute:
+        class:     'Opine\BundleRoute'
+        arguments: ['%root%', '@container']
     cache:
         class:     'Opine\Cache'
     topic:

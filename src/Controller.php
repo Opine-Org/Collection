@@ -23,14 +23,18 @@
  * THE SOFTWARE.
  */
 namespace Opine\Collection;
+use ReflectionClass;
+use ReflectionMethod;
 
 class Controller {
 	private $model;
 	private $view;
+    private $collection;
 
-	public function __construct ($model, $view) {
+	public function __construct ($model, $view, $collection) {
 		$this->model = $model;
 		$this->view = $view;
+        $this->collection = $collection;
 	}
 
     public function json ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
@@ -82,11 +86,12 @@ class Controller {
     public function jsonCollectionIndex () {
         $collections = $this->model->collections();
         foreach ($collections as &$collection) {
-            $collectionObj = $this->collection->factory($collection['p']);
-            $reflection = new \ReflectionClass($collectionObj);
-            $methods = $reflection->getMethods();
+            $class = $collection['class'];
+            $collectionObj = $this->collection->factory(new $class);
+            $reflection = new ReflectionClass($collectionObj);
+            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
             foreach ($methods as $method) {
-                if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll'])) {
+                if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll','index','views','statsUpdate','statsSet','statsAll','toCamelCase'])) {
                     continue;
                 }
                 $collection['methods'][] = $method->name;
@@ -101,6 +106,6 @@ class Controller {
             $head = $_GET['callback'] . '(';
             $tail = ');';
         }
-        echo $head . json_encode($collections) . $tail;
+        echo $head . json_encode($collections, JSON_PRETTY_PRINT) . $tail;
     }
 }

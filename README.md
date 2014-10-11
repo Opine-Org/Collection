@@ -6,17 +6,17 @@ RESTful API for MongoDB collections
 
 JSON REST API
 
-/api/v1/collection/{collection}/[{method}/{limit}/{page}/{sort}/{fields}]
+/api/collection/{collection}/[{method}/{limit}/{page}/{sort}/{fields}]
 
 JSON REST API for Bunldles
 
-/{bundle}/api/v1/collection/{collection}[/{method}/{limit}/{page}/{sort}/{fields}]
+/{bundle}/api/collection/{collection}[/{method}/{limit}/{page}/{sort}/{fields}]
 
-FE LIST
+HTML INDEX
 
 /{collection plural}/[{method}/{limit}/{page}/{sort}]
 
-FE API SINGLE
+HTML ITEM
 
 /{collection singular}/{slug}
 /{collection singular}/id/{id}

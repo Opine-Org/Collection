@@ -42,7 +42,8 @@ class Controller {
         if (!class_exists($collectionClass)) {
             throw new Exception ('Collection not found: ' . $collectionClass);
         }
-        $this->view->json($this->model->generate(new $collectionClass, $method, $limit, $page, $sort, $fields, $method));
+        $this->pathOverride($method, $limit, $page, $sort, $fields);
+        $this->view->json($this->model->generate(new $collectionClass, $method, $limit, $page, $sort, $fields));
     }
 
     public function jsonBundle ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
@@ -50,7 +51,16 @@ class Controller {
         if (!class_exists($collectionClass)) {
             throw new Exception ('Bundled Collection not found: ' . $collectionClass);
         }
-        $this->view->json($this->model->generate(new $collectionClass, $method, $limit, $page, $sort, $fields, $method));
+        $this->pathOverride($method, $limit, $page, $sort, $fields);
+        $this->view->json($this->model->generate(new $collectionClass, $method, $limit, $page, $sort, $fields));
+    }
+
+    private function pathOverride (&$method, &$limit, &$page, &$sort, &$fields) {
+        foreach (['method', 'limit', 'page', 'sort', 'fields'] as $key) {
+            if (isset($_GET) && isset($_GET[$key])) {
+                ${$key} = $_GET[$key];
+            }
+        }
     }
 
     public function htmlIndex ($method='all', $limit=10, $page=1, $sort=[]) {

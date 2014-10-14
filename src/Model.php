@@ -81,11 +81,14 @@ class Model {
         $this->cache = $cache;
     }
 
-    private function directoryScan ($path, &$collections) {
+    private function directoryScan ($path, &$collections, $namespace='') {
+        if ($namespace != '') {
+            $namespace .= '\\';
+        }
         $dirFiles = glob($path);
         foreach ($dirFiles as $collection) {
             $collection = basename($collection, '.php');
-            $className = 'Collection\\' . $collection;
+            $className = $namespace . 'Collection\\' . $collection;
             $instance = new $className();
             $collections[] = [
                 'p' => $collection,
@@ -96,46 +99,45 @@ class Model {
     }
 
 	public function build () {
-        $url='';
         $collections = [];
         $this->directoryScan($this->root . '/../collections/*.php', $collections);
         $bundles = $this->bundleRoute->bundles();
         foreach ($bundles as $bundle) {
-            $this->directoryScan($bundle['root'] . '/../collections/*.php', $collections);
+            $this->directoryScan($bundle['root'] . '/../collections/*.php', $collections, $bundle['name']);
         }
         $this->cacheWrite($collections);
         foreach ($collections as $collection) {
             $filename = $this->root . '/layouts/collections/' . $collection['p'] . '.html';
             if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('layout-collection.html', $collection, $url));
+                file_put_contents($filename, $this->stubRead('layout-collection.html', $collection));
             }
             $filename = $this->root . '/partials/collections/' . $collection['p'] . '.hbs';
             if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('partial-collection.hbs', $collection, $url));
+                file_put_contents($filename, $this->stubRead('partial-collection.hbs', $collection));
             }
             $filename = $this->root . '/layouts/documents/' . $collection['s'] . '.html';
             if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('layout-document.html', $collection, $url));
+                file_put_contents($filename, $this->stubRead('layout-document.html', $collection));
             }
             $filename = $this->root . '/partials/documents/' . $collection['s'] . '.hbs';
             if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('partial-document.hbs', $collection, $url));
+                file_put_contents($filename, $this->stubRead('partial-document.hbs', $collection));
             }
             $filename = $this->root . '/../app/collections/' . $collection['p'] . '.yml';
             if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('app-collection.yml', $collection, $url));
+                file_put_contents($filename, $this->stubRead('app-collection.yml', $collection));
             }
             $filename = $this->root . '/../app/documents/' . $collection['s'] . '.yml';
             if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('app-document.yml', $collection, $url));
+                file_put_contents($filename, $this->stubRead('app-document.yml', $collection));
             }
         }
         return json_encode($collections);
     }
 
-    private function stubRead ($name, $collection, $url='') {
+    private function stubRead ($name, $collection) {
         $data = file_get_contents($this->root . '/../vendor/opine/build/static/' . $name);
-        return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], [$url, $collection['p'], $collection['s']], $data);
+        return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], ['', $collection['p'], $collection['s']], $data);
     }
 
     public function upgrade () {

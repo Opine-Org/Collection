@@ -5,7 +5,7 @@ imports:
 services:
     containerCache:
         class:     'Opine\Container\Cache'
-        arguments: ['%root%', '@container', '@bundleRoute', '@cache']
+        arguments: ['%root%', '@container', '@bundleRoute']
     bundleRoute:
         class:     'Opine\BundleRoute'
         arguments: ['%root%', '@container']

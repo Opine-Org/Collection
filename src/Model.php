@@ -91,9 +91,11 @@ class Model {
             $className = $namespace . 'Collection\\' . $collection;
             $instance = new $className();
             $collections[] = [
+                'name' => $collection,
                 'p' => $collection,
                 's' => $instance->singular,
-                'class' => $className
+                'class' => $className,
+                'namespace' => str_replace('\\', '', $namespace)
             ];
         }
     }

@@ -30,11 +30,13 @@ class Model {
     private $collectionService;
     private $root;
     private $bundleRoute;
+    private $db;
 
-    public function __construct ($root, $collectionService, $bundleRoute) {
+    public function __construct ($root, $db, $collectionService, $bundleRoute) {
         $this->collectionService = $collectionService;
         $this->cacheFile = $root . '/../cache/collections.json';
         $this->root = $root;
+        $this->db = $db;
         $this->bundleRoute = $bundleRoute;
     }
 
@@ -48,6 +50,16 @@ class Model {
             return [];
         }
         return $collections;
+    }
+
+    private function metadataByName ($name) {
+        $collections = $this->collections();
+        foreach ($collections as $collection) {
+            if ($collection['collection'] == $name) {
+                return $collection;
+            }
+        }
+        return false;
     }
 
     public function generate ($collectionObj, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
@@ -95,7 +107,8 @@ class Model {
                 'p' => $collection,
                 's' => $instance->singular,
                 'class' => $className,
-                'namespace' => str_replace('\\', '', $namespace)
+                'namespace' => str_replace('\\', '', $namespace),
+                'collection' => $this->collectionService->toUnderscore($collection)
             ];
         }
     }
@@ -187,5 +200,22 @@ class Model {
             }
         }
         echo 'Upgraded ', $upgraded, ' collections.', "\n";
+    }
+
+    public function reIndex ($name) {
+        $metadata = $this->metadataByName($name);
+        $class = $metadata['class'];
+        $service = $this->collectionService->factory(new $class());
+        $this->db->each($this->db->collection($name)->find(), function ($doc) use ($service) {
+            $service->index($doc['_id'], $doc);
+            echo 'Indexed: ', (string)$doc['_id'], "\n";
+        });
+    }
+
+    public function reIndexAll ($drop=false) {
+        $collections = $this->collections();
+        foreach ($collection as $collections) {
+            $this->reIndex($collection['collection']);
+        }
     }
 }

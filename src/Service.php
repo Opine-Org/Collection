@@ -44,6 +44,7 @@ class Service {
     public $queue;
     public $publishable = false;
     public $instance;
+    public $class;
     private $search;
     public $method = false;
     public $value = false;
@@ -59,7 +60,8 @@ class Service {
         $collection = explode('\\', get_class($collectionObj));
         $collection = array_pop($collection);
         $collectionInstance = new Service($this->root, $this->db, $this->queue, $this->search);
-        $collectionInstance->instance = new $collectionObj();
+        $collectionInstance->instance = $collectionObj;
+        $collectionInstance->class = get_class($collectionObj);
         if (isset($collectionInstance->instance->singular)) {
             $collectionInstance->singular = $collectionInstance->instance->singular;
         }
@@ -344,7 +346,7 @@ class Service {
         unset($document['value']);
     }
 
-    public function index ($id, $document) {
+    public function index ($id, $document, $managerUrl=false, $publicUrl=false) {
         if (!method_exists($this->instance, 'index')) {
             return false;
         }
@@ -352,23 +354,63 @@ class Service {
         if ($index === false) {
             return false;
         }
+        if ($managerUrl === false && isset($document['dbURI'])) {
+            $managerUrl = $this->urlManager($document['dbURI']);
+        } else {
+            $managerUrl = '';
+        }
+        if ($publicUrl === false && isset($document['code_name'])) {
+            $publicUrl = $this->urlPublic($document['code_name']);
+        } else {
+            $publicUrl = '';
+        }
         $this->search->indexToDefault (
-            (string)$id, 
+            (string)$id,
             $this->collection, 
             (isset($index['title']) ? $index['title'] : null), 
             (isset($index['description']) ? $index['description'] : null), 
             (isset($index['image']) ? $index['image'] : null), 
             (isset($index['tags']) ? $index['tags'] : null), 
             (isset($index['categories']) ? $index['categories'] : null), 
-            (isset($index['date']) ? $index['date'] : null), 
-            date('c', $document['created_date']->sec),
-            date('c', $document['modified_date']->sec),
+            (isset($index['date']) ? date('Y/m/d H:i:s', strtotime($index['date'])) : null), 
+            date('Y/m/d H:i:s', $document['created_date']->sec),
+            date('Y/m/d H:i:s', $document['modified_date']->sec),
             $document['status'], 
             $document['featured'], 
             $document['acl'],
-            '/Manager/edit/' . $this->collection . '/' . $document['dbURI'],
-            (isset($document['code_name']) ? ('/' . $this->instance->singular . '/' . $document['code_name']) : null)
+            $managerUrl,
+            $publicUrl,
+            'en'
         );
+    }
+
+    private function urlManager ($dbURI) {
+        $managersCache = $this->root . '/../cache/managers.json';
+        if (!file_exists($managersCache)) {
+            return '';
+        }
+        $managers = json_decode(file_get_contents($managersCache), true);
+        $managers = $managers['managers'];
+        $metadata = false;
+        foreach ($managers as $manager) {
+            if (!isset($manager['collection'])) {
+                continue;
+            }
+            if ($manager['collection'] == $this->class) {
+                $metadata = $manager;
+                break;
+            } else {
+                echo $manager['collection'], ' == ', $this->class, "\n";
+            }
+        }
+        if ($metadata === false) {
+            return '';
+        }
+        return '/Manager/item/' . $metadata['link'] . '/' . $dbURI;
+    }
+
+    private function urlPublic ($slug) {
+        return '/' . $this->singular . '/' . $slug;   
     }
 
     public function views ($mode, $id, $document=[]) {
@@ -416,7 +458,7 @@ class Service {
         }
     }
 
-    private function toUnderscore ($value) {
+    public function toUnderscore ($value) {
         return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $value));
     }
 

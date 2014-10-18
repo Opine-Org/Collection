@@ -7,7 +7,7 @@ services:
         arguments: ['%root%', '@db', '@queue', '@search']
     collectionModel:
         class:     'Opine\Collection\Model'
-        arguments: ['%root%', '@collection', '@bundleRoute']
+        arguments: ['%root%', '@db', '@collection', '@bundleRoute']
     collectionController:
         class:     'Opine\Collection\Controller'
         arguments: ['@collectionModel', '@collectionView', '@collection']

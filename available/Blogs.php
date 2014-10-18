@@ -18,9 +18,9 @@ class Blogs {
         return [
             'title' => $document['title'],
             'description' => $document['description'],
-            'image' => isset($document['image']) ? $document['image'] : '', 
+            'image' => isset($document['image']) ? $document['image'] : null, 
             'tags' => isset($document['tags']) ? $document['tags'] : [], 
-            'categories' => isset($document['categories']) ? $document['categories']: [],
+            'categories' => isset($document['categories']) ? $document['categories'] : [],
             'date' => date('c', $document['created_date']->sec) 
         ];
     }

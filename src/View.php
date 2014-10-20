@@ -73,7 +73,7 @@ class View {
         $name = $collection->collection();
         if ($method == 'byEmbeddedField') {
             $name = $collection->name;
-        }
+        }      
         if (isset($_GET) && isset($_GET['pretty'])) {
             $options = JSON_PRETTY_PRINT;
             $head = '<html><head></head><body style="margin:0; border:0; padding: 0"><textarea wrap="off" style="overflow: auto; margin:0; border:0; padding: 0; width:100%; height: 100%">';

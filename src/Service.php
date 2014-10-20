@@ -89,6 +89,10 @@ class Service {
         } else {
             $collectionInstance->sort = $sort;
         }
+        if ($method == 'byEmbeddedField') {
+            $tmp = explode(':', $value);
+            $collectionInstance->name = array_pop($tmp);
+        }
         return $collectionInstance;
     }
 
@@ -200,7 +204,6 @@ class Service {
             return [];
         }
         if (sizeof($parts) == 1) {
-            $this->name = $parts[0];
             if (!isset($document[$parts[0]])) {
                 $this->total = 0;
                 return [];

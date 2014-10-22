@@ -93,7 +93,7 @@ class Model {
         $this->cache = $cache;
     }
 
-    private function directoryScan ($path, &$collections, $bundles='') {
+    private function directoryScan ($path, &$collections, $bundle='') {
         if ($bundle != '') {
             $bundle .= '\\';
         }
@@ -206,7 +206,7 @@ class Model {
         $collections = $this->collections();
         foreach ($collections as $collection) {
             $this->db->collection('collection_stats')->update(
-                ['collection' => $csollection['p']],
+                ['collection' => $collection['p']],
                 ['$set' => [
                     'collection' => $collection['p'],
                     'count' => $this->db->collection($collection['p'])->count()

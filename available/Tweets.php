@@ -5,7 +5,7 @@
  * @mode upgrade
  *
  *
- *  Use like this:  /json-data/Tweets/byField-key-TYPE-QUERY/1/1/{"created_date":-1}
+ *  Use like this:  /api/collection/Tweets/byField-key-TYPE-QUERY/1/1/{"created_date":-1}
  *  where type is either "user" or "search" 
  * 
  * .1 initial load

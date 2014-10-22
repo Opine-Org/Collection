@@ -228,7 +228,7 @@ class Model {
 
     public function reIndexAll ($drop=false) {
         $collections = $this->collections();
-        foreach ($collection as $collections) {
+        foreach ($collections as $collection) {
             $this->reIndex($collection['collection']);
         }
     }

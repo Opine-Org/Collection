@@ -13,4 +13,4 @@ services:
         arguments: ['@collectionModel', '@collectionView', '@collection']
     collectionView:
         class:     'Opine\Collection\View'
-        arguments: ['@separation']
+        arguments: ['@layout']

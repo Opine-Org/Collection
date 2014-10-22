@@ -127,23 +127,15 @@ class Service {
                 return;
             }
         }
-        if ($this->local) {
-            $key = '_id';
-            if (!empty($this->pathKey)) {
-                $key = $this->pathKey;
-            }
-            $path = $this->singular . $template . '.html#{"Sep":"' . $this->collection . '", "a": {"id":"' . (string)$document[$key] . '"}}';
-        } else {
-            if (!property_exists($this->instance, 'path')) {
-                $path = '/' . $this->singular . $template;
-                if (isset($document['code_name'])) {
-                    $path .= '/' . $document['code_name'] . '.html';
-                } else {
-                    $path .= '/id/' . (string)$document['_id'] . '.html';
-                }
+        if (!property_exists($this->instance, 'path')) {
+            $path = '/' . $this->singular . $template;
+            if (isset($document['code_name'])) {
+                $path .= '/' . $document['code_name'] . '.html';
             } else {
-                $path = $this->instance->path . $document[$this->pathKey] . '.html';
+                $path .= '/id/' . (string)$document['_id'] . '.html';
             }
+        } else {
+            $path = $this->instance->path . $document[$this->pathKey] . '.html';
         }
         $document['path'] = $path;
     }
@@ -445,20 +437,6 @@ class Service {
             ]],
             ['upsert' => true]
         );
-    }
-
-    public function statsAll () {
-        $collections = (array)json_decode(file_get_contents($this->root . '/../collections/cache.json'), true);
-        foreach ($collections as $collection) {
-            $this->db->collection('collection_stats')->update(
-                ['collection' => $collection['p']],
-                ['$set' => [
-                    'collection' => $collection['p'],
-                    'count' => $this->db->collection($collection['p'])->count()
-                ]],
-                ['upsert' => true]
-            );
-        }
     }
 
     public function toUnderscore ($value) {

@@ -93,21 +93,21 @@ class Model {
         $this->cache = $cache;
     }
 
-    private function directoryScan ($path, &$collections, $namespace='') {
-        if ($namespace != '') {
-            $namespace .= '\\';
+    private function directoryScan ($path, &$collections, $bundles='') {
+        if ($bundle != '') {
+            $bundle .= '\\';
         }
         $dirFiles = glob($path);
         foreach ($dirFiles as $collection) {
             $collection = basename($collection, '.php');
-            $className = $namespace . 'Collection\\' . $collection;
+            $className = $bundle . 'Collection\\' . $collection;
             $instance = new $className();
             $collections[] = [
                 'name' => $collection,
                 'p' => $collection,
                 's' => $instance->singular,
                 'class' => $className,
-                'namespace' => str_replace('\\', '', $namespace),
+                'bundle' => str_replace('\\', '', $bundle),
                 'collection' => $this->collectionService->toUnderscore($collection)
             ];
         }
@@ -200,6 +200,20 @@ class Model {
             }
         }
         echo 'Upgraded ', $upgraded, ' collections.', "\n";
+    }
+
+    public function statsAll () {
+        $collections = $this->collections();
+        foreach ($collections as $collection) {
+            $this->db->collection('collection_stats')->update(
+                ['collection' => $csollection['p']],
+                ['$set' => [
+                    'collection' => $collection['p'],
+                    'count' => $this->db->collection($collection['p'])->count()
+                ]],
+                ['upsert' => true]
+            );
+        }
     }
 
     public function reIndex ($name) {

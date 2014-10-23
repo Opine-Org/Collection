@@ -4,13 +4,13 @@ services:
         arguments: ['@route', '@collectionModel']
     collection:
         class:     'Opine\Collection\Service'
-        arguments: ['%root%', '@db', '@queue', '@search']
+        arguments: ['%root%', '@db', '@queue', '@search', '@language', '@person']
     collectionModel:
         class:     'Opine\Collection\Model'
         arguments: ['%root%', '@db', '@collection', '@bundleRoute']
     collectionController:
         class:     'Opine\Collection\Controller'
-        arguments: ['@collectionModel', '@collectionView', '@collection']
+        arguments: ['@collectionModel', '@collectionView', '@collection', '@person']
     collectionView:
         class:     'Opine\Collection\View'
         arguments: ['@layout']

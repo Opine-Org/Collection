@@ -48,18 +48,21 @@ class Service {
     private $search;
     public $method = false;
     public $value = false;
+    private $language;
 
-    public function __construct ($root, $db, $queue, $search) {
+    public function __construct ($root, $db, $queue, $search, $language, $person) {
         $this->root = $root;
         $this->db = $db;
         $this->queue = $queue;
         $this->search = $search;
+        $this->language = $language;
+        $this->person = $person;
     }
 
     public function factory ($collectionObj, $limit=20, $page=1, $sort=[], $method=false, $value=false) {
         $collection = explode('\\', get_class($collectionObj));
         $collection = array_pop($collection);
-        $collectionInstance = new Service($this->root, $this->db, $this->queue, $this->search);
+        $collectionInstance = new Service($this->root, $this->db, $this->queue, $this->search, $this->language, $this->person);
         $collectionInstance->instance = $collectionObj;
         $collectionInstance->class = get_class($collectionObj);
         if (isset($collectionInstance->instance->singular)) {
@@ -165,6 +168,17 @@ class Service {
         $this->name = $this->collection;
         if ($this->publishable) {
             $this->criteria['status'] = 'published';
+        }
+        $language = $this->language->get();
+        if ($language !== NULL) {
+            $this->criteria['language'] = $language;
+        }
+        $groups = $this->person->groups();
+        if (is_array($groups) && count($groups) > 0) {
+            $groups[] = 'public';
+            $this->criteria['acl'] = ['$in' => $groups];
+        } else {
+            $this->criteria['acl'] = 'public';   
         }
         return $this->fetch();
     }

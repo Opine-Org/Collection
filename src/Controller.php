@@ -30,11 +30,13 @@ class Controller {
 	private $model;
 	private $view;
     private $collection;
+    private $person;
 
-	public function __construct ($model, $view, $collection) {
+	public function __construct ($model, $view, $collection, $person) {
 		$this->model = $model;
 		$this->view = $view;
         $this->collection = $collection;
+        $this->person = $person;
 	}
 
     public function json ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
@@ -117,5 +119,12 @@ class Controller {
             $tail = ');';
         }
         echo $head . json_encode($collections, JSON_PRETTY_PRINT) . $tail;
+    }
+
+    public function authFilter () {
+        if ($this->person->permission(['api-all', 'api-collections', 'manager'])) {
+            return true;
+        }
+        return 401;
     }
 }

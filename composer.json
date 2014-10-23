@@ -29,7 +29,8 @@
         "opine\/pubsub": "dev-master",
         "opine\/search": "dev-master",
         "opine\/build": "dev-master",
-        "opine\/bundle": "dev-master"
+        "opine\/bundle": "dev-master",
+        "opine\/language": "dev-master"
     },
     "autoload": {
         "psr-4": {

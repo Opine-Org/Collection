@@ -29,15 +29,15 @@ class Model {
     private $cacheFile;
     private $collectionService;
     private $root;
-    private $bundleRoute;
+    private $bundleModel;
     private $db;
 
-    public function __construct ($root, $db, $collectionService, $bundleRoute) {
+    public function __construct ($root, $db, $collectionService, $bundleModel) {
         $this->collectionService = $collectionService;
         $this->cacheFile = $root . '/../cache/collections.json';
         $this->root = $root;
         $this->db = $db;
-        $this->bundleRoute = $bundleRoute;
+        $this->bundleModel = $bundleModel;
     }
 
 	public function collections () {
@@ -116,7 +116,7 @@ class Model {
 	public function build () {
         $collections = [];
         $this->directoryScan($this->root . '/../collections/*.php', $collections);
-        $bundles = $this->bundleRoute->bundles();
+        $bundles = $this->bundleModel->bundles();
         foreach ($bundles as $bundle) {
             $this->directoryScan($bundle['root'] . '/../collections/*.php', $collections, $bundle['name']);
         }

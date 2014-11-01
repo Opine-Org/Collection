@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  */
 namespace Opine\Collection;
+use MongoDate;
 
 class Service {
     public $root;
@@ -306,13 +307,13 @@ class Service {
 
     public function byDateUpcoming () {
         $this->dateFieldValidate();
-        $this->criteria[$this->dateField] = ['$gte' => new \MongoDate(strtorime('today'))];
+        $this->criteria[$this->dateField] = ['$gte' => new MongoDate(strtorime('today'))];
         $this->all();
     }
 
     public function byDatePast () {
         $this->dateFieldValidate();
-        $this->criteria[$this->dateField] = ['$lt' => new \MongoDate(strtorime('today'))];
+        $this->criteria[$this->dateField] = ['$lt' => new MongoDate(strtorime('today'))];
         $this->all();
     }
 
@@ -363,17 +364,21 @@ class Service {
         if ($index === false) {
             return false;
         }
-        if ($managerUrl === false && isset($document['dbURI'])) {
-            $managerUrl = $this->urlManager($document['dbURI']);
-        } else {
-            $managerUrl = '';
+        if ($managerUrl === false) {
+            if (isset($document['dbURI'])) {
+                $managerUrl = $this->urlManager($document['dbURI']);
+            } else {
+                $managerUrl = '';
+            }
         }
-        if ($publicUrl === false && isset($document['code_name'])) {
-            $publicUrl = $this->urlPublic($document['code_name']);
-        } else {
-            $publicUrl = '';
+        if ($publicUrl === false) {
+            if (isset($document['code_name'])) {
+                $publicUrl = $this->urlPublic($document['code_name']);
+            } else {
+                $publicUrl = '';
+            }
         }
-        $this->search->indexToDefault (
+        return $this->search->indexToDefault (
             (string)$id,
             $this->collection, 
             (isset($index['title']) ? $index['title'] : null), 
@@ -442,12 +447,12 @@ class Service {
 
     public function statsSet ($dbURI) {
         $collection = explode(':', $dbURI)[0];
-        $this->db->collection('collection_stats')->update(
+        return $this->db->collection('collection_stats')->update(
             ['collection' => $collection],
             ['$set' => [
                 'collection' => $collection,
                 'count' => $this->db->collection($collection)->count(),
-                'modified_date' => new \MongoDate(strtotime('now'))
+                'modified_date' => new MongoDate(strtotime('now'))
             ]],
             ['upsert' => true]
         );

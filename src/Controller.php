@@ -83,7 +83,7 @@ class Controller {
                 $args[$option] = $_GET[$key];
             }
         }
-        $this->view->htmlIndex($name, $arguments);
+        $this->view->htmlIndex($name, $args);
     }
 
     public function html ($slug) {
@@ -126,5 +126,13 @@ class Controller {
             return true;
         }
         return 401;
+    }
+
+    public function stats ($context) {
+        $this->collection->statsSet($context['dbURI']);
+    }
+
+    public function tagsCollection ($context) {
+        $this->model->tagsCollection($context);
     }
 }

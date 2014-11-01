@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  */
 namespace Opine\Collection;
+use Exception;
 
 class Model {
 	public $cache = false;
@@ -90,6 +91,10 @@ class Model {
     }
 
     public function cacheSet ($cache) {
+        if (empty($cache)) {
+            $this->cache = $this->cacheRead();
+            return;
+        }
         $this->cache = $cache;
     }
 
@@ -231,5 +236,39 @@ class Model {
         foreach ($collections as $collection) {
             $this->reIndex($collection['collection']);
         }
+    }
+
+    public function tagsCollection ($context) {
+        $map = <<<MAP
+            function() {
+                if (!this.tags) {
+                    return;
+                }
+                for (var i=0; i < this.tags.length; i++) {
+                    emit(this.tags[i], 1);
+                }
+            }
+MAP;
+            
+        $reduce = <<<REDUCE
+            function(key, values) {
+                var count = 0;
+                for (var i = 0; i < values.length; i++) {
+                    count += values[i];
+                }
+                return count;
+            }
+REDUCE;
+        
+        try {
+            $result = $this->db->mapReduce($map, $reduce, [
+                'mapreduce' => $context['collection'],
+                'out' => $context['collection'] . '_tags'
+            ]);
+        } catch (Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 }

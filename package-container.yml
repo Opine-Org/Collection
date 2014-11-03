@@ -10,7 +10,7 @@ services:
         arguments: ['%root%', '@db', '@collection', '@bundleModel']
     collectionController:
         class:     'Opine\Collection\Controller'
-        arguments: ['@collectionModel', '@collectionView', '@collection', '@person']
+        arguments: ['@collectionModel', '@collectionView', '@collection', '@person', '@language']
     collectionView:
         class:     'Opine\Collection\View'
         arguments: ['@layout']

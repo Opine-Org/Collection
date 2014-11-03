@@ -31,12 +31,14 @@ class Controller {
 	private $view;
     private $collection;
     private $person;
+    private $language;
 
-	public function __construct ($model, $view, $collection, $person) {
+	public function __construct ($model, $view, $collection, $person, $language) {
 		$this->model = $model;
 		$this->view = $view;
         $this->collection = $collection;
         $this->person = $person;
+        $this->language = $language;
 	}
 
     public function json ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
@@ -66,7 +68,8 @@ class Controller {
     }
 
     public function htmlIndex ($method='all', $limit=10, $page=1, $sort=[]) {
-        $name = explode('/', trim($_SERVER['REQUEST_URI'], '/'))[0];
+        $path = $this->language->pathEvaluate($_SERVER['REQUEST_URI']);
+        $name = explode('/', trim($path, '/'))[0];
         if ($limit === null) {
             $limit = 10;
         }
@@ -87,7 +90,8 @@ class Controller {
     }
 
     public function html ($slug) {
-        $name = explode('/', trim($_SERVER['REQUEST_URI'], '/'))[0];
+        $path = $this->language->pathEvaluate($_SERVER['REQUEST_URI']);
+        $name = explode('/', trim($path, '/'))[0];
         $this->view->html($name, $slug);
     }
 

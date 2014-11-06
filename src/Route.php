@@ -52,18 +52,18 @@ class Route {
         $routed = [];
         foreach ($collections as $collection) {
             if (isset($collection['p']) && !isset($routed[$collection['p']])) {
-                $this->route->get('collectionController@authFilter', '/' . strtolower($collection['p']), 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . strtolower($collection['p']) . '/{method}', 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . strtolower($collection['p']) . '/{method}/{limit}', 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . strtolower($collection['p']) . '/{method}/{limit}/{page}', 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . strtolower($collection['p']) . '/{method}/{limit}/{page}/{sort}', 'collectionController@htmlIndex');
+                $this->route->get('collectionController@authFilter', '/' . $collection['p'], 'collectionController@htmlIndex');
+                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}', 'collectionController@htmlIndex');
+                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}/{limit}', 'collectionController@htmlIndex');
+                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}/{limit}/{page}', 'collectionController@htmlIndex');
+                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}/{limit}/{page}/{sort}', 'collectionController@htmlIndex');
                 $routed[$collection['p']] =  true;
             }
             if (!isset($collection['s']) || isset($routed[$collection['s']])) {
                 continue;
             }
-            $this->route->get('collectionController@authFilter', '/' . strtolower($collection['s']) . '/{slug}', 'collectionController@html');
-            $this->route->get('collectionController@authFilter', '/' . strtolower($collection['s']) . '/id/{id}', 'collectionController@html');
+            $this->route->get('collectionController@authFilter', '/' . $collection['s'] . '/{slug}', 'collectionController@html');
+            $this->route->get('collectionController@authFilter', '/' . $collection['s'] . '/id/{id}', 'collectionController@html');
             $routed[$collection['s']] = true;
         }
         $this->route->get('collectionController@authFilter', '/collections', 'collectionController@htmlCollectionIndex');

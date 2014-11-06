@@ -109,7 +109,7 @@ class Model {
             $instance = new $className();
             $collections[] = [
                 'name' => $collection,
-                'p' => $collection,
+                'p' => $this->collectionService->toUnderscore($collection),
                 's' => $instance->singular,
                 'class' => $className,
                 'bundle' => str_replace('\\', '', $bundle),

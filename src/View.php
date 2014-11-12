@@ -36,7 +36,6 @@ class View {
             app('app/collections/' . $name)->
             layout('collections/' . $name)->
             args($name, $args)->
-            template()->
             write();
 	}
 
@@ -45,7 +44,6 @@ class View {
             app('app/documents/' . $name)->
             layout('documents/' . $name)->
             args($name, ['slug' => basename($slug, '.html')])->
-            template()->
             write();
 	}
 

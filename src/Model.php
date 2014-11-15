@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -160,53 +160,6 @@ class Model {
         return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], ['', $collection['p'], $collection['s']], $data);
     }
 
-    public function upgrade () {
-        $manifest = (array)json_decode(file_get_contents('https://raw.github.com/Opine-Org/Collection/master/available/manifest.json'), true);
-        $upgraded = 0;
-        foreach (glob($this->root . '/../collections/*.php') as $filename) {
-            $lines = file($filename);
-            $version = false;
-            $mode = false;
-            $link = false;
-            foreach ($lines as $line) {
-                if (substr_count($line, ' * @') != 1) {
-                    continue;
-                }
-                if (substr_count($line, '* @mode') == 1) {
-                    $mode = trim(str_replace('* @mode', '', $line));
-                    continue;
-                }
-                if (substr_count($line, '* @version') == 1) {
-                    $version = floatval(trim(str_replace('* @version', '', $line)));
-                    continue;
-                }
-                if (substr_count($line, '* @link') == 1) {
-                    $link = trim(str_replace('* @link', '', $line));
-                    continue;
-                }
-            }
-            if ($mode === false || $version === false || $link === false) {
-                continue;
-            }
-            if ($version == '' || $link == '' || $mode == '') {
-                continue;
-            }
-            if ($mode != 'upgrade') {
-                continue;
-            }
-            if ($version == $manifest['collections'][basename($filename, '.php')]) {
-                continue;
-            }
-            $newVersion = floatval($manifest['collections'][basename($filename, '.php')]);
-            if ($newVersion > $version) {
-                file_put_contents($filename, file_get_contents($link));
-                echo 'Upgraded Collection: ', basename($filename, '.php'), ' to version: ', $newVersion, "\n";
-                $upgraded++;
-            }
-        }
-        echo 'Upgraded ', $upgraded, ' collections.', "\n";
-    }
-
     public function statsAll () {
         $collections = $this->collections();
         foreach ($collections as $collection) {
@@ -221,20 +174,34 @@ class Model {
         }
     }
 
-    public function reIndex ($name) {
+    public function reIndexSearch ($name) {
         $metadata = $this->metadataByName($name);
         $class = $metadata['class'];
         $service = $this->collectionService->factory(new $class());
         $this->db->each($this->db->collection($name)->find(), function ($doc) use ($service) {
-            $service->index($doc['_id'], $doc);
+            $service->indexSearch($doc['_id'], $doc);
             echo 'Indexed: ', (string)$doc['_id'], "\n";
         });
     }
 
-    public function reIndexAll ($drop=false) {
+    public function reIndexData ($name) {
+        $metadata = $this->metadataByName($name);
+        $class = $metadata['class'];
+        $service = $this->collectionService->factory(new $class());
+        $service->indexData();
+    }
+
+    public function reIndexSearchAll ($drop=false) {
         $collections = $this->collections();
         foreach ($collections as $collection) {
-            $this->reIndex($collection['collection']);
+            $this->reIndexSearch($collection['collection']);
+        }
+    }
+
+    public function reIndexDataAll ($drop=false) {
+        $collections = $this->collections();
+        foreach ($collections as $collection) {
+            $this->reIndexData($collection['collection']);
         }
     }
 
@@ -249,7 +216,7 @@ class Model {
                 }
             }
 MAP;
-            
+
         $reduce = <<<REDUCE
             function(key, values) {
                 var count = 0;
@@ -259,7 +226,7 @@ MAP;
                 return count;
             }
 REDUCE;
-        
+
         try {
             $result = $this->db->mapReduce($map, $reduce, [
                 'mapreduce' => $context['collection'],

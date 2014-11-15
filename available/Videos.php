@@ -1,12 +1,6 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/Opine-Org/Collection/master/available/Videos.php
- * @mode upgrade
- *
- * .3 add youtube image
- * .4 tag view
- * .5 fix namespace issue
  */
 namespace Collection;
 use Opine\UrlId;
@@ -25,7 +19,6 @@ class Videos {
             $document['image'] = ['url' => 'http://img.youtube.com/vi/' . $document['video_id'] . '/0.jpg'];
         }
         if ($document['video_type'] == 'vimeo') {
-            
         }
         $document['category_titles'] = [];
         if (isset($document['categories']) && is_array($document['categories'])) {
@@ -39,14 +32,14 @@ class Videos {
         }
     }
 
-    public function index ($document) {
+    public function indexSearch ($document) {
         return [
-            'title' => $document['title'], 
-            'description' => $document['description'], 
-            'image' => isset($document['image']) ? $document['image'] : '', 
-            'tags' => isset($document['tags']) ? $document['tags'] : [], 
+            'title' => $document['title'],
+            'description' => $document['description'],
+            'image' => isset($document['image']) ? $document['image'] : '',
+            'tags' => isset($document['tags']) ? $document['tags'] : [],
             'categories' => isset($document['categories']) ? $document['categories']: [],
-            'date' => date('c', $document['created_date']->sec) 
+            'date' => date('c', $document['created_date']->sec)
         ];
     }
 

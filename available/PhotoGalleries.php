@@ -1,11 +1,6 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/Opine-Org/Collection/master/available/PhotoGalleries.php
- * @mode upgrade
- *
- * .4 remove dead code
- * .5 tag view
  */
 namespace Collection;
 
@@ -13,7 +8,7 @@ class PhotoGalleries {
     public $publishable = true;
     public $singular = 'photo_gallery';
 
-    public function index ($document) {
+    public function indexSearch ($document) {
         $depth = substr_count($document['dbURI'], ':');
         if ($depth > 1) {
             return false;

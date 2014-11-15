@@ -1,10 +1,6 @@
 <?php
 /*
  * @version .1
- * @link https://raw.github.com/Opine-Org/Collection/master/available/BooksTags.php
- * @mode upgrade
- *
- * .1 initial load
  */
 namespace Collection;
 

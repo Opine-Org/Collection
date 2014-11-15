@@ -1,10 +1,6 @@
 <?php
 /*
  * @version .3
- * @link https://raw.github.com/Opine-Org/Collection/master/available/Pages.php
- * @mode upgrade
- *
- * .3 tag view
  */
 namespace Collection;
 
@@ -13,14 +9,14 @@ class Pages {
     public $singular = 'page';
 
 
-    public function index ($document) {
+    public function indexSearch ($document) {
         return [
-            'title' => $document['title'], 
-            'description' => $document['metadata_description'], 
-            'image' => null, 
-            'tags' => isset($document['tags']) ? $document['tags'] : [], 
-            'categories' => isset($document['categories']) ? $document['categories']: [],
-            'date' => date('c', $document['created_date']->sec) 
+            'title' => $document['title'],
+            'description' => $document['metadata_description'],
+            'image' => null,
+            'tags' => isset($document['tags']) ? $document['tags'] : [],
+            'categories' => isset($document['categories']) ? $document['categories'] : [],
+            'date' => date('c', $document['created_date']->sec)
         ];
     }
 

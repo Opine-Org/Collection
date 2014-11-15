@@ -1,10 +1,6 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/CarouselsReportByTag.php
- * @mode upgrade
- *
- * .2 correct field to provide
  */
 namespace Collection;
 
@@ -25,7 +21,7 @@ class CarouselsReportByTag {
                 }
             }
 MAP;
-        
+
     $reduce = <<<REDUCE
         function(key, values) {
             var count = 0;

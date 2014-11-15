@@ -1,8 +1,6 @@
 <?php
 /*
  * @version .2
- * @link https://raw.github.com/Opine-Org/Collection/master/available/Sponsors.php
- * @mode upgrade
  */
 namespace Collection;
 
@@ -10,14 +8,14 @@ class Sponsors {
     public $publishable = true;
     public $singular = 'sponsor';
 
-    public function index ($document) {
+    public function indexSearch ($document) {
         return [
-            'title' => $document['title'], 
-            'description' => $document['description'], 
+            'title' => $document['title'],
+            'description' => $document['description'],
             'image' => isset($document['image']) ? $document['image'] : '',
-            'tags' => [], 
+            'tags' => [],
             'categories' => isset($document['categories']) ? $document['categories']: [],
-            'date' => date('c', $document['created_date']->sec) 
+            'date' => date('c', $document['created_date']->sec)
         ];
     }
 }

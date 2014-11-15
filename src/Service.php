@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -179,7 +179,7 @@ class Service {
             $groups[] = 'public';
             $this->criteria['acl'] = ['$in' => $groups];
         } else {
-            $this->criteria['acl'] = 'public';   
+            $this->criteria['acl'] = 'public';
         }
         return $this->fetch();
     }
@@ -356,11 +356,30 @@ class Service {
         unset($document['value']);
     }
 
-    public function index ($id, $document, $managerUrl=false, $publicUrl=false) {
-        if (!method_exists($this->instance, 'index')) {
+    public function indexData ($id, $document, $managerUrl=false, $publicUrl=false) {
+        if (!method_exists($this->instance, 'indexData')) {
             return false;
         }
-        $index = $this->instance->index($document);
+        $indexes = $this->instance->indexData();
+        print_r($indexes);
+        foreach ($indexes as $index) {
+            echo $this->collection, "\n";
+            if (!isset($index['keys'])) {
+                echo 'Index can not be created for collection: ', $this->collection, ': missing keys.', "\n";
+            }
+            if (!isset($index['options'])) {
+                $index['options'] = [];
+            }
+            continue;
+            $this->db->collection($this->collection)->createIndex($index['keys'], $index['options']);
+        }
+    }
+
+    public function indexSearch ($id, $document, $managerUrl=false, $publicUrl=false) {
+        if (!method_exists($this->instance, 'indexSearch')) {
+            return false;
+        }
+        $index = $this->instance->indexSearch($document);
         if ($index === false) {
             return false;
         }
@@ -380,17 +399,17 @@ class Service {
         }
         return $this->search->indexToDefault (
             (string)$id,
-            $this->collection, 
-            (isset($index['title']) ? $index['title'] : null), 
-            (isset($index['description']) ? $index['description'] : null), 
-            (isset($index['image']) ? $index['image'] : null), 
-            (isset($index['tags']) ? $index['tags'] : null), 
-            (isset($index['categories']) ? $index['categories'] : null), 
-            (isset($index['date']) ? date('Y/m/d H:i:s', strtotime($index['date'])) : null), 
+            $this->collection,
+            (isset($index['title']) ? $index['title'] : null),
+            (isset($index['description']) ? $index['description'] : null),
+            (isset($index['image']) ? $index['image'] : null),
+            (isset($index['tags']) ? $index['tags'] : null),
+            (isset($index['categories']) ? $index['categories'] : null),
+            (isset($index['date']) ? date('Y/m/d H:i:s', strtotime($index['date'])) : null),
             date('Y/m/d H:i:s', $document['created_date']->sec),
             date('Y/m/d H:i:s', $document['modified_date']->sec),
-            $document['status'], 
-            $document['featured'], 
+            $document['status'],
+            $document['featured'],
             $document['acl'],
             $managerUrl,
             $publicUrl,
@@ -424,7 +443,7 @@ class Service {
     }
 
     private function urlPublic ($slug) {
-        return '/' . $this->singular . '/' . $slug;   
+        return '/' . $this->singular . '/' . $slug;
     }
 
     public function views ($mode, $id, $document=[]) {

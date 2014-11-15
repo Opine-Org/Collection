@@ -1,11 +1,6 @@
 <?php
 /*
  * @version .6
- * @link https://raw.github.com/Opine-Org/Collection/master/available/Blurbs.php
- * @mode upgrade
- *
- * .5 add view for generating alternate collection of blurbs
- * .6 typeo
  */
 namespace Collection;
 
@@ -13,14 +8,14 @@ class Blurbs {
     public $publishable = false;
     public $singular = 'blurb';
 
-    public function index ($document) {
+    public function indexSearch ($document) {
         return [
-            'title' => $document['title'], 
-            'description' => $document['body'], 
-            'image' => null, 
-            'tags' => isset($document['tags']) ? $document['tags'] : [], 
+            'title' => $document['title'],
+            'description' => $document['body'],
+            'image' => null,
+            'tags' => isset($document['tags']) ? $document['tags'] : [],
             'categories' => [],
-            'date' => date('c', $document['created_date']->sec) 
+            'date' => date('c', $document['created_date']->sec)
         ];
     }
 

@@ -1,18 +1,6 @@
 <?php
 /*
  * @version .5
- * @link https://raw.github.com/Opine-Org/Collection/master/available/Tweets.php
- * @mode upgrade
- *
- *
- *  Use like this:  /api/collection/Tweets/byField-key-TYPE-QUERY/1/1/{"created_date":-1}
- *  where type is either "user" or "search" 
- * 
- * .1 initial load
- * .2 typo
- * .3 missing logic
- * .4 warm cache
- * .5 add html links
  */
 namespace Collection;
 

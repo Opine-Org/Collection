@@ -356,23 +356,21 @@ class Service {
         unset($document['value']);
     }
 
-    public function indexData ($id, $document, $managerUrl=false, $publicUrl=false) {
+    public function indexData () {
         if (!method_exists($this->instance, 'indexData')) {
             return false;
         }
         $indexes = $this->instance->indexData();
-        print_r($indexes);
         foreach ($indexes as $index) {
-            echo $this->collection, "\n";
             if (!isset($index['keys'])) {
                 echo 'Index can not be created for collection: ', $this->collection, ': missing keys.', "\n";
             }
             if (!isset($index['options'])) {
                 $index['options'] = [];
             }
-            continue;
             $this->db->collection($this->collection)->createIndex($index['keys'], $index['options']);
         }
+        echo $this->collection, " indexed", "\n";
     }
 
     public function indexSearch ($id, $document, $managerUrl=false, $publicUrl=false) {

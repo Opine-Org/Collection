@@ -24,6 +24,7 @@
  */
 namespace Opine\Collection;
 use MongoDate;
+use Opine\Interfaces\DB as DBInterface;
 
 class Service {
     public $root;
@@ -51,7 +52,7 @@ class Service {
     public $value = false;
     private $language;
 
-    public function __construct ($root, $db, $queue, $search, $language, $person) {
+    public function __construct ($root, DBInterface $db, $queue, $search, $language, $person) {
         $this->root = $root;
         $this->db = $db;
         $this->queue = $queue;

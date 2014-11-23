@@ -24,11 +24,13 @@
  */
 namespace Opine\Collection;
 
+use Opine\Interfaces\Route as RouteInterface;
+
 class Route {
     private $route;
     private $model;
 
-    public function __construct ($route, $model) {
+    public function __construct (RouteInterface $route, $model) {
         $this->route = $route;
         $this->model = $model;
     }

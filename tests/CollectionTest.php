@@ -1,25 +1,29 @@
 <?php
 namespace Opine;
 
+use PHPUnit_Framework_TestCase;
+use Opine\Config\Service as Config;
+
 /**
  * @backupGlobals disabled
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase {
+class CollectionTest extends PHPUnit_Framework_TestCase {
     private $db;
     private $collection;
     private $collectionRoutes;
     private $collectionModel;
 
     public function setup () {
-        date_default_timezone_set('UTC');
         $root = __DIR__ . '/../public';
-        $container = new Container($root, $root . '/../container.yml');
-        $this->route = $container->route;
+        $config = new Config($root);
+        $config->cacheSet();
+        $container = new Container($root, $config, $root . '/../container.yml');
+        $this->route = $container->get('route');
         $this->route->testMode();
         $this->db = $container->db;
-        $this->collection = $container->collection;
-        $this->collectionRoute = $container->collectionRoute;
-        $this->collectionModel = $container->collectionModel;
+        $this->collection = $container->get('collection');
+        $this->collectionRoute = $container->get('collectionRoute');
+        $this->collectionModel = $container->get('collectionModel');
         $this->collectionModel->build();
         $this->collectionRoute->paths();
     }

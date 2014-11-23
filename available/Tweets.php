@@ -18,7 +18,7 @@ class Tweets {
         if (empty($query)) {
             return $collection->all();
         }
-        $container->twitter->tweets($query, 10, 600, $type);
+        $container->get('twitter')->tweets($query, 10, 600, $type);
         return $collection->all();
     }
 

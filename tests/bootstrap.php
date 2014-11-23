@@ -1,9 +1,12 @@
 <?php
+date_default_timezone_set('UTC');
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $root = __DIR__ . '/../public';
-$container = new \Opine\Container($root, $root . '/../container.yml');
-$collectionRoute = $container->collectionRoute;
+$config = new \Opine\Config\Service($root);
+$config->cacheSet();
+$container = new \Opine\Container($root, $config, $root . '/../container.yml');
+$collectionRoute = $container->get('collectionRoute');
 $collectionRoute->paths();
 
 $files = glob(__DIR__ . '/../available/*.php');

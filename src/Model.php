@@ -123,6 +123,9 @@ class Model {
         $this->directoryScan($this->root . '/../collections/*.php', $collections);
         $bundles = $this->bundleModel->bundles();
         foreach ($bundles as $bundle) {
+            if (!isset($bundle['root'])) {
+                continue;
+            }
             $this->directoryScan($bundle['root'] . '/../collections/*.php', $collections, $bundle['name']);
         }
         $this->cacheWrite($collections);

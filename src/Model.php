@@ -120,13 +120,13 @@ class Model {
 
 	public function build () {
         $collections = [];
-        $this->directoryScan($this->root . '/../collections/*.php', $collections);
+        $this->directoryScan($this->root . '/../config/collections/*.php', $collections);
         $bundles = $this->bundleModel->bundles();
         foreach ($bundles as $bundle) {
             if (!isset($bundle['root'])) {
                 continue;
             }
-            $this->directoryScan($bundle['root'] . '/../collections/*.php', $collections, $bundle['name']);
+            $this->directoryScan($bundle['root'] . '/../config/collections/*.php', $collections, $bundle['name']);
         }
         $this->cacheWrite($collections);
         foreach ($collections as $collection) {
@@ -146,11 +146,11 @@ class Model {
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('partial-document.hbs', $collection));
             }
-            $filename = $this->root . '/../app/collections/' . $collection['p'] . '.yml';
+            $filename = $this->root . '/../config/layouts/collections/' . $collection['p'] . '.yml';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('app-collection.yml', $collection));
             }
-            $filename = $this->root . '/../app/documents/' . $collection['s'] . '.yml';
+            $filename = $this->root . '/../config/layouts/documents/' . $collection['s'] . '.yml';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('app-document.yml', $collection));
             }

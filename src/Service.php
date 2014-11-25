@@ -417,7 +417,7 @@ class Service {
     }
 
     private function urlManager ($dbURI) {
-        $managersCache = $this->root . '/../cache/managers.json';
+        $managersCache = $this->root . '/../var/cache/managers.json';
         if (!file_exists($managersCache)) {
             return '';
         }

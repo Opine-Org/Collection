@@ -33,7 +33,7 @@ class View {
 
 	public function htmlIndex ($name, $args=[]) {
 		$this->layout->
-            app('app/collections/' . $name)->
+            app('collections/' . $name)->
             layout('collections/' . $name)->
             args($name, $args)->
             write();
@@ -41,7 +41,7 @@ class View {
 
 	public function html ($name, $slug) {
 		$this->layout->
-            app('app/documents/' . $name)->
+            app('documents/' . $name)->
             layout('documents/' . $name)->
             args($name, ['slug' => basename($slug, '.html')])->
             write();

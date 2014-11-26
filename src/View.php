@@ -24,25 +24,27 @@
  */
 namespace Opine\Collection;
 
+use Opine\Interfaces\Layout as LayoutInterface;
+
 class View {
 	private $layout;
 
-	public function __construct ($layout) {
+	public function __construct (LayoutInterface $layout) {
 		$this->layout = $layout;
 	}
 
 	public function htmlIndex ($name, $args=[]) {
 		$this->layout->
-            app('collections/' . $name)->
-            layout('collections/' . $name)->
+            config('collections/' . $name)->
+            container('collections/' . $name)->
             args($name, $args)->
             write();
 	}
 
 	public function html ($name, $slug) {
 		$this->layout->
-            app('documents/' . $name)->
-            layout('documents/' . $name)->
+            config('documents/' . $name)->
+            container('documents/' . $name)->
             args($name, ['slug' => basename($slug, '.html')])->
             write();
 	}

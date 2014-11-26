@@ -33,7 +33,8 @@
         "opine/search": "dev-master",
         "opine/build": "dev-master",
         "opine/bundle": "dev-master",
-        "opine/language": "dev-master"
+        "opine/language": "dev-master",
+        "opine/interfaces": "dev-master"
     },
     "autoload": {
         "psr-4": {

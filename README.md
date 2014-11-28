@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/opine-org/collection.png?label=ready&title=Ready)](https://waffle.io/opine-org/collection)
 Collections
 ===========
 

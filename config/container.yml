@@ -1,5 +1,5 @@
 imports:
-    - 'package-container.yml'
+    - 'config/package-container.yml'
     - 'vendor/opine/route/config/package-container.yml'
     - 'vendor/opine/form/config/package-container.yml'
     - 'vendor/opine/language/config/package-container.yml'

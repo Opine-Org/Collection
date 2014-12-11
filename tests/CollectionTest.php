@@ -29,6 +29,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
         $this->collectionRoute->paths();
     }
 
+/*
     public function testFactory () {
         $class = $this->collection->factory(new \Collection\Books());
         $this->assertTrue(get_class($class) == 'Opine\Collection\Service');
@@ -44,4 +45,5 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
         $json = json_decode($this->route->run('GET', '/Test/api/collection/Books'), true);
         $this->assertTrue(is_array($json['books']));
     }
+*/
 }

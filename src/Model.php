@@ -23,18 +23,18 @@
  * THE SOFTWARE.
  */
 namespace Opine\Collection;
+
 use Exception;
+use Symfony\Component\Yaml\Yaml;
 
 class Model {
 	public $cache = false;
     private $cacheFile;
-    private $collectionService;
     private $root;
     private $bundleModel;
     private $db;
 
-    public function __construct ($root, $db, $collectionService, $bundleModel) {
-        $this->collectionService = $collectionService;
+    public function __construct ($root, $db, $bundleModel) {
         $this->cacheFile = $root . '/../var/cache/collections.json';
         $this->root = $root;
         $this->db = $db;
@@ -53,30 +53,12 @@ class Model {
         return $collections;
     }
 
-    private function metadataByName ($name) {
+    private function collection ($slug) {
         $collections = $this->collections();
-        foreach ($collections as $collection) {
-            if ($collection['collection'] == $name) {
-                return $collection;
-            }
+        if (!isset($collections[$slug])) {
+            return false;
         }
-        return false;
-    }
-
-    public function generate ($collectionObj, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
-        $value = false;
-        if (in_array($method, ['byId', 'bySlug'])) {
-            $value = $limit;
-        } else {
-            $value = false;
-            if (substr_count($method, '-') > 0) {
-                list($method, $value) = explode('-', urldecode($method), 2);
-            }
-        }
-        if ($page == 0) {
-            $page = 1;
-        }
-        return $this->collectionService->factory($collectionObj, $limit, $page, $sort, $method, $value);
+        return $collections[$slug];
     }
 
 	private function cacheWrite ($collections) {
@@ -99,58 +81,45 @@ class Model {
     }
 
     private function directoryScan ($path, &$collections, $bundle='') {
-        if ($bundle != '') {
-            $bundle .= '\\';
-        }
         $dirFiles = glob($path);
-        foreach ($dirFiles as $collection) {
-            $collection = basename($collection, '.php');
-            $className = $bundle . 'Collection\\' . $collection;
-            $instance = new $className();
-            $collections[] = [
-                'name' => $collection,
-                'p' => $this->collectionService->toUnderscore($collection),
-                's' => $instance->singular,
-                'class' => $className,
-                'bundle' => str_replace('\\', '', $bundle),
-                'collection' => $this->collectionService->toUnderscore($collection)
-            ];
+        foreach ($dirFiles as $collectionFile) {
+            $collections[] = array_merge($this->yaml($collectionFile), ['bundle' => $bundle]);
         }
     }
 
 	public function build () {
         $collections = [];
-        $this->directoryScan($this->root . '/../config/collections/*.php', $collections);
+        $this->directoryScan($this->root . '/../config/collections/*.yml', $collections);
         $bundles = $this->bundleModel->bundles();
         foreach ($bundles as $bundle) {
             if (!isset($bundle['root'])) {
                 continue;
             }
-            $this->directoryScan($bundle['root'] . '/../config/collections/*.php', $collections, $bundle['name']);
+            $this->directoryScan($bundle['root'] . '/../config/collections/*.yml', $collections, $bundle['name']);
         }
         $this->cacheWrite($collections);
         foreach ($collections as $collection) {
-            $filename = $this->root . '/layouts/collections/' . $collection['p'] . '.html';
+            $filename = $this->root . '/layouts/collections/' . $collection['plural'] . '.html';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('layout-collection.html', $collection));
             }
-            $filename = $this->root . '/partials/collections/' . $collection['p'] . '.hbs';
+            $filename = $this->root . '/partials/collections/' . $collection['plural'] . '.hbs';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('partial-collection.hbs', $collection));
             }
-            $filename = $this->root . '/layouts/documents/' . $collection['s'] . '.html';
+            $filename = $this->root . '/layouts/documents/' . $collection['singular'] . '.html';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('layout-document.html', $collection));
             }
-            $filename = $this->root . '/partials/documents/' . $collection['s'] . '.hbs';
+            $filename = $this->root . '/partials/documents/' . $collection['singular'] . '.hbs';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('partial-document.hbs', $collection));
             }
-            $filename = $this->root . '/../config/layouts/collections/' . $collection['p'] . '.yml';
+            $filename = $this->root . '/../config/layouts/collections/' . $collection['plural'] . '.yml';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('app-collection.yml', $collection));
             }
-            $filename = $this->root . '/../config/layouts/documents/' . $collection['s'] . '.yml';
+            $filename = $this->root . '/../config/layouts/documents/' . $collection['singular'] . '.yml';
             if (!file_exists($filename) && is_writable($filename)) {
                 file_put_contents($filename, $this->stubRead('app-document.yml', $collection));
             }
@@ -160,85 +129,27 @@ class Model {
 
     private function stubRead ($name, $collection) {
         $data = file_get_contents($this->root . '/../vendor/opine/build/static/' . $name);
-        return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], ['', $collection['p'], $collection['s']], $data);
+        return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], ['', $collection['plural'], $collection['singular']], $data);
     }
 
     public function statsAll () {
         $collections = $this->collections();
         foreach ($collections as $collection) {
             $this->db->collection('collection_stats')->update(
-                ['collection' => $collection['p']],
+                ['collection' => $collection['plural']],
                 ['$set' => [
-                    'collection' => $collection['p'],
-                    'count' => $this->db->collection($collection['p'])->count()
+                    'collection' => $collection['plural'],
+                    'count' => $this->db->collection($collection['plural'])->count()
                 ]],
                 ['upsert' => true]
             );
         }
     }
 
-    public function reIndexSearch ($name) {
-        $metadata = $this->metadataByName($name);
-        $class = $metadata['class'];
-        $service = $this->collectionService->factory(new $class());
-        $this->db->each($this->db->collection($name)->find(), function ($doc) use ($service) {
-            $service->indexSearch($doc['_id'], $doc);
-            echo 'Indexed: ', (string)$doc['_id'], "\n";
-        });
-    }
-
-    public function reIndexData ($name) {
-        $metadata = $this->metadataByName($name);
-        $class = $metadata['class'];
-        $service = $this->collectionService->factory(new $class());
-        $service->indexData();
-    }
-
-    public function reIndexSearchAll ($drop=false) {
-        $collections = $this->collections();
-        foreach ($collections as $collection) {
-            $this->reIndexSearch($collection['collection']);
+    private function yaml ($file) {
+        if (function_exists('yaml_parse_file')) {
+            return yaml_parse_file($file);
         }
-    }
-
-    public function reIndexDataAll ($drop=false) {
-        $collections = $this->collections();
-        foreach ($collections as $collection) {
-            $this->reIndexData($collection['collection']);
-        }
-    }
-
-    public function tagsCollection ($context) {
-        $map = <<<MAP
-            function() {
-                if (!this.tags) {
-                    return;
-                }
-                for (var i=0; i < this.tags.length; i++) {
-                    emit(this.tags[i], 1);
-                }
-            }
-MAP;
-
-        $reduce = <<<REDUCE
-            function(key, values) {
-                var count = 0;
-                for (var i = 0; i < values.length; i++) {
-                    count += values[i];
-                }
-                return count;
-            }
-REDUCE;
-
-        try {
-            $result = $this->db->mapReduce($map, $reduce, [
-                'mapreduce' => $context['collection'],
-                'out' => $context['collection'] . '_tags'
-            ]);
-        } catch (Exception $e) {
-            $result = false;
-        }
-
-        return $result;
+        return Yaml::parse(file_get_contents($file));
     }
 }

@@ -1,16 +1,16 @@
 services:
     collectionRoute:
-        class:     'Opine\Collection\Route'
-        arguments: ['@route', '@collectionModel']
+        class:     Opine\Collection\Route
+        arguments: [@route, @collectionModel]
     collection:
-        class:     'Opine\Collection\Service'
-        arguments: ['%root%', '@db', '@queue', '@search', '@language', '@person']
+        class:     Opine\Collection\Service
+        arguments: [%root%, @collectionModel, @db, @queue, @search, @language, @person]
     collectionModel:
-        class:     'Opine\Collection\Model'
-        arguments: ['%root%', '@db', '@collection', '@bundleModel']
+        class:     Opine\Collection\Model
+        arguments: [%root%, @db, @bundleModel]
     collectionController:
-        class:     'Opine\Collection\Controller'
-        arguments: ['@collectionModel', '@collectionView', '@collection', '@person', '@language']
+        class:     Opine\Collection\Controller
+        arguments: [@collectionModel, @collectionView, @collection, @person, @language]
     collectionView:
-        class:     'Opine\Collection\View'
-        arguments: ['@layout']
+        class:     Opine\Collection\View
+        arguments: [@layout]

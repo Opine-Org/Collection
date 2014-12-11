@@ -41,13 +41,9 @@ class Controller {
         $this->language = $language;
 	}
 
-    public function json ($collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
-        $collectionClass = '\Collection\\' . $collection;
-        if (!class_exists($collectionClass)) {
-            throw new Exception ('Collection not found: ' . $collectionClass);
-        }
+    public function json ($slug, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
         $this->pathOverride($method, $limit, $page, $sort, $fields);
-        $this->view->json($this->model->generate(new $collectionClass, $method, $limit, $page, $sort, $fields));
+        $this->view->json($this->collection->generate($slug, $method, $limit, $page, $sort, $fields));
     }
 
     public function jsonBundle ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
@@ -56,7 +52,7 @@ class Controller {
             throw new Exception ('Bundled Collection not found: ' . $collectionClass);
         }
         $this->pathOverride($method, $limit, $page, $sort, $fields);
-        $this->view->json($this->model->generate(new $collectionClass, $method, $limit, $page, $sort, $fields));
+        $this->view->json($this->collection->generate(new $collectionClass, $method, $limit, $page, $sort, $fields));
     }
 
     private function pathOverride (&$method, &$limit, &$page, &$sort, &$fields) {

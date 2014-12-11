@@ -1,6 +1,7 @@
 collection:
-    plural: blogs
-    singular: blog
+    name: blogs
+    plural_slug: blogs
+    singular_slug: blog
     publishable: true
 
     indexSearch:

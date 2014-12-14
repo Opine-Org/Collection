@@ -80,7 +80,7 @@ class View {
             $tail = '</textarea></body></html>';
         }
         if (in_array($method, ['byId', 'bySlug'])) {
-            $name = $collection->singular;
+            $name = $collection->singularGet();
             echo $head . json_encode([
                 $name => $collection->$method($value)
             ], $options) . $tail;

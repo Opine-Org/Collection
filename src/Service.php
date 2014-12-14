@@ -55,8 +55,10 @@ class Service {
         if ($method == 'byId' || $method == 'bySlug') {
             $value = $limit;
         }
-        if (substr_count($method, '-') > 0) {
-            list($method, $value) = explode('-', urldecode($method), 2);
+        if (substr_count($method, ':') > 0) {
+            $tmp = explode(':', $method);
+            $value = array_pop($tmp);
+            $method = implode(':', $tmp);
         }
         if ($page < 1) {
             $page = 1;

@@ -28,8 +28,9 @@ class Collection {
     }
 
     public function queryOptionsSet ($limit=10, $page=1, Array $sort=[], $method='all', $value=NULL) {
-        $this->queryOptions['skip'] = ($page - 1) * $limit;
-        $this->queryOptions['limit'] = $limit;
+        $this->queryOptions['field'] = NULL;
+        $this->queryOptions['skip'] = (integer)(($page - 1) * $limit);
+        $this->queryOptions['limit'] = (integer)$limit;
         $this->method = $method;
         if ($value !== NULL) {
             $this->value = $value;
@@ -39,6 +40,11 @@ class Collection {
         if ($method == 'byEmbeddedField') {
             $tmp = explode(':', $value);
             $this->name = array_pop($tmp);
+        }
+        if (substr($method, 0, 7) == 'byField') {
+            $tmp = explode(':', $method);
+            $this->method = $tmp[0];
+            $this->queryOptions['field'] = $tmp[1];
         }
     }
 
@@ -54,7 +60,10 @@ class Collection {
         if (!isset($this->queryOptions['limit'])) {
             return 20;
         }
-        return $this->queryOptions['limit'];
+        if ($this->queryOptions['limit'] == 0) {
+            return 20;
+        }
+        return (integer)$this->queryOptions['limit'];
     }
 
     public function pageGet () {
@@ -147,8 +156,8 @@ class Collection {
             $this->db->collection($this->metadata['name'])->
                 find($this->criteria)->
                 sort($this->queryOptions['sort'])->
-                limit($this->queryOptions['limit'])->
-                skip($this->queryOptions['skip']));
+                limit((integer)$this->queryOptions['limit'])->
+                skip((integer)$this->queryOptions['skip']));
     }
 
     public function manager () {
@@ -159,8 +168,8 @@ class Collection {
             $this->db->collection($this->metadata['name'])->
                 find($this->criteria)->
                 sort($this->queryOptions['sort'])->
-                limit($this->queryOptions['limit'])->
-                skip($this->queryOptions['skip']));
+                limit((integer)$this->queryOptions['limit'])->
+                skip((integer)$this->queryOptions['skip']));
     }
 
     public function byEmbeddedField ($dbURI) {
@@ -198,12 +207,8 @@ class Collection {
         return $document;
     }
 
-    public function byField ($field) {
-        if (substr_count($field, '-') == 0) {
-            throw new Exception('Invalid field collection query, field must contain hyphen: ' . $field);
-        }
-        list ($field, $value) = explode('-', $field, 2);
-        $this->criteria[$field] = $value;
+    public function byField () {
+        $this->criteria[$this->queryOptions['field']] = $this->value;
         return $this->all();
     }
 

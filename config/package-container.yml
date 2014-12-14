@@ -4,7 +4,13 @@ services:
         arguments: [@route, @collectionModel]
     collection:
         class:     Opine\Collection\Service
-        arguments: [%root%, @collectionModel, @db, @queue, @search, @language, @person]
+        arguments:
+            - %root%
+            - @collectionModel
+            - @route
+            - @db
+            - @language
+            - @person
     collectionModel:
         class:     Opine\Collection\Model
         arguments: [%root%, @db, @bundleModel]

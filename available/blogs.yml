@@ -16,5 +16,6 @@ collection:
         blogs_tags: collectionModel@viewTags
 
     indexData:
-        - {slug: 1, created_date: -1}
-        - {dbURI: 1}
+        keys:
+            - {slug: 1, created_date: -1}
+            - {dbURI: 1}

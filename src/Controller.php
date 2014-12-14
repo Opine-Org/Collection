@@ -41,18 +41,19 @@ class Controller {
         $this->language = $language;
 	}
 
-    public function json ($slug, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
+    public function json ($slug, $method='all', $limit=20, $page=1, $sort='', $fields='') {
+        if (!empty($sort)) {
+            $sort = json_decode($sort);
+        }
+        if (!empty($fields)) {
+            $fields = json_decode($fields);
+        }
         $this->pathOverride($method, $limit, $page, $sort, $fields);
         $this->view->json($this->collection->generate($slug, $method, $limit, $page, $sort, $fields));
     }
 
-    public function jsonBundle ($bundle, $collection, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
-        $collectionClass = '\\' . $bundle . '\Collection\\' . $collection;
-        if (!class_exists($collectionClass)) {
-            throw new Exception ('Bundled Collection not found: ' . $collectionClass);
-        }
-        $this->pathOverride($method, $limit, $page, $sort, $fields);
-        $this->view->json($this->collection->generate(new $collectionClass, $method, $limit, $page, $sort, $fields));
+    public function jsonBundle ($bundle, $slug, $method='all', $limit=20, $page=1, $sort='', $fields='') {
+        $this->json($slug, $method, $limit, $page, $sort, $fields);
     }
 
     private function pathOverride (&$method, &$limit, &$page, &$sort, &$fields) {
@@ -97,28 +98,7 @@ class Controller {
 
     public function jsonCollectionIndex () {
         $collections = $this->model->collections();
-        foreach ($collections as &$collection) {
-            $class = $collection['class'];
-            $collectionObj = $this->collection->factory(new $class);
-            $reflection = new ReflectionClass($collectionObj);
-            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-            foreach ($methods as $method) {
-                if (in_array($method->name, ['document','__construct','totalGet','localSet','decorate','fetchAll','index','views','statsUpdate','statsSet','statsAll','toCamelCase'])) {
-                    continue;
-                }
-                $collection['methods'][] = $method->name;
-            }
-        }
-        $head = '';
-        $tail = '';
-        if (isset($_GET['callback'])) {
-            if ($_GET['callback'] == '?') {
-                $_GET['callback'] = 'callback';
-            }
-            $head = $_GET['callback'] . '(';
-            $tail = ');';
-        }
-        echo $head . json_encode($collections, JSON_PRETTY_PRINT) . $tail;
+        echo json_encode($collections, JSON_PRETTY_PRINT);
     }
 
     public function authFilter () {

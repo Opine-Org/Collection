@@ -57,9 +57,9 @@ class View {
         echo '</body></html>';
 	}
 
-	public function json (\Opine\Collection\Service $collection) {
-        $method = $collection->method;
-        $value = $collection->value;
+	public function json (\Opine\Collection\Collection $collection) {
+        $method = $collection->methodGet();
+        $value = $collection->valueGet();
         $head = '';
         $tail = '';
         if (isset($_GET['callback'])) {
@@ -88,15 +88,15 @@ class View {
             echo $head . json_encode([
                 $name => $collection->$method($value),
                 'pagination' => [
-                    'limit' => $collection->limit,
+                    'limit' => $collection->limitGet(),
                     'total' => $collection->totalGet(),
-                    'page' => $collection->page,
-                    'pageCount' => ceil($collection->totalGet() / $collection->limit)
+                    'page' => $collection->pageGet(),
+                    'pageCount' => ceil($collection->totalGet() / $collection->limitGet())
                 ],
                 'metadata' => array_merge(
                     ['display' => [
-                        'collection' => ucwords(str_replace('_', ' ', $collection->collection)),
-                        'document' => ucwords(str_replace('_', ' ', $collection->singular)),
+                        'collection' => ucwords(str_replace('_', ' ', $collection->collection())),
+                        'document' => ucwords(str_replace('_', ' ', $collection->singularGet())),
                     ],
                     'method' => $method
                 ], get_object_vars($collection))

@@ -1,111 +1,170 @@
 <?php
-namespace Opine\Collection\Collection;
+namespace Opine\Collection;
 
 use Exception;
+use MongoDate;
+use Opine\Interfaces\DB as DBInterface;
 
 class Collection {
+    private $root;
+    private $route;
     private $db;
-    private $skip;
+    private $person;
+    private $language;
+    private $metadata = [];
+    private $queryOptions = [];
+    private $name;
+    private $value;
+    private $method;
+    private $managerCache;
 
-    public function __construct ($collection, $limit, $page, $sort, $method, $value) {
-        $this->skip = ($page - 1) * $limit;
+    public function __construct (Array $metadata, $root, $route, DBInterface $db, $language, $person) {
+        $this->metadata = $metadata;
+        $this->root = $root;
+        $this->route = $route;
+        $this->db = $db;
+        $this->language = $language;
+        $this->person = $person;
+    }
+
+    public function queryOptionsSet ($limit=10, $page=1, Array $sort=[], $method='all', $value=NULL) {
+        $this->queryOptions['skip'] = ($page - 1) * $limit;
+        $this->queryOptions['limit'] = $limit;
+        $this->method = $method;
+        if ($value !== NULL) {
+            $this->value = $value;
+        }
+        $this->queryOptions['sort'] = $sort;
+        $this->name = $this->metadata['name'];
+        if ($method == 'byEmbeddedField') {
+            $tmp = explode(':', $value);
+            $this->name = array_pop($tmp);
+        }
+    }
+
+    public function methodGet () {
+        return $this->method;
+    }
+
+    public function valueGet () {
+        return $this->value;
+    }
+
+    public function limitGet () {
+        if (!isset($this->queryOptions['limit'])) {
+            return 20;
+        }
+        return $this->queryOptions['limit'];
+    }
+
+    public function pageGet () {
+        if (!isset($this->queryOptions['page'])) {
+            return 1;
+        }
+        return $this->queryOptions['page'];
     }
 
     public function collection () {
-        return $this->collection;
+        return $this->metadata['name'];
     }
 
     public function totalGet () {
         return $this->total;
     }
 
-    private function decorate (&$document) {
-        $document['_id'] = (string)$document['_id'];
-        if (method_exists($this->instance, $this->transform)) {
-            $method = $this->transform;
-            $this->instance->{$method}($document);
-        }
-        if (method_exists($this->instance, $this->myTransform)) {
-            $method = $this->myTransform;
-            $this->instance->{$method}($document);
-        }
-        $template = '';
-        if (isset($document['template_separation'])) {
-            $template = '-' . $document['template_separation'];
-        }
-        if (property_exists($this, 'path')) {
-            if ($this->path === false) {
-                return;
-            }
-        }
-        if (!property_exists($this->instance, 'path')) {
-            $path = '/' . $this->singular . $template;
-            if (isset($document['code_name'])) {
-                $path .= '/' . $document['code_name'] . '.html';
-            } else {
-                $path .= '/id/' . (string)$document['_id'] . '.html';
-            }
-        } else {
-            $path = $this->instance->path . $document[$this->pathKey] . '.html';
-        }
-        $document['path'] = $path;
+    public function singularGet () {
+        return $this->metadata['singular_slug'];
     }
 
-    public function fetchAll ($collection, $cursor) {
-        $rows = [];
+    private function transform (&$document) {
+        if (!isset($this->metadata['transform'])) {
+            return;
+        }
+        if (substr_count($this->metadata['transform'], '@') != 1) {
+            throw new Exception ('bad service declaration: ' . $this->metadata['transform']);
+        }
+        $this->route->serviceMethod($this->metadata['transform'], $document);
+    }
+
+    private function chunk (&$documents) {
+        if (!isset($this->metadata['chunk'])) {
+            return;
+        }
+        if (substr_count($this->metadata['chunk'], '@') != 1) {
+            throw new Exception ('bad service declaration: ' . $this->metadata['chunk']);
+        }
+        $this->route->serviceMethod($this->metadata['chunk'], $documents);
+    }
+
+    private function decorate (&$document) {
+        if (isset($document['path'])) {
+            return;
+        }
+        $document['_id'] = (string)$document['_id'];
+        $slug = $document['_id'];
+        if (isset($document['code_name'])) {
+            $slug = $document['code_name'];
+        }
+        if (isset($this->metadata['path'])) {
+            $document['path'] = $this->metadata['path'] . '/' . $slug . (isset($metadata['path_extension']) ? '.' . $metadata['path_extension'] : '');
+            return;
+        }
+        $document['path'] = '/' . $this->metadata['singular_slug'] . '/' . $slug . (isset($metadata['path_extension']) ? '.' . $metadata['path_extension'] : '');
+    }
+
+    private function fetchAll ($collection, $cursor) {
+        $documents = [];
         while ($cursor->hasNext()) {
             $document = $cursor->getNext();
             $this->decorate($document);
-            $rows[] = $document;
+            $documents[] = $document;
         }
-        if (method_exists($this->instance, $this->transformChunk)) {
-            $method = $this->transformChunk;
-            $this->instance->{$method}($rows);
-        }
-        if (method_exists($this->instance, $this->myTransformChunk)) {
-            $method = $this->myTransformChunk;
-            $this->instance->{$method}($rows);
-        }
-        return $rows;
+        $this->chunk($documents);
+        return $documents;
     }
 
     public function all () {
-        if (method_exists($this->instance, 'all')) {
-            return $this->instance->all($this);
-        }
-        $this->name = $this->collection;
-        if ($this->publishable) {
+        $this->name = $this->metadata['name'];
+        if ($this->metadata['publishable'] == true) {
             $this->criteria['status'] = 'published';
         }
         $language = $this->language->get();
         if ($language !== NULL) {
             $this->criteria['language'] = $language;
         }
+        $this->criteria['acl'] = 'public';
         $groups = $this->person->groups();
         if (is_array($groups) && count($groups) > 0) {
-            $groups[] = 'public';
-            $this->criteria['acl'] = ['$in' => $groups];
-        } else {
-            $this->criteria['acl'] = 'public';
+            $this->criteria['acl'] = ['$in' => array_merge([$this->criteria['acl']], $groups)];
         }
         return $this->fetch();
     }
 
-    public function fetch () {
-        $this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
-        return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+    private function fetch () {
+        $this->total = $this->db->collection($this->metadata['name'])->find($this->criteria)->count();
+        return $this->fetchAll(
+            $this->metadata['name'],
+            $this->db->collection($this->metadata['name'])->
+                find($this->criteria)->
+                sort($this->queryOptions['sort'])->
+                limit($this->queryOptions['limit'])->
+                skip($this->queryOptions['skip']));
     }
 
     public function manager () {
-        if (method_exists($this->instance, 'manager')) {
-            return $this->instance->manager($this);
-        }
-        $this->name = $this->collection;
-        $this->total = $this->db->collection($this->collection)->find($this->criteria)->count();
-        return $this->fetchAll($this->collection, $this->db->collection($this->collection)->find($this->criteria)->sort($this->sort)->limit($this->limit)->skip($this->skip));
+        $this->name = $this->metadata['name'];
+        $this->total = $this->db->collection($this->metadata['name'])->find($this->criteria)->count();
+        return $this->fetchAll(
+            $this->metadata['name'],
+            $this->db->collection($this->metadata['name'])->
+                find($this->criteria)->
+                sort($this->queryOptions['sort'])->
+                limit($this->queryOptions['limit'])->
+                skip($this->queryOptions['skip']));
     }
 
     public function byEmbeddedField ($dbURI) {
+        $this->total = 0;
         $filter = [];
         if (substr_count($dbURI, ':') > 0) {
             $parts = explode(':', $dbURI);
@@ -113,33 +172,35 @@ class Collection {
             $id = array_shift($parts);
             $filter = [$parts[0]];
         }
-        $document = $this->db->collection($this->collection)->findOne(['_id' => $this->db->id($id)], $filter);
+        $document = $this->db->collection($this->metadata['name'])->findOne(['_id' => $this->db->id($id)], $filter);
         if (!isset($document['_id'])) {
             return [];
         }
-        if (sizeof($parts) == 1) {
-            if (!isset($document[$parts[0]])) {
-                $this->total = 0;
-                return [];
-            }
-            $this->total = count($document[$parts[0]]);
-            return $document[$parts[0]];
+        if (sizeof($parts) != 1) {
+            return [];
         }
+        if (!isset($document[$parts[0]])) {
+            return [];
+        }
+        $this->total = count($document[$parts[0]]);
+        return $document[$parts[0]];
     }
 
     public function byId ($id) {
-        $this->name = $this->singular;
-        $document = $this->db->collection($this->collection)->findOne(['_id' => $this->db->id($id)]);
+        $this->total = 0;
+        $this->name = $this->metadata['singular_slug'];
+        $document = $this->db->collection($this->metadata['name'])->findOne(['_id' => $this->db->id($id)]);
         if (!isset($document['_id'])) {
             return [];
         }
+        $this->total = 1;
         $this->decorate($document);
         return $document;
     }
 
     public function byField ($field) {
-        if (method_exists($this->instance, 'byField')) {
-            return $this->instance->byField($this, $field);
+        if (substr_count($field, '-') == 0) {
+            throw new Exception('Invalid field collection query, field must contain hyphen: ' . $field);
         }
         list ($field, $value) = explode('-', $field, 2);
         $this->criteria[$field] = $value;
@@ -147,8 +208,8 @@ class Collection {
     }
 
     public function bySlug ($slug) {
-        $this->name = $this->singular;
-        $document = $this->db->collection($this->collection)->findOne(['code_name' => $slug]);
+        $this->name = $this->metadata['singular_slug'];
+        $document = $this->db->collection($this->metadata['name'])->findOne(['code_name' => $slug]);
         if (!isset($document['_id'])) {
             return [];
         }
@@ -175,7 +236,7 @@ class Collection {
         return $this->all();
     }
 
-    public function categoryIdFromTitle ($title) {
+    private function categoryIdFromTitle ($title) {
         return $this->db->collection('categories')->findOne(['title' => urldecode($title)], ['id']);
     }
 
@@ -206,7 +267,7 @@ class Collection {
         return $this->all();
     }
 
-    public function dateFieldValidate() {
+    private function dateFieldValidate() {
         if (isset($this->dateField)) {
             throw new Exception('Model configuration mmissing dateField');
         }
@@ -232,19 +293,6 @@ class Collection {
         $this->criteria['author'] = $this->db->id($id);
     }
 
-    public function tags () {
-        if (!isset($this->tagCacheCollection)) {
-            throw new Exception('Model configuration missing tagCacheCollection field');
-        }
-        $this->path = '/' . $this->collection . '/byTag/';
-        $this->pathKey = 'tag';
-        $this->collection = $this->tagCacheCollection;
-        $this->publishable = false;
-        $this->transform = 'documentTags';
-        $this->myTransform = 'myDocumentTags';
-        return $this->all();
-    }
-
     public function document (&$document) {
         //format date
 
@@ -258,5 +306,118 @@ class Collection {
         $document['count'] = $document['value'];
         unset($document['_id']);
         unset($document['value']);
+    }
+
+    public function indexData () {
+        if (!isset($this->metadata['indexData']) || !is_array($this->metadata['indexData'])) {
+            return false;
+        }
+        foreach ($indexes as $index) {
+            if (!isset($index['keys'])) {
+                echo 'Index can not be created for collection: ', $this->metadata['name'], ': missing keys.', "\n";
+            }
+            if (!isset($index['options'])) {
+                $index['options'] = [];
+            }
+            $this->db->collection($this->metadata['name'])->
+                createIndex($index['keys'], $index['options']);
+        }
+        echo $this->metadata['name'], " indexed", "\n";
+    }
+
+    private function indexString (&$index, $field, $map, &$document) {
+        if (!isset($document[$map])) {
+            $index[$field] = NULL;
+        }
+        $index[$field] = $document[$map];
+    }
+
+    private function indexArray (&$index, $field, Array $map, &$document) {
+        $data = NULL;
+        if (isset($document[$map])) {
+            $data = $index[$field];
+        }
+        if (!isset($map['field'])) {
+            throw new Exception('indexing a field via service requires the field key to be set');
+        }
+        if (!isset($map['service'])) {
+            throw new Exception('indexing a field via service requires the service key to be set');
+        }
+        try {
+            $index[$field] = $this->route->serviceMethod($map['service'], $field, $map, $document);
+        } catch (Exception $e) {
+            throw new Exception('can not call indexing service for field: ', $field, ', ' . $e->getMessage());
+        }
+    }
+
+    public function indexSearch ($id, Array $document, $managerUrl=NULL, $publicUrl=NULL) {
+        if (!isset($this->metadata['indexSearch']) || !is_array($this->metadata['indexSearch'])) {
+            return false;
+        }
+        $index = [];
+        foreach ($this->metadata['indexSearch'] as $field => $map) {
+            $type = gettype($map);
+            switch ($type) {
+                case 'string':
+                    $this->indexString($index, $field, $map, $document);
+                    break;
+
+                case 'array':
+                    $this->indexArray($index, $field, $map, $document);
+                    break;
+
+                default:
+                    throw new Exception('Unknown index type: ', $type, ', for field: ', $field);
+            }
+        }
+        if (empty($index)) {
+            return false;
+        }
+        if (empty($managerUrl) && !empty($document['dbURI'])) {
+            $managerUrl = $this->urlManager($document['dbURI']);
+        }
+        if (empty($publicUrl) && !empty($document['code_name'])) {
+            $publicUrl = '/' . $this->metadata['singular_slug'] . '/' . $document['code_name'];
+        }
+        return $this->search->indexToDefault (
+            (string)$id,
+            $this->metadata['name'],
+            (isset($index['title']) ? $index['title'] : NULL),
+            (isset($index['description']) ? $index['description'] : NULL),
+            (isset($index['image']) ? $index['image'] : NULL),
+            (isset($index['tags']) ? $index['tags'] : NULL),
+            (isset($index['categories']) ? $index['categories'] : NULL),
+            (isset($index['date']) ? date('Y/m/d H:i:s', strtotime($index['date'])) : NULL),
+            date('Y/m/d H:i:s', $document['created_date']->sec),
+            date('Y/m/d H:i:s', $document['modified_date']->sec),
+            $document['status'],
+            $document['featured'],
+            $document['acl'],
+            $managerUrl,
+            $publicUrl,
+            (isset($index['language']) ? $index['language'] : NULL)
+        );
+    }
+
+    private function managerCache () {
+        $managersCache = $this->root . '/../var/cache/managersByCollection.json';
+        if (!file_exists($managersCache)) {
+            return false;
+        }
+        $managers = json_decode(file_get_contents($managersCache), true);
+        if (!isset($managers['managers']) || !isset($managers['managers'][$this->metadata['slug']])) {
+            return false;
+        }
+        $managers['managers'][$this->metadata['slug']];
+    }
+
+    private function urlManager ($dbURI) {
+        if ($this->managerCache === NULL) {
+            $this->managerCache = $this->managerCache();
+        }
+        if (!is_array($this->managerCache)) {
+            return NULL;
+        }
+        return '/Manager/item/' . $this->managerCache['slug'] . '/' . $dbURI;
     }
 }

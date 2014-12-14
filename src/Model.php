@@ -26,9 +26,10 @@ namespace Opine\Collection;
 
 use Exception;
 use Symfony\Component\Yaml\Yaml;
+use MongoDate;
 
 class Model {
-	public $cache = false;
+	private $cache;
     private $cacheFile;
     private $root;
     private $bundleModel;
@@ -42,9 +43,11 @@ class Model {
     }
 
 	public function collections () {
+        $collections = [];
         if (!empty($this->cache)) {
             $collections = $this->cache;
-        } else {
+        }
+        if (empty($collections)) {
             $collections = $this->cacheRead();
         }
         if (!is_array($collections)) {
@@ -53,7 +56,7 @@ class Model {
         return $collections;
     }
 
-    private function collection ($slug) {
+    public function collection ($slug) {
         $collections = $this->collections();
         if (!isset($collections[$slug])) {
             return false;
@@ -65,7 +68,7 @@ class Model {
         file_put_contents($this->cacheFile, json_encode($collections, JSON_PRETTY_PRINT));
     }
 
-    public function cacheRead () {
+    private function cacheRead () {
         if (!file_exists($this->cacheFile)) {
             return [];
         }
@@ -83,7 +86,11 @@ class Model {
     private function directoryScan ($path, &$collections, $bundle='') {
         $dirFiles = glob($path);
         foreach ($dirFiles as $collectionFile) {
-            $collections[] = array_merge($this->yaml($collectionFile), ['bundle' => $bundle]);
+            $metadata = array_merge($this->yaml($collectionFile), ['bundle' => $bundle]);
+            if (!isset($metadata['name'])) {
+                throw new Exception('Collection metadata must define a name value');
+            }
+            $collections[$metadata['name']] = $metadata;
         }
     }
 
@@ -92,64 +99,191 @@ class Model {
         $this->directoryScan($this->root . '/../config/collections/*.yml', $collections);
         $bundles = $this->bundleModel->bundles();
         foreach ($bundles as $bundle) {
-            if (!isset($bundle['root'])) {
-                continue;
-            }
-            $this->directoryScan($bundle['root'] . '/../config/collections/*.yml', $collections, $bundle['name']);
+            $this->readBundleCollections($bundle, $collections);
         }
         $this->cacheWrite($collections);
         foreach ($collections as $collection) {
-            $filename = $this->root . '/layouts/collections/' . $collection['plural'] . '.html';
-            if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('layout-collection.html', $collection));
-            }
-            $filename = $this->root . '/partials/collections/' . $collection['plural'] . '.hbs';
-            if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('partial-collection.hbs', $collection));
-            }
-            $filename = $this->root . '/layouts/documents/' . $collection['singular'] . '.html';
-            if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('layout-document.html', $collection));
-            }
-            $filename = $this->root . '/partials/documents/' . $collection['singular'] . '.hbs';
-            if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('partial-document.hbs', $collection));
-            }
-            $filename = $this->root . '/../config/layouts/collections/' . $collection['plural'] . '.yml';
-            if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('app-collection.yml', $collection));
-            }
-            $filename = $this->root . '/../config/layouts/documents/' . $collection['singular'] . '.yml';
-            if (!file_exists($filename) && is_writable($filename)) {
-                file_put_contents($filename, $this->stubRead('app-document.yml', $collection));
-            }
+            $this->writeIndexLayout($collection);
+            $this->writeIndexPartial($collection);
+            $this->writeItemLayout($collection);
+            $this->writeItemPartial($collection);
+            $this->writeIndexConfig($collection);
+            $this->writeItemConfig($collection);
         }
         return json_encode($collections);
     }
 
+    private function readBundleCollections ($bundle, &$collection) {
+        if (!isset($bundle['root'])) {
+            return;
+        }
+        $this->directoryScan($bundle['root'] . '/../config/collections/*.yml', $collections, $bundle['name']);
+    }
+
+    private function writeItemConfig ($collection) {
+        $filename = $this->root . '/../config/layouts/documents/' . $collection['singular_slug'] . '.yml';
+        if (file_exists($filename) || !is_writable($filename)) {
+            return;
+        }
+        file_put_contents($filename, $this->stubRead('app-document.yml', $collection));
+    }
+
+    private function writeIndexConfig ($collection) {
+        $filename = $this->root . '/../config/layouts/collections/' . $collection['plural_slug'] . '.yml';
+        if (file_exists($filename) || !is_writable($filename)) {
+            return;
+        }
+        file_put_contents($filename, $this->stubRead('app-collection.yml', $collection));
+    }
+
+    private function writeItemPartial ($collection) {
+        $filename = $this->root . '/partials/documents/' . $collection['singular_slug'] . '.hbs';
+        if (file_exists($filename) || !is_writable($filename)) {
+            return;
+        }
+        file_put_contents($filename, $this->stubRead('partial-document.hbs', $collection));
+    }
+
+    private function writeItemLayout ($collection) {
+        $filename = $this->root . '/layouts/documents/' . $collection['singular_slug'] . '.html';
+        if (file_exists($filename) || !is_writable($filename)) {
+            return;
+        }
+        file_put_contents($filename, $this->stubRead('layout-document.html', $collection));
+    }
+
+    private function writeIndexPartial ($collection) {
+        $filename = $this->root . '/partials/collections/' . $collection['plural_slug'] . '.hbs';
+        if (file_exists($filename) || !is_writable($filename)) {
+            return;
+        }
+        file_put_contents($filename, $this->stubRead('partial-collection.hbs', $collection));
+    }
+
+    private function writeIndexLayout ($collection) {
+        $filename = $this->root . '/layouts/collections/' . $collection['plural_slug'] . '.html';
+        if (file_exists($filename) || !is_writable($filename)) {
+            return;
+        }
+        file_put_contents($filename, $this->stubRead('layout-collection.html', $collection));
+    }
+
     private function stubRead ($name, $collection) {
         $data = file_get_contents($this->root . '/../vendor/opine/build/static/' . $name);
-        return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], ['', $collection['plural'], $collection['singular']], $data);
+        return str_replace(['{{$url}}', '{{$plural}}', '{{$singular}}'], ['', $collection['plural_slug'], $collection['singular_slug']], $data);
+    }
+
+    private function statsDbUpdate ($name) {
+        $this->db->collection('collection_stats')->update(
+            ['collection' => $name],
+            ['$set' => [
+                'collection' => $name,
+                'count' => $this->db->collection($name)->count(),
+                'modified_date' => new MongoDate(strtotime('now'))
+            ]],
+            ['upsert' => true]
+        );
     }
 
     public function statsAll () {
         $collections = $this->collections();
         foreach ($collections as $collection) {
-            $this->db->collection('collection_stats')->update(
-                ['collection' => $collection['plural']],
-                ['$set' => [
-                    'collection' => $collection['plural'],
-                    'count' => $this->db->collection($collection['plural'])->count()
-                ]],
-                ['upsert' => true]
-            );
+            $this->statsDbUpdate($collection['name']);
         }
     }
 
     private function yaml ($file) {
-        if (function_exists('yaml_parse_file')) {
-            return yaml_parse_file($file);
+        try {
+            if (function_exists('yaml_parse_file')) {
+                $metadata = yaml_parse_file($file);
+            }
+            $metadata = Yaml::parse(file_get_contents($file));
+            if (!isset($metadata['collection'])) {
+                throw new Exception('Malformed collection YAML, missing "collection": ' . $file);
+            }
+            return $metadata['collection'];
+        } catch (Exception $e) {
+            throw new Exception('YAML error: ' . $file . ': ' . $e->getMessage());
         }
-        return Yaml::parse(file_get_contents($file));
+    }
+
+    public function statsUpdate ($dbURI) {
+        $this->queue->add('CollectionStats', [
+            'dbURI' => $dbURI,
+            'root'  => $this->root
+        ]);
+    }
+
+    public function statsSetByDbURI ($dbURI) {
+        if (substr_count($dbURI, ':') == 0) {
+            throw new Exception('Invalid dbURI format');
+        }
+        $collection = explode(':', $dbURI)[0];
+        return $this->statsDbUpdate($collection);
+    }
+
+    public function reIndexSearch ($name) {
+        $metadata = $this->metadataByName($name);
+        $class = $metadata['class'];
+        $service = $this->factory(new $class());
+        $this->db->each($this->db->collection($name)->find(), function ($doc) use ($service) {
+            $service->indexSearch($doc['_id'], $doc);
+            echo 'Indexed: ', (string)$doc['_id'], "\n";
+        });
+    }
+
+    public function reIndexData ($name) {
+        $metadata = $this->metadataByName($name);
+        $class = $metadata['class'];
+        $service = $this->factory(new $class());
+        $service->indexData();
+    }
+
+    public function reIndexSearchAll ($drop=false) {
+        $collections = $this->collections();
+        foreach ($collections as $collection) {
+            $this->reIndexSearch($collection['collection']);
+        }
+    }
+
+    public function reIndexDataAll ($drop=false) {
+        $collections = $this->collections();
+        foreach ($collections as $collection) {
+            $this->reIndexData($collection['collection']);
+        }
+    }
+
+    public function tagsCollection ($context) {
+        $map = <<<MAP
+            function() {
+                if (!this.tags) {
+                    return;
+                }
+                for (var i=0; i < this.tags.length; i++) {
+                    emit(this.tags[i], 1);
+                }
+            }
+MAP;
+
+        $reduce = <<<REDUCE
+            function(key, values) {
+                var count = 0;
+                for (var i = 0; i < values.length; i++) {
+                    count += values[i];
+                }
+                return count;
+            }
+REDUCE;
+
+        try {
+            $result = $this->db->mapReduce($map, $reduce, [
+                'mapreduce' => $context['collection'],
+                'out' => $context['collection'] . '_tags'
+            ]);
+        } catch (Exception $e) {
+            $result = false;
+        }
+
+        return $result;
     }
 }

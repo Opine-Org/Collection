@@ -1,0 +1,5 @@
+collection:
+    name: links
+    plural_slug: links
+    singular_slug: link
+    publishable: true

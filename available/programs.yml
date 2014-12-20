@@ -1,0 +1,5 @@
+collection:
+    name: programs
+    plural_slug: programs
+    singular_slug: program
+    publishable: true

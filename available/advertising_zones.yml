@@ -1,0 +1,5 @@
+collection:
+    name: advertising_zones
+    plural_slug: advertising_zones
+    singular_slug: advertising_zone
+    publishable: false

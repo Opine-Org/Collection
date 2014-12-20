@@ -1,0 +1,5 @@
+collection:
+    name: blurbs_by_tag
+    plural_slug: blurbs_by_tag
+    singular_slug: blurb
+    publishable: false

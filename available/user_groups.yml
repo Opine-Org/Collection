@@ -1,0 +1,5 @@
+collection:
+    name: user_groups
+    plural_slug: user_groups
+    singular_slug: user_group
+    publishable: false

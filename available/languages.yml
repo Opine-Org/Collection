@@ -1,0 +1,5 @@
+collection:
+    name: languages
+    plural_slug: languages
+    singular_slug: language
+    publishable: false

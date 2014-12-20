@@ -1,0 +1,5 @@
+collection:
+    name: advertisements
+    plural_slug: advertisements
+    singular_slug: advertisement
+    publishable: false

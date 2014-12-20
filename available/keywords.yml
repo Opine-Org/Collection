@@ -1,0 +1,5 @@
+collection:
+    name: keywords
+    plural_slug: keywords
+    singular_slug: keyword
+    publishable: false

@@ -1,0 +1,5 @@
+collection:
+    name: practice_areas
+    plural_slug: practice_areas
+    singular_slug: practice_area
+    publishable: false

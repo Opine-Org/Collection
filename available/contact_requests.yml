@@ -1,0 +1,5 @@
+collection:
+    name: contact_requests
+    plural_slug: contact_requests
+    singular_slug: contact_request
+    publishable: true

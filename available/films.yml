@@ -1,0 +1,5 @@
+collection:
+    name: films
+    plural_slug: films
+    singular_slug: film
+    publishable: true

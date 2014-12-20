@@ -1,0 +1,5 @@
+collection:
+    name: tweets
+    plural_slug: tweets
+    singular_slug: tweet
+    publishable: false

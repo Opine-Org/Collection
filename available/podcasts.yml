@@ -1,0 +1,5 @@
+collection:
+    name: podcasts
+    plural_slug: podcasts
+    singular_slug: podcast
+    publishable: true

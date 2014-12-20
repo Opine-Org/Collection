@@ -57,6 +57,9 @@ class Model {
     }
 
     public function collection ($slug) {
+        if (!is_string($slug)) {
+            throw new Exception ('Invalid collection type: ' . gettype($slug));
+        }
         $collections = $this->collections();
         if (!isset($collections[$slug])) {
             return false;

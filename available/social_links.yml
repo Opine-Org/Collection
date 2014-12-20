@@ -1,0 +1,5 @@
+collection:
+    name: social_links
+    plural_slug: social_links
+    singular_slug: social_link
+    publishable: false

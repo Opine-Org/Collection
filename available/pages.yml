@@ -1,0 +1,5 @@
+collection:
+    name: pages
+    plural_slug: pages
+    singular_slug: page
+    publishable: false

@@ -1,0 +1,5 @@
+collection:
+    name: file_uploads
+    plural_slug: file_uploads
+    singular_slug: book
+    publishable: true

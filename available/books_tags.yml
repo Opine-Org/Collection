@@ -1,0 +1,5 @@
+collection:
+    name: books_tags
+    plural_slug: books_tags
+    singular_slug: books_tag
+    publishable: false

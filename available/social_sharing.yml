@@ -1,0 +1,5 @@
+collection:
+    name: social_sharing
+    plural_slug: social_sharing
+    singular_slug: social_share
+    publishable: false

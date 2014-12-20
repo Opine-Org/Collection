@@ -1,0 +1,5 @@
+collection:
+    name: carousels
+    plural_slug: carousels
+    singular_slug: carousel
+    publishable: false

@@ -1,0 +1,5 @@
+collection:
+    name: videos_tags
+    plural_slug: videos_tags
+    singular_slug: videos_tag
+    publishable: false

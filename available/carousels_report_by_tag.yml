@@ -1,0 +1,5 @@
+collection:
+    name: carousels_report_by_tag
+    plural_slug: carousels_report_by_tag
+    singular_slug: carousels
+    publishable: false

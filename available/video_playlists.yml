@@ -1,0 +1,5 @@
+collection:
+    name: video_playlists
+    plural_slug: video_playlists
+    singular_slug: video_playlist
+    publishable: false

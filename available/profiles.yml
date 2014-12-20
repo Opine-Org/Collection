@@ -1,0 +1,5 @@
+collection:
+    name: profiles
+    plural_slug: profiles
+    singular_slug: profile
+    publishable: true

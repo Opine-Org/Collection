@@ -1,0 +1,5 @@
+collection:
+    name: photo_galleries
+    plural_slug: photo_galleries
+    singular_slug: photo_gallery
+    publishable: true

@@ -1,0 +1,5 @@
+collection:
+    name: videos
+    plural_slug: videos
+    singular_slug: video
+    publishable: true

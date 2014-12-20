@@ -1,0 +1,5 @@
+collection:
+    name: departments
+    plural_slug: departments
+    singular_slug: event
+    publishable: true

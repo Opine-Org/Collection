@@ -1,0 +1,5 @@
+collection:
+    name: categories
+    plural_slug: categories
+    singular_slug: category
+    publishable: false

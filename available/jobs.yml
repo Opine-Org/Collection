@@ -1,0 +1,5 @@
+collection:
+    name: jobs
+    plural_slug: jobs
+    singular_slug: job
+    publishable: true

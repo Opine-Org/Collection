@@ -1,0 +1,5 @@
+collection:
+    name: funding_campaigns
+    plural_slug: funding_campaigns
+    singular_slug: funding_campaign
+    publishable: true

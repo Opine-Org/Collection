@@ -46,6 +46,9 @@ class Service {
 
     public function factory ($slug) {
         $metadata = $this->model->collection($slug);
+        if ($metadata === false) {
+            throw new Exception('Can not read collection: ' . $slug);
+        }
         $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person);
         return $collection;
     }
@@ -70,6 +73,9 @@ class Service {
             $fields = [];
         }
         $metadata = $this->model->collection($slug);
+        if ($metadata === false) {
+            throw new Exception ('Can not load collection metadata for: ' . $slug);
+        }
         $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person);
         $collection->queryOptionsSet($limit, $page, $sort, $method, $value);
         return $collection;

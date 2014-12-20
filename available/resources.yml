@@ -1,0 +1,5 @@
+collection:
+    name: resources
+    plural_slug: resources
+    singular_slug: resource
+    publishable: true

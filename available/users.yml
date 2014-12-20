@@ -1,0 +1,5 @@
+collection:
+    name: users
+    plural_slug: users
+    singular_slug: user
+    publishable: true

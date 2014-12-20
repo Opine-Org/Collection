@@ -1,0 +1,5 @@
+collection:
+    name: pages_tags
+    plural_slug: pages_tags
+    singular_slug: pages_tag
+    publishable: false

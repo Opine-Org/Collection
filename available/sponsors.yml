@@ -1,0 +1,5 @@
+collection:
+    name: sponsors
+    plural_slug: sponsors
+    singular_slug: sponsor
+    publishable: true

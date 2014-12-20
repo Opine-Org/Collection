@@ -1,0 +1,5 @@
+collection:
+    name: events_tags
+    plural_slug: events_tags
+    singular_slug: events_tag
+    publishable: false

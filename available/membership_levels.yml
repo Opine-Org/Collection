@@ -1,0 +1,5 @@
+collection:
+    name: membership_levels
+    plural_slug: membership_levels
+    singular_slug: membership_level
+    publishable: true

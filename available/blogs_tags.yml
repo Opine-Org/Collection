@@ -1,0 +1,5 @@
+collection:
+    name: blogs_tags
+    plural_slug: blogs_tags
+    singular_slug: blogs_tag
+    publishable: false

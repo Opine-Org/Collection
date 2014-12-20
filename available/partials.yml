@@ -1,0 +1,5 @@
+collection:
+    name: partials
+    plural_slug: partials
+    singular_slug: partial
+    publishable: false

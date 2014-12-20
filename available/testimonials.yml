@@ -1,0 +1,5 @@
+collection:
+    name: testimonials
+    plural_slug: testimonials
+    singular_slug: testimonial
+    publishable: true

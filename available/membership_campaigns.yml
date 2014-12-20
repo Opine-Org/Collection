@@ -1,0 +1,5 @@
+collection:
+    name: membership_campaigns
+    plural_slug: membership_campaigns
+    singular_slug: membership_campaign
+    publishable: true

@@ -1,0 +1,5 @@
+collection:
+    name: news
+    plural_slug: news
+    singular_slug: newsitem
+    publishable: true

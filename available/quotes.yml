@@ -1,0 +1,5 @@
+collection:
+    name: quotes
+    plural_slug: quotes
+    singular_slug: quote
+    publishable: true

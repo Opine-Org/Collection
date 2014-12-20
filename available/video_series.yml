@@ -1,0 +1,5 @@
+collection:
+    name: video_series
+    plural_slug: video_series
+    singular_slug: video_series_item
+    publishable: false

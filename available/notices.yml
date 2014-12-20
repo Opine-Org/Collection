@@ -1,0 +1,5 @@
+collection:
+    name: notices
+    plural_slug: notices
+    singular_slug: notice
+    publishable: false

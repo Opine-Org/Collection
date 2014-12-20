@@ -1,0 +1,5 @@
+collection:
+    name: initiatives
+    plural_slug: initiatives
+    singular_slug: initiative
+    publishable: true

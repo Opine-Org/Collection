@@ -1,0 +1,5 @@
+collection:
+    name: menus
+    plural_slug: menus
+    singular_slug: menu
+    publishable: false

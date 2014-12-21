@@ -43,10 +43,10 @@ class Controller {
 
     public function json ($slug, $method='all', $limit=20, $page=1, $sort='', $fields='') {
         if (!empty($sort)) {
-            $sort = json_decode($sort);
+            $sort = json_decode($sort, true);
         }
         if (!empty($fields)) {
-            $fields = json_decode($fields);
+            $fields = json_decode($fields, true);
         }
         $this->pathOverride($method, $limit, $page, $sort, $fields);
         $this->view->json($this->collection->generate($slug, $method, $limit, $page, $sort, $fields));

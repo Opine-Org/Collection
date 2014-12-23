@@ -26,7 +26,7 @@
     "require-dev": {
         "phpunit/phpunit" : "3.7.32",
         "opine/db"        : "dev-master",
-        "opine/route"     : "dev-master",
+        "opine/route"     : "3.0.1",
         "opine/layout"    : "dev-master",
         "opine/queue"     : "dev-master",
         "opine/config"    : "dev-master",

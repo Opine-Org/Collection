@@ -36,40 +36,40 @@ class Route {
     }
 
     public function paths () {
-        $this->route->get('collectionController@authFilter', '/api/collection/{collection}', 'collectionController@json');
-        $this->route->get('collectionController@authFilter', '/api/collection/{collection}/{method}', 'collectionController@json');
-        $this->route->get('collectionController@authFilter', '/api/collection/{collection}/{method}/{limit}', 'collectionController@json');
-        $this->route->get('collectionController@authFilter', '/api/collection/{collection}/{method}/{limit}/{page}', 'collectionController@json');
-        $this->route->get('collectionController@authFilter', '/api/collection/{collection}/{method}/{limit}/{page}/{sort}', 'collectionController@json');
-        $this->route->get('collectionController@authFilter', '/api/collection/{collection}/{method}/{limit}/{page}/{sort}/{fields}', 'collectionController@json');
+        $this->route->get('/api/collection/{collection}', 'collectionController@json', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/api/collection/{collection}/{method}', 'collectionController@json', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/api/collection/{collection}/{method}/{limit}', 'collectionController@json', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/api/collection/{collection}/{method}/{limit}/{page}', 'collectionController@json', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/api/collection/{collection}/{method}/{limit}/{page}/{sort}', 'collectionController@json', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/api/collection/{collection}/{method}/{limit}/{page}/{sort}/{fields}', 'collectionController@json', ['before' => 'collectionController@authFilter']);
 
-        $this->route->get('collectionController@authFilter', '/{bundle}/api/collection/{collection}', 'collectionController@jsonBundle');
-        $this->route->get('collectionController@authFilter', '/{bundle}/api/collection/{collection}/{method}', 'collectionController@jsonBundle');
-        $this->route->get('collectionController@authFilter', '/{bundle}/api/collection/{collection}/{method}/{limit}', 'collectionController@jsonBundle');
-        $this->route->get('collectionController@authFilter', '/{bundle}/api/collection/{collection}/{method}/{limit}/{page}', 'collectionController@jsonBundle');
-        $this->route->get('collectionController@authFilter', '/{bundle}/api/collection/{collection}/{method}/{limit}/{page}/{sort}', 'collectionController@jsonBundle');
-        $this->route->get('collectionController@authFilter', '/{bundle}/api/collection/{collection}/{method}/{limit}/{page}/{sort}/{fields}', 'collectionController@jsonBundle');
+        $this->route->get('/{bundle}/api/collection/{collection}', 'collectionController@jsonBundle', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/{bundle}/api/collection/{collection}/{method}', 'collectionController@jsonBundle', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/{bundle}/api/collection/{collection}/{method}/{limit}', 'collectionController@jsonBundle', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/{bundle}/api/collection/{collection}/{method}/{limit}/{page}', 'collectionController@jsonBundle', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/{bundle}/api/collection/{collection}/{method}/{limit}/{page}/{sort}', 'collectionController@jsonBundle', ['before' => 'collectionController@authFilter']);
+        $this->route->get('/{bundle}/api/collection/{collection}/{method}/{limit}/{page}/{sort}/{fields}', 'collectionController@jsonBundle', ['before' => 'collectionController@authFilter']);
 
         $collections = $this->model->collections();
         $routed = [];
         foreach ($collections as $collection) {
             if (isset($collection['p']) && !isset($routed[$collection['p']])) {
-                $this->route->get('collectionController@authFilter', '/' . $collection['p'], 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}', 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}/{limit}', 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}/{limit}/{page}', 'collectionController@htmlIndex');
-                $this->route->get('collectionController@authFilter', '/' . $collection['p'] . '/{method}/{limit}/{page}/{sort}', 'collectionController@htmlIndex');
+                $this->route->get('/' . $collection['p'], 'collectionController@htmlIndex', ['before' => 'collectionController@authFilter']);
+                $this->route->get('/' . $collection['p'] . '/{method}', 'collectionController@htmlIndex', ['before' => 'collectionController@authFilter']);
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}', 'collectionController@htmlIndex', ['before' => 'collectionController@authFilter']);
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}', 'collectionController@htmlIndex', ['before' => 'collectionController@authFilter']);
+                $this->route->get('/' . $collection['p'] . '/{method}/{limit}/{page}/{sort}', 'collectionController@htmlIndex', ['before' => 'collectionController@authFilter']);
                 $routed[$collection['p']] =  true;
             }
             if (!isset($collection['s']) || isset($routed[$collection['s']])) {
                 continue;
             }
-            $this->route->get('collectionController@authFilter', '/' . $collection['s'] . '/{slug}', 'collectionController@html');
-            $this->route->get('collectionController@authFilter', '/' . $collection['s'] . '/id/{id}', 'collectionController@html');
+            $this->route->get('/' . $collection['s'] . '/{slug}', 'collectionController@html', ['before' => 'collectionController@authFilter']);
+            $this->route->get('/' . $collection['s'] . '/id/{id}', 'collectionController@html', ['before' => 'collectionController@authFilter']);
             $routed[$collection['s']] = true;
         }
-        $this->route->get('collectionController@authFilter', '/collections', 'collectionController@htmlCollectionIndex');
+        $this->route->get('/collections', 'collectionController@htmlCollectionIndex', ['before' => 'collectionController@authFilter']);
 
-        $this->route->get('collectionController@authFilter', '/api/collections', 'collectionController@jsonCollectionIndex');
+        $this->route->get('/api/collections', 'collectionController@jsonCollectionIndex', ['before' => 'collectionController@authFilter']);
     }
 }

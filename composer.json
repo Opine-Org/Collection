@@ -16,10 +16,8 @@
             "role"    : "Developer"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php"             : ">=5.5.0",
-        "opine/urlid"     : "dev-master",
         "opine/interfaces": "1.0.0",
         "symfony/yaml"    : "2.6.1",
         "opine/db"        : "2.0.0",
@@ -27,11 +25,11 @@
         "opine/layout"    : "2.0.0",
         "opine/queue"     : "2.0.0",
         "opine/config"    : "3.0.0",
-        "opine/cache"     : "2.0.3",
+        "opine/cache"     : "2.0.4",
         "opine/pubsub"    : "2.0.0",
         "opine/search"    : "2.0.0",
-        "opine/build"     : "2.0.0",
-        "opine/bundle"    : "2.0.0",
+        "opine/build"     : "2.0.1",
+        "opine/bundle"    : "2.0.1",
         "opine/language"  : "2.0.0",
         "opine/person"    : "2.0.0"
     },
@@ -43,5 +41,5 @@
             "Opine\\Collection\\": "src/"
         }
     },
-    "version": "2.0.0"
+    "version": "2.0.1"
 }

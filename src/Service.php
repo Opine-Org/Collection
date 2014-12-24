@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  */
 namespace Opine\Collection;
-use MongoDate;
-use Opine\Interfaces\DB as DBInterface;
-use Opine\Collection\Collection as Collection;
 
-class Service {
+use Opine\Interfaces\DB as DBInterface;
+
+class Service
+{
     private $root;
     private $model;
     private $route;
@@ -35,7 +35,8 @@ class Service {
     private $language;
     private $person;
 
-    public function __construct ($root, $model, $route, DBInterface $db, $language, $person) {
+    public function __construct($root, $model, $route, DBInterface $db, $language, $person)
+    {
         $this->root = $root;
         $this->model = $model;
         $this->route = $route;
@@ -44,17 +45,20 @@ class Service {
         $this->person = $person;
     }
 
-    public function factory ($slug) {
+    public function factory($slug)
+    {
         $metadata = $this->model->collection($slug);
         if ($metadata === false) {
-            throw new Exception('Can not read collection: ' . $slug);
+            throw new Exception('Can not read collection: '.$slug);
         }
         $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person);
+
         return $collection;
     }
 
-    public function generate ($slug, $method='all', $limit=20, $page=1, $sort=[], $fields=[]) {
-        $value = NULL;
+    public function generate($slug, $method = 'all', $limit = 20, $page = 1, $sort = [], $fields = [])
+    {
+        $value = null;
         if ($method == 'byId' || $method == 'bySlug') {
             $value = $limit;
         }
@@ -74,10 +78,11 @@ class Service {
         }
         $metadata = $this->model->collection($slug);
         if ($metadata === false) {
-            throw new Exception ('Can not load collection metadata for: ' . $slug);
+            throw new Exception('Can not load collection metadata for: '.$slug);
         }
         $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person);
         $collection->queryOptionsSet($limit, $page, $sort, $method, $value);
+
         return $collection;
     }
 }

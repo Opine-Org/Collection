@@ -1,7 +1,8 @@
 <?php
 namespace Collection;
 
-use ReflectionClass, Exception;
+use ReflectionClass;
+use Exception;
 
 $collections = ['Advertisements',
 'AdvertisingZones',
@@ -54,30 +55,32 @@ $collections = ['Advertisements',
 'VideoPlaylists',
 'VideoSeries',
 'Videos',
-'VideosTags'];
+'VideosTags', ];
 
 foreach ($collections as $collection) {
     $name = toUnderscore($collection);
-    require_once(__DIR__ . '/available/' . $collection . '.php');
-    $class = 'Collection\\' . $collection;
+    require_once __DIR__.'/available/'.$collection.'.php';
+    $class = 'Collection\\'.$collection;
     $obj = new $class();
     $reflect = new ReflectionClass($obj);
     $singular = $reflect->getProperty('singular')->getValue($obj);
     $publishable = false;
     try {
         $publishable = $reflect->getProperty('publishable')->getValue($obj);
-    } catch (Exception $e) {}
+    } catch (Exception $e) {
+    }
     if ($name == 'blogs') {
         continue;
     }
     $data = 'collection:
-    name: ' . $name. '
-    plural_slug: ' . $name . '
-    singular_slug: ' . $singular . '
-    publishable: ' . ($publishable == 1 ? 'true' : 'false');
-    file_put_contents(__DIR__ . '/available/' . $name . '.yml', $data);
+    name: '.$name.'
+    plural_slug: '.$name.'
+    singular_slug: '.$singular.'
+    publishable: '.($publishable == 1 ? 'true' : 'false');
+    file_put_contents(__DIR__.'/available/'.$name.'.yml', $data);
 }
 
-function toUnderscore ($value) {
+function toUnderscore($value)
+{
     return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $value));
 }

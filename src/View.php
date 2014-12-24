@@ -26,38 +26,44 @@ namespace Opine\Collection;
 
 use Opine\Interfaces\Layout as LayoutInterface;
 
-class View {
-	private $layout;
+class View
+{
+    private $layout;
 
-	public function __construct (LayoutInterface $layout) {
-		$this->layout = $layout;
-	}
+    public function __construct(LayoutInterface $layout)
+    {
+        $this->layout = $layout;
+    }
 
-	public function htmlIndex ($name, $args=[]) {
-		$this->layout->
-            config('collections/' . $name)->
-            container('collections/' . $name)->
+    public function htmlIndex($name, $args = [])
+    {
+        $this->layout->
+            config('collections/'.$name)->
+            container('collections/'.$name)->
             args($name, $args)->
             write();
-	}
+    }
 
-	public function html ($name, $slug) {
-		$this->layout->
-            config('documents/' . $name)->
-            container('documents/' . $name)->
+    public function html($name, $slug)
+    {
+        $this->layout->
+            config('documents/'.$name)->
+            container('documents/'.$name)->
             args($name, ['slug' => basename($slug, '.html')])->
             write();
-	}
+    }
 
-	public function htmlCollectionIndex ($collections) {
-		echo '<html><body>';
+    public function htmlCollectionIndex($collections)
+    {
+        echo '<html><body>';
         foreach ($collections as $collection) {
-            echo '<a href="/api/collection/' . $collection['p'] . '/all?pretty">', $collection['p'], '</a><br />';
+            echo '<a href="/api/collection/'.$collection['p'].'/all?pretty">', $collection['p'], '</a><br />';
         }
         echo '</body></html>';
-	}
+    }
 
-	public function json (\Opine\Collection\Collection $collection) {
+    public function json(\Opine\Collection\Collection $collection)
+    {
         $method = $collection->methodGet();
         $value = $collection->valueGet();
         $head = '';
@@ -66,7 +72,7 @@ class View {
             if ($_GET['callback'] == '?') {
                 $_GET['callback'] = 'callback';
             }
-            $head = $_GET['callback'] . '(';
+            $head = $_GET['callback'].'(';
             $tail = ');';
         }
         $options = null;
@@ -81,26 +87,26 @@ class View {
         }
         if (in_array($method, ['byId', 'bySlug'])) {
             $name = $collection->singularGet();
-            echo $head . json_encode([
-                $name => $collection->$method($value)
-            ], $options) . $tail;
+            echo $head.json_encode([
+                $name => $collection->$method($value),
+            ], $options).$tail;
         } else {
-            echo $head . json_encode([
+            echo $head.json_encode([
                 $name => $collection->$method($value),
                 'pagination' => [
                     'limit' => $collection->limitGet(),
                     'total' => $collection->totalGet(),
                     'page' => $collection->pageGet(),
-                    'pageCount' => ceil($collection->totalGet() / $collection->limitGet())
+                    'pageCount' => ceil($collection->totalGet() / $collection->limitGet()),
                 ],
                 'metadata' => array_merge(
                     ['display' => [
                         'collection' => ucwords(str_replace('_', ' ', $collection->collection())),
                         'document' => ucwords(str_replace('_', ' ', $collection->singularGet())),
                     ],
-                    'method' => $method
-                ], get_object_vars($collection))
-            ], $options) . $tail;
+                    'method' => $method,
+                ], get_object_vars($collection)),
+            ], $options).$tail;
         }
     }
 }

@@ -23,25 +23,27 @@
  * THE SOFTWARE.
  */
 namespace Opine\Collection;
-use ReflectionClass;
-use ReflectionMethod;
 
-class Controller {
-	private $model;
-	private $view;
+
+class Controller
+{
+    private $model;
+    private $view;
     private $collection;
     private $person;
     private $language;
 
-	public function __construct ($model, $view, $collection, $person, $language) {
-		$this->model = $model;
-		$this->view = $view;
+    public function __construct($model, $view, $collection, $person, $language)
+    {
+        $this->model = $model;
+        $this->view = $view;
         $this->collection = $collection;
         $this->person = $person;
         $this->language = $language;
-	}
+    }
 
-    public function json ($slug, $method='all', $limit=20, $page=1, $sort='', $fields='') {
+    public function json($slug, $method = 'all', $limit = 20, $page = 1, $sort = '', $fields = '')
+    {
         if (!empty($sort)) {
             $sort = json_decode($sort, true);
         }
@@ -52,11 +54,13 @@ class Controller {
         $this->view->json($this->collection->generate($slug, $method, $limit, $page, $sort, $fields));
     }
 
-    public function jsonBundle ($bundle, $slug, $method='all', $limit=20, $page=1, $sort='', $fields='') {
+    public function jsonBundle($bundle, $slug, $method = 'all', $limit = 20, $page = 1, $sort = '', $fields = '')
+    {
         $this->json($slug, $method, $limit, $page, $sort, $fields);
     }
 
-    private function pathOverride (&$method, &$limit, &$page, &$sort, &$fields) {
+    private function pathOverride(&$method, &$limit, &$page, &$sort, &$fields)
+    {
         foreach (['method', 'limit', 'page', 'sort', 'fields'] as $key) {
             if (isset($_GET) && isset($_GET[$key])) {
                 ${$key} = $_GET[$key];
@@ -64,7 +68,8 @@ class Controller {
         }
     }
 
-    public function htmlIndex ($method='all', $limit=10, $page=1, $sort=[]) {
+    public function htmlIndex($method = 'all', $limit = 10, $page = 1, $sort = [])
+    {
         $path = $this->language->pathEvaluate($_SERVER['REQUEST_URI']);
         $name = explode('/', trim($path, '/'))[0];
         if ($limit === null) {
@@ -78,7 +83,7 @@ class Controller {
         $args['page'] = $page;
         $args['sort'] = json_encode($sort);
         foreach (['limit', 'page', 'sort'] as $option) {
-            $key = $name . '-' . $method . '-' . $option;
+            $key = $name.'-'.$method.'-'.$option;
             if (isset($_GET[$key])) {
                 $args[$option] = $_GET[$key];
             }
@@ -86,34 +91,41 @@ class Controller {
         $this->view->htmlIndex($name, $args);
     }
 
-    public function html ($slug) {
+    public function html($slug)
+    {
         $path = $this->language->pathEvaluate($_SERVER['REQUEST_URI']);
         $name = explode('/', trim($path, '/'))[0];
         $this->view->html($name, $slug);
     }
 
-    public function htmlCollectionIndex () {
+    public function htmlCollectionIndex()
+    {
         $this->view->htmlCollectionIndex($this->model->collections());
     }
 
-    public function jsonCollectionIndex () {
+    public function jsonCollectionIndex()
+    {
         $collections = $this->model->collections();
         echo json_encode($collections, JSON_PRETTY_PRINT);
     }
 
-    public function authFilter () {
+    public function authFilter()
+    {
         return true;
         if ($this->person->permission(['api-all', 'api-collections', 'manager'])) {
             return true;
         }
+
         return 401;
     }
 
-    public function stats ($context) {
+    public function stats($context)
+    {
         $this->collection->statsSet($context['dbURI']);
     }
 
-    public function tagsCollection ($context) {
+    public function tagsCollection($context)
+    {
         $this->model->tagsCollection($context);
     }
 }

@@ -20,11 +20,8 @@
     "require": {
         "php"             : ">=5.5.0",
         "opine/urlid"     : "dev-master",
-        "opine/interfaces": "dev-master",
-        "symfony/yaml"    : "2.6.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit" : "3.7.32",
+        "opine/interfaces": "1.0.0",
+        "symfony/yaml"    : "2.6.1",
         "opine/db"        : "dev-master",
         "opine/route"     : "3.0.1",
         "opine/layout"    : "dev-master",
@@ -36,8 +33,10 @@
         "opine/build"     : "dev-master",
         "opine/bundle"    : "dev-master",
         "opine/language"  : "dev-master",
-        "opine/interfaces": "dev-master",
         "opine/person"    : "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "3.7.32"
     },
     "autoload": {
         "psr-4": {

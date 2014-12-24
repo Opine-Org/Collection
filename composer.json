@@ -22,18 +22,18 @@
         "opine/urlid"     : "dev-master",
         "opine/interfaces": "1.0.0",
         "symfony/yaml"    : "2.6.1",
-        "opine/db"        : "dev-master",
-        "opine/route"     : "3.0.1",
-        "opine/layout"    : "dev-master",
-        "opine/queue"     : "dev-master",
+        "opine/db"        : "2.0.0",
+        "opine/route"     : "3.0.2",
+        "opine/layout"    : "2.0.0",
+        "opine/queue"     : "2.0.0",
         "opine/config"    : "3.0.0",
-        "opine/cache"     : "2.0.2",
-        "opine/pubsub"    : "dev-master",
-        "opine/search"    : "dev-master",
-        "opine/build"     : "dev-master",
-        "opine/bundle"    : "1.9.0",
-        "opine/language"  : "dev-master",
-        "opine/person"    : "dev-master"
+        "opine/cache"     : "2.0.3",
+        "opine/pubsub"    : "2.0.0",
+        "opine/search"    : "2.0.0",
+        "opine/build"     : "2.0.0",
+        "opine/bundle"    : "2.0.0",
+        "opine/language"  : "2.0.0",
+        "opine/person"    : "2.0.0"
     },
     "require-dev": {
         "phpunit/phpunit" : "3.7.32"
@@ -42,5 +42,6 @@
         "psr-4": {
             "Opine\\Collection\\": "src/"
         }
-    }
+    },
+    "version": "2.0.0"
 }

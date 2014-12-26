@@ -11,6 +11,7 @@ class Collection
     private $route;
     private $db;
     private $person;
+    private $search;
     private $language;
     private $metadata = [];
     private $queryOptions = [];
@@ -18,8 +19,9 @@ class Collection
     private $value;
     private $method;
     private $managerCache;
+    private $criteria = [];
 
-    public function __construct(Array $metadata, $root, $route, DBInterface $db, $language, $person)
+    public function __construct(Array $metadata, $root, $route, DBInterface $db, $language, $person, $search)
     {
         $this->metadata = $metadata;
         $this->root = $root;
@@ -27,6 +29,7 @@ class Collection
         $this->db = $db;
         $this->language = $language;
         $this->person = $person;
+        $this->search = $search;
     }
 
     public function queryOptionsSet($limit = 10, $page = 1, Array $sort = [], $method = 'all', $value = null)
@@ -389,6 +392,7 @@ class Collection
     {
         if (!isset($document[$map])) {
             $index[$field] = null;
+            return;
         }
         $index[$field] = $document[$map];
     }
@@ -449,14 +453,14 @@ class Collection
             (isset($index['title']) ? $index['title'] : null),
             (isset($index['description']) ? $index['description'] : null),
             (isset($index['image']) ? $index['image'] : null),
-            (isset($index['tags']) ? $index['tags'] : null),
-            (isset($index['categories']) ? $index['categories'] : null),
+            (isset($index['tags']) ? $index['tags'] : []),
+            (isset($index['categories']) ? $index['categories'] : []),
             (isset($index['date']) ? date('Y/m/d H:i:s', strtotime($index['date'])) : null),
-            date('Y/m/d H:i:s', $document['created_date']->sec),
-            date('Y/m/d H:i:s', $document['modified_date']->sec),
-            $document['status'],
-            $document['featured'],
-            $document['acl'],
+            (isset($document['created_date']) ? date('Y/m/d H:i:s', $document['created_date']->sec) : null),
+            (isset($document['modified_date']) ? date('Y/m/d H:i:s', $document['modified_date']->sec) : null),
+            (isset($document['status']) ? $document['status'] : null),
+            (isset($document['featured']) ? $document['featured'] : null),
+            (isset($document['acl']) ? $document['acl'] : ['public']),
             $managerUrl,
             $publicUrl,
             (isset($index['language']) ? $index['language'] : null)
@@ -486,5 +490,13 @@ class Collection
         }
 
         return '/Manager/item/'.$this->managerCache['slug'].'/'.$dbURI;
+    }
+
+    public function views () {
+        //regenerate and views of collection
+    }
+
+    public function statsUpdate () {
+        //regenerate the count of this collection
     }
 }

@@ -130,7 +130,7 @@ class Model
         return json_encode($collections);
     }
 
-    private function readBundleCollections($bundle, &$collection)
+    private function readBundleCollections($bundle, &$collections)
     {
         if (!isset($bundle['root'])) {
             return;
@@ -223,9 +223,6 @@ class Model
     private function yaml($file)
     {
         try {
-            if (function_exists('yaml_parse_file')) {
-                $metadata = yaml_parse_file($file);
-            }
             $metadata = Yaml::parse(file_get_contents($file));
             if (!isset($metadata['collection'])) {
                 throw new Exception('Malformed collection YAML, missing "collection": '.$file);

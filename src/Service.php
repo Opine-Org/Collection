@@ -34,8 +34,9 @@ class Service
     private $db;
     private $language;
     private $person;
+    private $search;
 
-    public function __construct($root, $model, $route, DBInterface $db, $language, $person)
+    public function __construct($root, $model, $route, DBInterface $db, $language, $person, $search)
     {
         $this->root = $root;
         $this->model = $model;
@@ -43,6 +44,7 @@ class Service
         $this->db = $db;
         $this->language = $language;
         $this->person = $person;
+        $this->search = $search;
     }
 
     public function factory($slug)
@@ -51,7 +53,7 @@ class Service
         if ($metadata === false) {
             throw new Exception('Can not read collection: '.$slug);
         }
-        $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person);
+        $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person, $this->search);
 
         return $collection;
     }
@@ -80,7 +82,7 @@ class Service
         if ($metadata === false) {
             throw new Exception('Can not load collection metadata for: '.$slug);
         }
-        $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person);
+        $collection = new Collection($metadata, $this->root, $this->route, $this->db, $this->language, $this->person, $this->search);
         $collection->queryOptionsSet($limit, $page, $sort, $method, $value);
 
         return $collection;

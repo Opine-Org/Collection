@@ -21,17 +21,17 @@
         "opine/interfaces": "1.0.1",
         "symfony/yaml"    : "2.6.1",
         "opine/db"        : "2.0.1",
-        "opine/route"     : "3.0.3",
-        "opine/layout"    : "2.0.1",
+        "opine/route"     : "3.0.4",
+        "opine/layout"    : "2.0.2",
         "opine/queue"     : "2.0.1",
-        "opine/config"    : "3.0.1",
+        "opine/config"    : "3.0.2",
         "opine/cache"     : "2.0.4",
-        "opine/pubsub"    : "2.0.1",
-        "opine/search"    : "2.0.1",
+        "opine/pubsub"    : "2.0.2",
+        "opine/search"    : "2.0.2",
         "opine/build"     : "2.0.1",
         "opine/bundle"    : "2.0.2",
         "opine/language"  : "2.0.1",
-        "opine/person"    : "2.0.1"
+        "opine/person"    : "2.0.2"
     },
     "require-dev": {
         "phpunit/phpunit" : "3.7.32"
